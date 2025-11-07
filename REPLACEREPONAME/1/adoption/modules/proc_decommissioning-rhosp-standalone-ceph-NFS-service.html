@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Decommissioning the {rhos_prev_long} standalone Ceph NFS service :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_decommissioning-rhosp-standalone-ceph-NFS-service.html">Decommissioning the {rhos_prev_long} standalone Ceph NFS service</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Decommissioning the {rhos_prev_long} standalone Ceph NFS service</h1>
+<div class="paragraph _abstract">
+<p>If your deployment uses CephFS through NFS, you must decommission the {rhos_prev_long}({OpenStackShort}) standalone NFS service. Since future software upgrades do not support the previous NFS service, ensure that the decommissioning period is short.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You identified the new export locations for your existing shares by querying the Shared File Systems API.</p>
+</li>
+<li>
+<p>You unmounted and remounted the shared file systems on each client to stop using the previous NFS server.</p>
+</li>
+<li>
+<p>If you are consuming the {rhos_component_storage_file} shares with the {rhos_component_storage_file} CSI plugin for {rhocp_long}, you migrated the shares by scaling down the application pods and scaling them back up.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Clients that are creating new workloads cannot use share exports through the previous NFS service. The {rhos_component_storage_file} no longer communicates with the previous NFS service, and cannot apply or alter export rules on the previous NFS service.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Remove the <code>cephfs_ganesha_server_ip</code> option from the <code>manila-share</code> service configuration:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This restarts the <code>manila-share</code> process and removes the export locations that applied to the previous NFS service from all the shares.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; __EOF__ &gt; ~/manila.patch
+spec:
+  manila:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      manilaShares:
+        cephfs:
+          replicas: 1
+          customServiceConfig: |
+            [DEFAULT]
+            enabled_share_backends = cephfs
+            host = hostgroup
+            [cephfs]
+            driver_handles_share_servers=False
+            share_backend_name=cephfs
+            share_driver=manila.share.drivers.cephfs.driver.CephFSDriver
+            cephfs_conf_path=/etc/ceph/ceph.conf
+            cephfs_auth_id=openstack
+            cephfs_cluster_name=ceph
+            cephfs_protocol_helper_type=NFS
+            cephfs_nfs_cluster_id=cephfs
+          networkAttachments:
+              - storage
+__EOF__</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> custom resource:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=~/&lt;manila.patch&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;manila.patch&gt;</code> with the name of your patch file.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Clean up the standalone <code>ceph-nfs</code> service from the {OpenStackShort} control plane nodes by disabling and deleting the Pacemaker resources associated with the service:</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+You can defer this step until after {rhos_acro} {rhos_curr_ver} is operational. During this time, you cannot decommission the Controller nodes.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo pcs resource disable ceph-nfs
+$ sudo pcs resource disable ip-&lt;VIP&gt;
+$ sudo pcs resource unmanage ceph-nfs
+$ sudo pcs resource unmanage ip-&lt;VIP&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;VIP&gt;</code> with the IP address assigned to the <code>ceph-nfs</code> service in your environment.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

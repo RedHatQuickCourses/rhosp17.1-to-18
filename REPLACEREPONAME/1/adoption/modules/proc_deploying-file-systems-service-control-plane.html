@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying the {rhos_component_storage_file} on the control plane :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_deploying-file-systems-service-control-plane.html">Deploying the {rhos_component_storage_file} on the control plane</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Deploying the {rhos_component_storage_file} on the control plane</h1>
+<div class="paragraph _abstract">
+<p>Copy the {rhos_component_storage_file_first_ref} configuration from the {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment, and then deploy the {rhos_component_storage_file} on the control plane.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>The {rhos_component_storage_file} systemd services such as <code>api</code>, <code>cron</code>, and <code>scheduler</code> are stopped. For more information, see <a href="#stopping-openstack-services_migrating-databases">Stopping {rhos_prev_long} services</a>.</p>
+</li>
+<li>
+<p>If the deployment uses CephFS through NFS as a storage back end, the Pacemaker ordering and collocation constraints are adjusted. For more information, see <a href="#stopping-openstack-services_migrating-databases">Stopping {rhos_prev_long} services</a>.</p>
+</li>
+<li>
+<p>The {rhos_component_storage_file} Pacemaker service (<code>openstack-manila-share</code>) is stopped. For more information, see <a href="#stopping-openstack-services_migrating-databases">Stopping {rhos_prev_long} services</a>.</p>
+</li>
+<li>
+<p>The database migration is complete. For more information, see <a href="#migrating-databases-to-mariadb-instances_migrating-databases">Migrating databases to MariaDB instances</a>.</p>
+</li>
+<li>
+<p>The {rhocp_long} nodes where the <code>manila-share</code> service is to be deployed can reach the management network that the storage system is in.</p>
+</li>
+<li>
+<p>If the deployment uses CephFS through NFS as a storage back end, a new clustered Ceph NFS service is deployed on the {CephCluster} cluster with the help
+of Ceph orchestrator. For more information, see <a href="#creating-a-ceph-nfs-cluster_ceph-prerequisites">Creating a Ceph NFS cluster</a>.</p>
+</li>
+<li>
+<p>Services such as the {identity_service_first_ref} and memcached are available prior to adopting the Shared File Systems services.</p>
+</li>
+<li>
+<p>If you enabled tenant-driven networking by setting <code>driver_handles_share_servers=True</code>, the {networking_first_ref} is deployed.</p>
+</li>
+<li>
+<p>The <code>CONTROLLER1_SSH</code> environment variable is defined and points to the {OpenStackShort} Controller node. Replace the following example values with values that are correct for your environment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ CONTROLLER1_SSH="ssh -i &lt;path to SSH key&gt; root@&lt;node IP&gt;"</pre>
+</div>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Copy the configuration file from {OpenStackShort} {rhos_prev_ver} for reference:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/manila/etc/manila/manila.conf | awk '!/^ *#/ &amp;&amp; NF' &gt; ~/manila.conf</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Review the configuration file for configuration changes that were made since {OpenStackShort} {rhos_prev_ver}. For more information on preparing this file for {rhos_long}, see <a href="#preparing-the-shared-file-systems-service-configuration_adopting-shared-file-systems">Guidelines for preparing the {rhos_component_storage_file} configuration</a>.</p>
+</li>
+<li>
+<p>Create a patch file for the <code>OpenStackControlPlane</code> CR to deploy the {rhos_component_storage_file}. The following example <code>manila.patch</code> file uses native CephFS:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; __EOF__ &gt; ~/manila.patch
+spec:
+  manila:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      databaseAccount: manila
+      secret: osp-secret
+      manilaAPI:
+        replicas: 3
+        customServiceConfig: |
+          [DEFAULT]
+          enabled_share_protocols = cephfs
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+              spec:
+                type: LoadBalancer
+      manilaScheduler:
+        replicas: 3
+      manilaShares:
+        cephfs:
+          replicas: 1
+          customServiceConfig: |
+            [DEFAULT]
+            enabled_share_backends = tripleo_ceph
+            host = hostgroup
+            [cephfs]
+            driver_handles_share_servers=False
+            share_backend_name=cephfs <i class="conum" data-value="2"></i><b>(2)</b>
+            share_driver=manila.share.drivers.cephfs.driver.CephFSDriver
+            cephfs_conf_path=/etc/ceph/ceph.conf
+            cephfs_auth_id=openstack
+            cephfs_cluster_name=ceph
+            cephfs_volume_mode=0755
+            cephfs_protocol_helper_type=CEPHFS
+          networkAttachments: <i class="conum" data-value="3"></i><b>(3)</b>
+              - storage
+      extraMounts: <i class="conum" data-value="4"></i><b>(4)</b>
+      - name: v1
+        region: r1
+        extraVol:
+          - propagation:
+            - ManilaShare
+          extraVolType: Ceph
+          volumes:
+          - name: ceph
+            secret:
+              secretName: ceph-conf-files
+          mounts:
+          - name: ceph
+            mountPath: "/etc/ceph"
+            readOnly: true
+__EOF__</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Ensure that the names of the back ends (<code>share_backend_name</code>) are the same as they were in {OpenStackShort} {rhos_prev_ver}.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Ensure that you specify the appropriate storage management network in the <code>networkAttachments</code> section. For example, the <code>manilaShares</code> instance with the CephFS back-end driver is connected to the <code>storage</code> network.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If you need to add extra files to any of the services, you can use <code>extraMounts</code>. For example, when using {Ceph}, you can add the {rhos_component_storage_file} Ceph user&#8217;s keyring file as well as the <code>ceph.conf</code> configuration file.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example patch file uses CephFS through NFS:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; __EOF__ &gt; ~/manila.patch
+spec:
+  manila:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      secret: osp-secret
+      manilaAPI:
+        replicas: 3
+        customServiceConfig: |
+          [DEFAULT]
+          enabled_share_protocols = cephfs
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+              spec:
+                type: LoadBalancer
+      manilaScheduler:
+        replicas: 3
+      manilaShares:
+        cephfs:
+          replicas: 1
+          customServiceConfig: |
+            [DEFAULT]
+            enabled_share_backends = cephfs
+            host = hostgroup
+            [cephfs]
+            driver_handles_share_servers=False
+            share_backend_name=tripleo_ceph
+            share_driver=manila.share.drivers.cephfs.driver.CephFSDriver
+            cephfs_conf_path=/etc/ceph/ceph.conf
+            cephfs_auth_id=openstack
+            cephfs_cluster_name=ceph
+            cephfs_protocol_helper_type=NFS
+            cephfs_nfs_cluster_id=cephfs
+            cephfs_ganesha_server_ip=172.17.5.47
+          networkAttachments:
+              - storage
+__EOF__</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Prior to adopting the <code>manilaShares</code> service for CephFS through NFS, ensure that you create a clustered Ceph NFS service. The name of the service must be <code>cephfs_nfs_cluster_id</code>. The <code>cephfs_nfs_cluster_id</code> option is set with the name of the NFS cluster created on {Ceph}.</p>
+</li>
+<li>
+<p>The <code>cephfs_ganesha_server_ip</code> option is preserved from the configuration on the {OpenStackShort} {rhos_prev_ver} environment.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=~/&lt;manila.patch&gt;</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Replace <code>&lt;manila.patch&gt;</code> with the name of your patch file.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Inspect the resulting {rhos_component_storage_file} pods:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get pods -l service=manila</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the Shared File Systems API service is registered in the {identity_service_first_ref}:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack service list | grep manila</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack endpoint list | grep manila
+
+| 1164c70045d34b959e889846f9959c0e | regionOne | manila       | share        | True    | internal  | http://manila-internal.openstack.svc:8786/v1/%(project_id)s        |
+| 63e89296522d4b28a9af56586641590c | regionOne | manilav2     | sharev2      | True    | public    | https://manila-public-openstack.apps-crc.testing/v2                |
+| af36c57adcdf4d50b10f484b616764cc | regionOne | manila       | share        | True    | public    | https://manila-public-openstack.apps-crc.testing/v1/%(project_id)s |
+| d655b4390d7544a29ce4ea356cc2b547 | regionOne | manilav2     | sharev2      | True    | internal  | http://manila-internal.openstack.svc:8786/v2                       |</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Test the health of the service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack share service list
+$ openstack share pool list --detail</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check existing workloads:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack share list
+$ openstack share snapshot list</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

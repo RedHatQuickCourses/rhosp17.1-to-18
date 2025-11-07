@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Pulling the configuration from a {OpenStackPreviousInstaller} deployment :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_pulling-configuration-from-a-tripleo-deployment.html">Pulling the configuration from a {OpenStackPreviousInstaller} deployment</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Pulling the configuration from a {OpenStackPreviousInstaller} deployment</h1>
+<div class="paragraph _abstract">
+<p>Before you start the data plane adoption workflow, back up the configuration from the {rhos_prev_long} ({OpenStackShort}) services and {OpenStackPreviousInstaller}. You can then use the files during the configuration of the adopted services to ensure that nothing is missed or misconfigured.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>The os-diff tool is installed and configured. For more information, see
+<a href="#comparing-configuration-files-between-deployments_configuring-network">Comparing configuration files between deployments</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Update your ssh parameters according to your environment in the <code>os-diff.cfg</code>. Os-diff uses the ssh parameters to connect to your {OpenStackPreviousInstaller} node, and then query and download the configuration files:</p>
+<div class="listingblock">
+<div class="content">
+<pre>ssh_cmd=ssh -F ssh.config standalone
+container_engine=podman
+connection=ssh
+remote_config_path=/tmp/tripleo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ensure that the ssh command you provide in <code>ssh_cmd</code> parameter is correct and includes key authentication.</p>
+</div>
+</li>
+<li>
+<p>Enable the services that you want to include in the <code>/etc/os-diff/config.yaml</code> file, and disable the services that you want to exclude from the file. Ensure that you have the correct permissions to edit the file:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ chown ospng:ospng /etc/os-diff/config.yaml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following example enables the default {identity_service_first_ref} to be included in the <code>/etc/os-diff/config.yaml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># service name and file location
+services:
+  # Service name
+  keystone:
+    # Bool to enable/disable a service (not implemented yet)
+    enable: true
+    # Pod name, in both OCP and podman context.
+    # It could be strict match or will only just grep the podman_name
+    # and work with all the pods which matched with pod_name.
+    # To enable/disable use strict_pod_name_match: true/false
+    podman_name: keystone
+    pod_name: keystone
+    container_name: keystone-api
+    # pod options
+    # strict match for getting pod id in TripleO and podman context
+    strict_pod_name_match: false
+    # Path of the config files you want to analyze.
+    # It could be whatever path you want:
+    # /etc/&lt;service_name&gt; or /etc or /usr/share/&lt;something&gt; or even /
+    # @TODO: need to implement loop over path to support multiple paths such as:
+    # - /etc
+    # - /usr/share
+    path:
+      - /etc/
+      - /etc/keystone
+      - /etc/keystone/keystone.conf
+      - /etc/keystone/logging.conf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat this step for each {OpenStackShort} service that you want to disable or enable.</p>
+</div>
+</li>
+<li>
+<p>If you use non-containerized services, such as the <code>ovs-external-ids</code>, pull the configuration or the command output. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>services:
+  ovs_external_ids:
+    hosts: <i class="conum" data-value="1"></i><b>(1)</b>
+      - standalone
+    service_command: "ovs-vsctl list Open_vSwitch . | grep external_ids | awk -F ': ' '{ print $2; }'" <i class="conum" data-value="2"></i><b>(2)</b>
+    cat_output: true <i class="conum" data-value="3"></i><b>(3)</b>
+    path:
+      - ovs_external_ids.json
+    config_mapping: <i class="conum" data-value="4"></i><b>(4)</b>
+      ovn-bridge-mappings: edpm_ovn_bridge_mappings <i class="conum" data-value="5"></i><b>(5)</b>
+      ovn-bridge: edpm_ovn_bridge
+      ovn-encap-type: edpm_ovn_encap_type
+      ovn-monitor-all: ovn_monitor_all
+      ovn-remote-probe-interval: edpm_ovn_remote_probe_interval
+      ovn-ofctrl-wait-before-clear: edpm_ovn_ofctrl_wait_before_clear</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must correctly configure an SSH configuration file or equivalent for non-standard services, such as OVS. The <code>ovs_external_ids</code> service does not run in a container, and the OVS data is stored on each host of your cloud, for example, <code>controller_1/controller_2/</code>, and so on.
+</td>
+</tr>
+</table>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The list of hosts, for example, <code>compute-1</code>, <code>compute-2</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The command that runs against the hosts.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Os-diff gets the output of the command and stores the output in a file that is specified by the key path.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Provides a mapping between, in this example, the data plane custom resource definition and the <code>ovs-vsctl</code> output.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>edpm_ovn_bridge_mappings</code> variable must be a list of strings, for example, <code>["datacentre:br-ex"]</code>.
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Compare the values:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ os-diff diff ovs_external_ids.json edpm.crd --crd --service ovs_external_ids</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, to check the <code>/etc/yum.conf</code> on every host, you must put the following statement in the <code>config.yaml</code> file. The following example uses a file called <code>yum_config</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>services:
+  yum_config:
+    hosts:
+      - undercloud
+      - controller_1
+      - compute_1
+      - compute_2
+    service_command: "cat /etc/yum.conf"
+    cat_output: true
+    path:
+      - yum.conf</pre>
+</div>
+</div>
+</li>
+</ol>
+</div></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Pull the configuration:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The following command pulls all the configuration files that are included in the <code>/etc/os-diff/config.yaml</code> file. You can configure os-diff to update this file automatically according to your running environment by using the <code>--update</code> or <code>--update-only</code> option. These options set the podman information into the <code>config.yaml</code> for all running containers. The podman information can be useful later, when all the {rhos_prev_long} services are turned off.</p>
+</div>
+<div class="paragraph">
+<p>Note that when the <code>config.yaml</code> file is populated automatically you must provide the configuration paths manually for each service.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># will only update the /etc/os-diff/config.yaml
+os-diff pull --update-only</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># will update the /etc/os-diff/config.yaml and pull configuration
+os-diff pull --update</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># will update the /etc/os-diff/config.yaml and pull configuration
+os-diff pull</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration is pulled and stored by default in the following directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/tmp/tripleo/</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that you have a directory for each service configuration in your local path:</p>
+<div class="listingblock">
+<div class="content">
+<pre>  ▾ tmp/
+    ▾ tripleo/
+      ▾ glance/
+      ▾ keystone/</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

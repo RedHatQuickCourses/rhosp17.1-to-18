@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting the {image_service} that is deployed with a {block_storage} back end :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_adopting-image-service-with-block-storage-backend.html">Adopting the {image_service} that is deployed with a {block_storage} back end</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting the {image_service} that is deployed with a {block_storage} back end</h1>
+<div class="paragraph _abstract">
+<p>Adopt the {image_service_first_ref} that you deployed with a {block_storage_first_ref} back end in the {rhos_prev_long} ({OpenStackShort}) environment. The control plane <code>glanceAPI</code> instance is deployed with the following configuration. You use this configuration in the patch manifest that deploys the {image_service} with the block storage back end:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>..
+spec
+  glance:
+   ...
+      customServiceConfig: |
+          [DEFAULT]
+          enabled_backends = default_backend:cinder
+          [glance_store]
+          default_backend = default_backend
+          [default_backend]
+          description = Default cinder backend
+          cinder_store_auth_address = {{ .KeystoneInternalURL }}
+          cinder_store_user_name = {{ .ServiceUser }}
+          cinder_store_password = {{ .ServicePassword }}
+          cinder_store_project_name = service
+          cinder_catalog_info = volumev3::internalURL
+          cinder_use_multipath = true</pre>
+</div>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a new file, for example <code>glance_cinder.patch</code>, and include the following content:</p>
+<div class="listingblock">
+<div class="content">
+<pre>spec:
+  glance:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      secret: osp-secret
+      databaseInstance: openstack
+      storage:
+        storageRequest: 10G
+      customServiceConfig: |
+        [DEFAULT]
+        enabled_backends = default_backend:cinder
+        [glance_store]
+        default_backend = default_backend
+        [default_backend]
+        description = Default cinder backend
+        cinder_store_auth_address = {{ .KeystoneInternalURL }}
+        cinder_store_user_name = {{ .ServiceUser }}
+        cinder_store_password = {{ .ServicePassword }}
+        cinder_store_project_name = service
+        cinder_catalog_info = volumev3::internalURL
+        cinder_use_multipath = true
+      glanceAPIs:
+        default:
+          replicas: 1
+          override:
+            service:
+              internal:
+                metadata:
+                  annotations:
+                    metallb.universe.tf/address-pool: internalapi
+                    metallb.universe.tf/allow-shared-ip: internalapi
+                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                spec:
+                  type: LoadBalancer
+          networkAttachments:
+            - storage</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The {block_storage} as a back end establishes a dependency with the {image_service}. Any deployed <code>GlanceAPI</code> instances do not work if the {image_service} is configured with the {block_storage} that is not available in the <code>OpenStackControlPlane</code> custom resource.
+After the {block_storage}, and in particular <code>CinderVolume</code>, is adopted, you can proceed with the <code>GlanceAPI</code> adoption. For more information, see <a href="#adopting-the-block-storage-service_adopt-control-plane">Adopting the Block Storage service</a>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Verify that <code>CinderVolume</code> is available:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get pod -l component=cinder-volume | grep Running
+cinder-volume-75cb47f65-92rxq   3/3     Running   0</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>GlanceAPI</code> service that is deployed in the control plane:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=glance_cinder.patch</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

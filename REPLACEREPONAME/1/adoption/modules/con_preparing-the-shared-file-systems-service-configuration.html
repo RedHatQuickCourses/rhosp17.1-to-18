@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Guidelines for preparing the {rhos_component_storage_file} configuration :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="con_preparing-the-shared-file-systems-service-configuration.html">Guidelines for preparing the {rhos_component_storage_file} configuration</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Guidelines for preparing the {rhos_component_storage_file} configuration</h1>
+<div class="paragraph _abstract">
+<p>To deploy {rhos_component_storage_file_first_ref} on the control plane, you must copy the original configuration file from the {rhos_prev_long} {rhos_prev_ver} deployment. You must review the content in the file to make sure you are adopting the correct configuration for {rhos_long} {rhos_curr_ver}. Not all of the content needs to be brought into the new cloud environment.</p>
+</div>
+<div class="paragraph">
+<p>Review the following guidelines for preparing your {rhos_component_storage_file} configuration file for adoption:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The {rhos_component_storage_file} operator sets up the following configurations and can be ignored:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Database-related configuration (<code>[database]</code>)</p>
+</li>
+<li>
+<p>Service authentication (<code>auth_strategy</code>, <code>[keystone_authtoken]</code>)</p>
+</li>
+<li>
+<p>Message bus configuration (<code>transport_url</code>, <code>control_exchange</code>)</p>
+</li>
+<li>
+<p>The default paste config (<code>api_paste_config</code>)</p>
+</li>
+<li>
+<p>Inter-service communication configuration (<code>[neutron]</code>, <code>[nova]</code>, <code>[cinder]</code>, <code>[glance]</code> <code>[oslo_messaging_*]</code>)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Ignore the <code>osapi_share_listen</code> configuration. In {rhos_long} {rhos_curr_ver}, you rely on {rhocp_long} routes and ingress.</p>
+</li>
+<li>
+<p>Check for policy overrides. In {rhos_acro} {rhos_curr_ver}, the {rhos_component_storage_file} ships with a secure default Role-based access control (RBAC), and overrides might not be necessary.</p>
+</li>
+<li>
+<p>If a custom policy is necessary, you must provide it as a <code>ConfigMap</code>. The following example spec illustrates how you can set up a <code>ConfigMap</code> called <code>manila-policy</code> with the contents of a file called <code>policy.yaml</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  spec:
+    manila:
+      enabled: true
+      template:
+        manilaAPI:
+          customServiceConfig: |
+             [oslo_policy]
+             policy_file=/etc/manila/policy.yaml
+        extraMounts:
+        - extraVol:
+          - extraVolType: Undefined
+            mounts:
+            - mountPath: /etc/manila/
+              name: policy
+              readOnly: true
+            propagation:
+            - ManilaAPI
+            volumes:
+            - name: policy
+              projected:
+                sources:
+                - configMap:
+                    name: manila-policy
+                    items:
+                      - key: policy
+                        path: policy.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The value of the <code>host</code> option under the <code>[DEFAULT]</code> section must be <code>hostgroup</code>.</p>
+</li>
+<li>
+<p>To run the {rhos_component_storage_file} API service, you must add the <code>enabled_share_protocols</code> option to the <code>customServiceConfig</code> section in <code>manila: template: manilaAPI</code>.</p>
+</li>
+<li>
+<p>If you have scheduler overrides, add them to the <code>customServiceConfig</code>
+section in <code>manila: template: manilaScheduler</code>.</p>
+</li>
+<li>
+<p>If you have multiple storage back-end drivers configured with {OpenStackShort} {rhos_prev_ver}, you need to split them up when deploying {rhos_acro} {rhos_curr_ver}. Each storage back-end driver needs to use its own instance of the <code>manila-share</code> service.</p>
+</li>
+<li>
+<p>If a storage back-end driver needs a custom container image, find it in the
+<a href="https://catalog.redhat.com/software/containers/search?gs&amp;q=manila">Red Hat Ecosystem Catalog</a>, and create or modify an <code>OpenStackVersion</code> custom resource (CR) to specify the custom image using the same <code>custom name</code>.</p>
+<div class="paragraph">
+<p>The following example shows a manila spec from the <code>OpenStackControlPlane</code> CR that includes multiple storage back-end drivers, where only one is using a custom container image:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  spec:
+    manila:
+      enabled: true
+      template:
+        manilaAPI:
+          customServiceConfig: |
+            [DEFAULT]
+            enabled_share_protocols = nfs
+          replicas: 3
+        manilaScheduler:
+          replicas: 3
+        manilaShares:
+         netapp:
+           customServiceConfig: |
+             [DEFAULT]
+             debug = true
+             enabled_share_backends = netapp
+             host = hostgroup
+             [netapp]
+             driver_handles_share_servers = False
+             share_backend_name = netapp
+             share_driver = manila.share.drivers.netapp.common.NetAppDriver
+             netapp_storage_family = ontap_cluster
+             netapp_transport_type = http
+           replicas: 1
+         pure:
+            customServiceConfig: |
+             [DEFAULT]
+             debug = true
+             enabled_share_backends=pure-1
+             host = hostgroup
+             [pure-1]
+             driver_handles_share_servers = False
+             share_backend_name = pure-1
+             share_driver = manila.share.drivers.purestorage.flashblade.FlashBladeShareDriver
+             flashblade_mgmt_vip = 203.0.113.15
+             flashblade_data_vip = 203.0.10.14
+            replicas: 1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following example shows the <code>OpenStackVersion</code> CR that defines the custom container image:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: core.openstack.org/v1beta1
+kind: OpenStackVersion
+metadata:
+  name: openstack
+spec:
+  customContainerImages:
+    cinderVolumeImages:
+      pure: registry.connect.redhat.com/purestorage/openstack-manila-share-pure-rhosp-18-0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The name of the <code>OpenStackVersion</code> CR must match the name of your <code>OpenStackControlPlane</code> CR.</p>
+</div>
+</li>
+<li>
+<p>If you are providing sensitive information, such as passwords, hostnames, and usernames, use {OpenShiftShort} secrets, and the <code>customServiceConfigSecrets</code> key. You can use <code>customConfigSecrets</code> in any service. If you use third party storage that requires credentials, create a secret that is referenced in the manila CR/patch file by using the <code>customServiceConfigSecrets</code> key. For example:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a file that includes the secrets, for example, <code>netapp_secrets.conf</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; __EOF__ &gt; ~/netapp_secrets.conf
+
+[netapp]
+netapp_server_hostname = 203.0.113.10
+netapp_login = fancy_netapp_user
+netapp_password = secret_netapp_password
+netapp_vserver = mydatavserver
+__EOF__</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc create secret generic osp-secret-manila-netapp --from-file=~/&lt;secret&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;secret&gt;</code> with the name of the file that includes your secrets, for example, <code>netapp_secrets.conf</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add the secret to any {rhos_component_storage_file} file in the <code>customServiceConfigSecrets</code> section. The following example adds the <code>osp-secret-manila-netapp</code> secret to the <code>manilaShares</code> service:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  spec:
+    manila:
+      enabled: true
+      template:
+        &lt; . . . &gt;
+        manilaShares:
+         netapp:
+           customServiceConfig: |
+             [DEFAULT]
+             debug = true
+             enabled_share_backends = netapp
+             host = hostgroup
+             [netapp]
+             driver_handles_share_servers = False
+             share_backend_name = netapp
+             share_driver = manila.share.drivers.netapp.common.NetAppDriver
+             netapp_storage_family = ontap_cluster
+             netapp_transport_type = http
+           customServiceConfigSecrets:
+             - osp-secret-manila-netapp
+           replicas: 1
+    &lt; . . . &gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting Networker services to the {rhos_acro} data plane :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_adopting-networker-services-to-the-data-plane.html">Adopting Networker services to the {rhos_acro} data plane</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting Networker services to the {rhos_acro} data plane</h1>
+<div class="paragraph _abstract">
+<p>Adopt the Networker services in your existing {rhos_prev_long} deployment to the {rhos_long} data plane. The <code>Networker</code> services could be running on <code>Conroller</code> nodes or dedicated <code>Networker</code> nodes. You decide which services you want to run on the Networker nodes, and create a separate <code>OpenStackDataPlaneNodeSet</code> custom resource (CR) for the Networker nodes. You might also decide to implement the following options if they apply to your environment:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Depending on your topology, you might need to run the <code>neutron-metadata</code> service on the nodes, specifically when you want to serve metadata to SR-IOV ports that are hosted on Compute nodes.</p>
+</li>
+<li>
+<p>If you want to continue running OVN gateway services on Networker nodes, keep <code>ovn</code> service in the list to deploy.</p>
+</li>
+<li>
+<p>Optional: You can run the <code>neutron-dhcp</code> service on your Networker nodes instead of your Compute nodes. You might not need to use <code>neutron-dhcp</code> with OVN, unless your deployment uses DHCP relays, or advanced DHCP options that are supported by dnsmasq but not by the OVN DHCP implementation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Adopt each Controller or Networker node in your existing {rhos_prev_long} deployment to the {rhos_long} when your node is set as an OVN chassis gateway. Any node with
+parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway chassis. In this case, such nodes will become edpm networker nodes after adoption.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check for the nodes where <code>OVN Controller Gateway agent</code> agents are running. The list of agents varies depending on the services you enabled:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec openstackclient -- openstack network agent list
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | XXX   | UP    | ovn-controller             |
+| f3112349-054c-403a-b00a-e219238192b8 | OVN Controller agent         | compute-0.localdomain    |                   | XXX   | UP    | ovn-controller             |
+| af9dae2d-1c1c-55a8-a743-f84719f6406d | OVN Metadata agent           | compute-0.localdomain    |                   | XXX   | UP    | neutron-ovn-metadata-agent |
+| 51a11df8-a66e-47a2-aec0-52eb8589626c | OVN Controller Gateway agent | controller-1.localdomain |                   | XXX   | UP    | ovn-controller             |
+| bb817e5e-7832-410a-9e67-934dac8c602f | OVN Controller Gateway agent | controller-2.localdomain |                   | XXX   | UP    | ovn-controller             |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Define the shell variable. Based on above agent list output,
+controller-0, controller-1, controller-2 are our target
+hosts. If you have both <code>Controller</code> and <code>Networker</code> nodes running
+networker services then add all those hosts below.</p>
+<div class="listingblock">
+<div class="content">
+<pre>declare -A networkers
+networkers+=(
+  ["controller-0.localdomain"]="192.168.122.100"
+  ["controller-1.localdomain"]="192.168.122.101"
+  ["controller-2.localdomain"]="192.168.122.102"
+  # ...
+)</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>["&lt;node-name&gt;"]="192.168.122.100"</code> with the name and IP address of the corresponding Networker or Controller node as per your environment.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Deploy the <code>OpenStackDataPlaneNodeSet</code> CR for your nodes:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can reuse most of the <code>nodeTemplate</code> section from the <code>OpenStackDataPlaneNodeSet</code> CR that is designated for your Compute nodes. You can omit some of the variables because of the limited set of services that are running on the Networker nodes.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneNodeSet
+metadata:
+  name: openstack-networker
+spec:
+  tlsEnabled: false <i class="conum" data-value="1"></i><b>(1)</b>
+  networkAttachments:
+      - ctlplane
+  preProvisioned: true
+  services:
+    - bootstrap
+    - download-cache
+    - configure-network
+    - validate-network
+    - install-os
+    - configure-os
+    - ssh-known-hosts
+    - run-os
+    - install-certs
+    - ovn
+  env:
+    - name: ANSIBLE_CALLBACKS_ENABLED
+      value: "profile_tasks"
+    - name: ANSIBLE_FORCE_COLOR
+      value: "True"
+  nodes:
+    controller-0:
+      hostName: controller-0
+      ansible:
+        ansibleHost: ${networkers[controller-0.localdomain]}
+      networks:
+      - defaultRoute: true
+        fixedIP: ${networkers[controller-0.localdomain]}
+        name: ctlplane
+        subnetName: subnet1
+      - name: internalapi
+        subnetName: subnet1
+      - name: storage
+        subnetName: subnet1
+      - name: tenant
+        subnetName: subnet1
+    controller-1:
+      hostName: controller-1
+      ansible:
+        ansibleHost: ${networkers[controller-1.localdomain]}
+      networks:
+      - defaultRoute: true
+        fixedIP: ${networkers[controller-1.localdomain]}
+        name: ctlplane
+        subnetName: subnet1
+      - name: internalapi
+        subnetName: subnet1
+      - name: storage
+        subnetName: subnet1
+      - name: tenant
+        subnetName: subnet1
+    controller-2:
+      hostName: controller-2
+      ansible:
+        ansibleHost: ${networkers[controller-2.localdomain]}
+      networks:
+      - defaultRoute: true
+        fixedIP: ${networkers[controller-2.localdomain]}
+        name: ctlplane
+        subnetName: subnet1
+      - name: internalapi
+        subnetName: subnet1
+      - name: storage
+        subnetName: subnet1
+      - name: tenant
+        subnetName: subnet1
+  nodeTemplate:
+    ansibleSSHPrivateKeySecret: dataplane-adoption-secret
+    ansible:
+      ansibleUser: root
+      ansibleVars:
+        edpm_bootstrap_release_version_package: []
+        # edpm_network_config
+        # Default nic config template for a EDPM node
+        # These vars are edpm_network_config role vars
+        edpm_network_config_template: |
+           ---
+           {% set mtu_list = [ctlplane_mtu] %}
+           {% for network in nodeset_networks %}
+           {% set _ = mtu_list.append(lookup('vars', networks_lower[network] ~ '_mtu')) %}
+           {%- endfor %}
+           {% set min_viable_mtu = mtu_list | max %}
+           network_config:
+           - type: ovs_bridge
+             name: {{ neutron_physical_bridge_name }}
+             mtu: {{ min_viable_mtu }}
+             use_dhcp: false
+             dns_servers: {{ ctlplane_dns_nameservers }}
+             domain: {{ dns_search_domains }}
+             addresses:
+             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
+             routes: {{ ctlplane_host_routes }}
+             members:
+             - type: interface
+               name: nic1
+               mtu: {{ min_viable_mtu }}
+               # force the MAC address of the bridge to this interface
+               primary: true
+           {% for network in nodeset_networks %}
+             - type: vlan
+               mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
+               vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
+               addresses:
+               - ip_netmask:
+                   {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
+               routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
+           {% endfor %}
+
+        edpm_network_config_hide_sensitive_logs: false
+        #
+        # These vars are for the network config templates themselves and are
+        # considered EDPM network defaults.
+        neutron_physical_bridge_name: br-ctlplane
+        neutron_public_interface_name: eth0
+
+        # edpm_nodes_validation
+        edpm_nodes_validation_validate_controllers_icmp: false
+        edpm_nodes_validation_validate_gateway_icmp: false
+
+        # edpm ovn-controller configuration
+        edpm_ovn_bridge_mappings: &lt;bridge_mappings&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        edpm_ovn_bridge: br-int
+        edpm_ovn_encap_type: geneve
+        ovn_monitor_all: true
+        edpm_ovn_remote_probe_interval: 60000
+        edpm_ovn_ofctrl_wait_before_clear: 8000
+
+        # serve as a OVN gateway
+        edpm_enable_chassis_gw: true <i class="conum" data-value="3"></i><b>(3)</b>
+
+        timesync_ntp_servers:
+
+
+        gather_facts: false
+        enable_debug: false
+        # edpm firewall, change the allowed CIDR if needed
+        edpm_sshd_configure_firewall: true
+        edpm_sshd_allowed_ranges: ['192.168.122.0/24']
+        # SELinux module
+        edpm_selinux_mode: enforcing
+
+        # Do not attempt OVS major upgrades here
+        edpm_ovs_packages:
+        - openvswitch3.3
+EOF</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If TLS Everywhere is enabled, change <code>spec:tlsEnabled</code> to <code>true</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Set to the same values that you used in your {rhos_prev_long} {rhos_prev_ver} deployment.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Set to <code>true</code> to run <code>ovn-controller</code> in gateway mode.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Ensure that you use the same <code>ovn-controller</code> settings in the <code>OpenStackDataPlaneNodeSet</code> CR that you used in the Networker nodes before adoption. This configuration is stored in the <code>external_ids</code> column in the <code>Open_vSwitch</code> table in the Open vSwitch database:</p>
+<div class="listingblock">
+<div class="content">
+<pre>ovs-vsctl list Open .
+...
+external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn-bridge-mappings=&lt;bridge_mappings&gt;, ovn-chassis-mac-mappings="datacentre:1e:0a:bb:e6:7c:ad", ovn-cms-options=enable-chassis-as-gw, ovn-encap-ip="172.19.0.100", ovn-encap-tos="0", ovn-encap-type=geneve, ovn-match-northd-version=False, ovn-monitor-all=True, ovn-ofctrl-wait-before-clear="8000", ovn-openflow-probe-interval="60", ovn-remote="tcp:ovsdbserver-sb.openstack.svc:6642", ovn-remote-probe-interval="60000", rundir="/var/run/openvswitch", system-id="2eec68e6-aa21-4c95-a868-31aeafc11736"}
+...</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;bridge_mappings&gt;</code> with the value of the bridge mappings in your configuration, for example, <code>"datacentre:br-ctlplane"</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Optional: Enable <code>neutron-metadata</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
+  {
+    "op": "add",
+    "path": "/spec/services/-",
+    "value": "neutron-metadata"
+  }]'</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;networker_CR_name&gt;</code> with the name of the CR that you deployed for your Networker nodes, for example, <code>openstack-networker</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Optional: Enable <code>neutron-dhcp</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
+  {
+    "op": "add",
+    "path": "/spec/services/-",
+    "value": "neutron-dhcp"
+  }]'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the <code>pre-adoption-validation</code> service for Networker nodes:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack-pre-adoption-networker
+spec:
+  nodeSets:
+  - openstack-networker
+  servicesOverride:
+  - pre-adoption-validation
+EOF</pre>
+</div>
+</div>
+</li>
+<li>
+<p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the deployment to reach the <code>Ready</code> status:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Deploy the <code>OpenStackDataPlaneDeployment</code> CR for Networker nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack-networker
+spec:
+  nodeSets:
+  - openstack-networker
+EOF</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Alternatively, you can include the Networker node set in the <code>nodeSets</code> list before you deploy the main <code>OpenStackDataPlaneDeployment</code> CR. You cannot add new node sets to the <code>OpenStackDataPlaneDeployment</code> CR after deployment.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Clean up any {networking_first_ref} agents that are no longer running.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In some cases, agents from the old data plane that are replaced or retired remain in {rhos_acro}. The function these agents provided might be provided by a new agent that is running in {rhos_acro}, or the function might be replaced by other components. For example, DHCP agents might no longer be needed, since OVN DHCP in {rhos_acro} can provide this function.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>List the agents:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec openstackclient -- openstack network agent list
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| 856960f0-5530-46c7-a331-6eadcba362da | DHCP agent                   | controller-1.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
+| 8bd22720-789f-45b8-8d7d-006dee862bf9 | DHCP agent                   | controller-2.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
+| e584e00d-be4c-4e98-a11a-4ecd87d21be7 | DHCP agent                   | controller-0.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If any agent in the list shows <code>XXX</code> in the <code>Alive</code> field, verify the Host and Agent Type, if the functions of this agent is no longer required, and the agent has been permanently stopped on the {rhos_prev_long} host. Then, delete the agent:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec openstackclient -- openstack network agent &lt;agent_id&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;agent_id&gt;</code> with the ID of the agent to delete, for example, <code>856960f0-5530-46c7-a331-6eadcba362da</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the data plane node set to reach the <code>Ready</code> status:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc wait --for condition=Ready osdpns/&lt;networker_CR_name&gt; --timeout=30m</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;networker_CR_name&gt;</code> with the name of the CR that you deployed for your Networker nodes, for example, <code>openstack-networker</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Verify that the {networking_first_ref} agents are running. The list of agents varies depending on the services you enabled:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec openstackclient -- openstack network agent list
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| f3112349-054c-403a-b00a-e219238192b8 | OVN Controller agent         | compute-0.localdomain    |                   | :-)   | UP    | ovn-controller             |
+| af9dae2d-1c1c-55a8-a743-f84719f6406d | OVN Metadata agent           | compute-0.localdomain    |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 51a11df8-a66e-47a2-aec0-52eb8589626c | OVN Controller Gateway agent | controller-1.localdomain |                   | :-)   | UP    | ovn-controller             |
+| bb817e5e-7832-410a-9e67-934dac8c602f | OVN Controller Gateway agent | controller-2.localdomain |                   | :-)   | UP    | ovn-controller             |
++--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

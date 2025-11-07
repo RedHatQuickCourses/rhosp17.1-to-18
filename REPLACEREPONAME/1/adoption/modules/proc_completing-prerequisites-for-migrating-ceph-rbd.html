@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Completing prerequisites for a {Ceph} RBD migration :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_completing-prerequisites-for-migrating-ceph-rbd.html">Completing prerequisites for a {Ceph} RBD migration</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Completing prerequisites for a {Ceph} RBD migration</h1>
+<div class="paragraph _abstract">
+<p>Complete the following prerequisites before you begin the {Ceph} Rados Block Device (RBD) migration.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The target CephStorage or ComputeHCI nodes are configured to have both <code>storage</code> and <code>storage_mgmt</code> networks. This ensures that you can use both {Ceph} public and cluster networks from the same node. From {rhos_prev_long} {rhos_prev_ver} and later you do not have to run a stack update.</p>
+</li>
+<li>
+<p>NFS Ganesha is migrated from a {OpenStackPreviousInstaller} deployment to <code>cephadm</code>. For more information, see <a href="#creating-a-ceph-nfs-cluster_ceph-prerequisites">Creating an NFS Ganesha
+cluster</a>.</p>
+</li>
+<li>
+<p>Ceph Metadata Server, monitoring stack, Ceph Object Gateway, and any other daemon that is deployed on Controller nodes.</p>
+</li>
+<li>
+<p>The daemons distribution follows the cardinality constraints that are
+described in <a href="https://access.redhat.com/articles/1548993">Red Hat Ceph
+Storage: Supported configurations</a>.</p>
+</li>
+<li>
+<p>The {Ceph} cluster is healthy, and the <code>ceph -s</code> command returns <code>HEALTH_OK</code>.</p>
+</li>
+<li>
+<p>Run <code>os-net-config</code> on the bare metal node and configure additional networks:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If target nodes are <code>CephStorage</code>, ensure that the network is defined in the
+bare metal file for the <code>CephStorage</code> nodes, for example, <code>/home/stack/composable_roles/network/baremetal_deployment.yaml</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- name: CephStorage
+count: 2
+instances:
+- hostname: oc0-ceph-0
+name: oc0-ceph-0
+- hostname: oc0-ceph-1
+name: oc0-ceph-1
+defaults:
+networks:
+- network: ctlplane
+vif: true
+- network: storage_cloud_0
+subnet: storage_cloud_0_subnet
+- network: storage_mgmt_cloud_0
+subnet: storage_mgmt_cloud_0_subnet
+network_config:
+template: templates/single_nic_vlans/single_nic_vlans_storage.j2</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the missing network:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack overcloud node provision \
+-o overcloud-baremetal-deployed-0.yaml --stack overcloud-0 \
+/--network-config -y --concurrency 2 /home/stack/metalsmith-0.yaml</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the storage network is configured on the target nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">(undercloud) [stack@undercloud ~]$ ssh heat-admin@192.168.24.14 ip -o -4 a
+1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
+5: br-storage    inet 192.168.24.14/24 brd 192.168.24.255 scope global br-storage\       valid_lft forever preferred_lft forever
+6: vlan1    inet 192.168.24.14/24 brd 192.168.24.255 scope global vlan1\       valid_lft forever preferred_lft forever
+7: vlan11    inet 172.16.11.172/24 brd 172.16.11.255 scope global vlan11\       valid_lft forever preferred_lft forever
+8: vlan12    inet 172.16.12.46/24 brd 172.16.12.255 scope global vlan12\       valid_lft forever preferred_lft forever</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

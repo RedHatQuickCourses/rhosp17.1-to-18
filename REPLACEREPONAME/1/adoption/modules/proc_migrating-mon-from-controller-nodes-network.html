@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Migrating the Ceph Monitor IP address :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_migrating-mon-from-controller-nodes-network.html">Migrating the Ceph Monitor IP address</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Migrating the Ceph Monitor IP address</h1>
+<div class="paragraph _abstract">
+<p>You must migrate your Ceph Monitor IP addresses to the target {Ceph} nodes. The
+IP address migration assumes that the target nodes are originally deployed by
+{OpenStackPreviousInstaller} and that the network configuration is managed by
+<code>os-net-config</code>.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Get the original Ceph Monitor IP addresses from <code>$HOME/ceph_client_backup/ceph.conf</code> file on the <code>mon_host</code> line, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>mon_host = [v2:172.17.3.60:3300/0,v1:172.17.3.60:6789/0] [v2:172.17.3.29:3300/0,v1:172.17.3.29:6789/0] [v2:172.17.3.53:3300/0,v1:172.17.3.53:6789/0]</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Match the IP address retrieved in the previous step with the storage network IP addresses on the source node, and find the Ceph Monitor IP address:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[tripleo-admin@controller-0 ~]$ ip -o -4 a | grep 172.17.3
+9: vlan30    inet 172.17.3.60/24 brd 172.17.3.255 scope global vlan30\       valid_lft forever preferred_lft forever
+9: vlan30    inet 172.17.3.13/32 brd 172.17.3.255 scope global vlan30\       valid_lft forever preferred_lft forever</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that the Ceph Monitor IP address is present in the <code>os-net-config</code> configuration that is located in the <code>/etc/os-net-config</code> directory on the source node:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[tripleo-admin@controller-0 ~]$ grep "172.17.3.60" /etc/os-net-config/config.yaml
+    - ip_netmask: 172.17.3.60/24</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the <code>/etc/os-net-config/config.yaml</code> file and remove the <code>ip_netmask</code> line.</p>
+</li>
+<li>
+<p>Save the file and refresh the node network configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo os-net-config -c /etc/os-net-config/config.yaml</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the IP address is not present in the source node anymore, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[controller-0]$ ip -o a | grep 172.17.3.60</pre>
+</div>
+</div>
+</li>
+<li>
+<p>SSH into the target node, for example <code>cephstorage-0</code>, and add the IP address
+for the new Ceph Monitor.</p>
+</li>
+<li>
+<p>On the target node, edit <code>/etc/os-net-config/config.yaml</code> and
+add the <code>- ip_netmask: 172.17.3.60</code> line that you removed in the source node.</p>
+</li>
+<li>
+<p>Save the file and refresh the node network configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo os-net-config -c /etc/os-net-config/config.yaml</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the IP address is present in the target node.</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ip -o a | grep 172.17.3.60</pre>
+</div>
+</div>
+</li>
+<li>
+<p>From the Ceph client node, <code>controller-0</code>, ping the IP address that is
+migrated to the target node and confirm that it is still reachable:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[controller-0]$ ping -c 3 172.17.3.60</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<div class="title">Next steps</div>
+<p>Proceed to the next step <a href="#redeploying-a-ceph-monitor-on-the-target-node_{context}">Redeploying the Ceph Monitor on the target node</a>.</p>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

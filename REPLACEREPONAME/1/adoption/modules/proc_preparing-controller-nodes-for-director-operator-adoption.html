@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Preparing Controller nodes for director Operator adoption :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_preparing-controller-nodes-for-director-operator-adoption.html">Preparing Controller nodes for director Operator adoption</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Preparing Controller nodes for director Operator adoption</h1>
+<div class="paragraph _abstract">
+<p>Prepare the Controller nodes in your director Operator (OSPdO) environment for adoption to the {rhos_long} environment.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The following procedure uses a single {rhocp_long} cluster that is shared by the source OSPdO environment and a destination {rhos_acro} environment. Two {OpenShiftShort} master nodes are transferred to the {rhos_acro} environment, leaving OSPdO with one node for the duration of the adoption process. After adoption, the remaining node can be used by the {rhos_acro} environment as well.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Log in to the {OpenShiftShort} environment where {OpenStackShort} OSPdO is deployed and change to the project that hosts your {OpenStackShort} deployment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc project openstack</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Define the common environment variables:</p>
+<div class="listingblock">
+<div class="content">
+<pre>export PASSWORD_FILE="tripleo-passwords.yaml"
+
+export RHOSO18_NAMESPACE="rhoso"
+
+export OSPDO_NAMESPACE="openstack"
+
+export OS_CLIENT="oc exec -c openstackclient -t openstackclient -- "
+
+export CONTROLLER_SSH="oc rsh -n $OSPDO_NAMESPACE -c openstackclient openstackclient ssh controller-0.ctlplane"
+
+export CONTROLLER1_SSH="oc -n $OSPDO_NAMESPACE rsh -c openstackclient openstackclient ssh controller-0.ctlplane"
+export CONTROLLER2_SSH=
+export CONTROLLER3_SSH=
+
+export OSPDO_INTERNAL_API_NET="internalapi"
+
+export STORAGE_CLASS=$(oc get -n $OSPDO_NAMESPACE pvc openstackclient-hosts -o jsonpath='{.spec.storageClassName}')</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Get the name of the node where the current {OpenStackShort} Controller virtual machine (VM) is running:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ export CONTROLLER_NODE=$(oc -n $OSPDO_NAMESPACE get vmi -ojson | jq -r '.items[0].status.nodeName')</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you are using a combination master/worker cluster with a high availability OSPdO environment, configure OSPdO to use a single {OpenStackShort} Controller node:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Disable stonith:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ stonith_resources=$($CONTROLLER1_SSH sudo pcs stonith status|grep Started|awk '{print $2}')
+for resource in stonith_resources ;do $CONTROLLER1_SSH sudo pcs stonith disable $resource;done</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Put non-Controller nodes in maintenance:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER1_SSH sudo pcs node maintenance &lt;controller-1&gt; &lt;controller-2&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;controller-1&gt;</code> and <code>&lt;controller-2&gt;</code> with the names of the Controller nodes in your environment.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Update the quorum for single node:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER1_SSH sudo systemctl stop corosync
+$CONTROLLER2_SSH sudo systemctl stop corosync
+$CONTROLLER3_SSH sudo systemctl stop corosync
+$CONTROLLER1_SSH sudo pcs quorum update last_man_standing=1 wait_for_all=1
+$CONTROLLER1_SSH sudo systemctl restart corosync</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Restart the Pacemaker cluster:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER1_SSH sudo pcs cluster stop
+$CONTROLLER1_SSH sudo pcs cluster start</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that only Controller-0 is started and that the other 2 Controllers are stopped:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER_SSH sudo pcs status</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check if the {OpenStackShort} control plane is still operational:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$OS_CLIENT openstack compute service list</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You might need to wait a few minutes for the control plane to get operational. The control plane response slows down after this point.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>When Pacemaker is only managing one of the Controllers, delete 2 of the Controller VMs. The following example specifies Controller-1 and Controller-2 VMs for deletion:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc -n "${OSPDO_NAMESPACE}"annotate vm controller-1 osp-director.openstack.org/delete-host=true
+$ oc -n "${OSPDO_NAMESPACE}"annotate vm controller-2 osp-director.openstack.org/delete-host=true</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reduce the <code>roleCount</code> for the Controller role in the <code>OpenStackControlPlane</code> CR to <code>1</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc -n "${OSPDO_NAMESPACE}"patch OpenStackControlPlane overcloud --type json -p '[{"op": "replace", "path":"/spec/virtualMachineRoles/controller/roleCount", "value": 1}]'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the <code>OpenStackClient</code> pod is running on the same {OpenShiftShort} nodes as the remaining Controller VM. If the <code>OpenStackClient</code> pod is not on the same node, then move it by cordoning off the two nodes that have been freed up for {rhos_acro}. Then you delete the <code>OpenStackClient</code> pod so that it gets rescheduled on the {OpenShiftShort} node that has the remaining Controller VM. After the pod is moved to the correct node, uncordon all the nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc adm cordon $OSP18_NODE1
+$ oc adm cordon $OSP18_NODE2
+$ oc delete pod openstackclient
+$ oc adm uncordon $OSP18_NODE1
+$ oc adm uncordon $OSP18_NODE2</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove the OSPdO node network configuration policies from the other two nodes that are not running the Controller VM by placing a <code>nodeSelector</code> on the {OpenShiftShort} node that contains the Controller VM:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ for i in br-ctlplane br-ex br-osp; do oc patch osnetconfig openstacknetconfig --type json -p '[{"op": "replace", "path": "/spec/attachConfigurations/'$i'/nodeNetworkConfigurationPolicy/nodeSelector", "value": {"kubernetes.io/hostname": "'$CONTROLLER_NODE'"}}]'; done</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

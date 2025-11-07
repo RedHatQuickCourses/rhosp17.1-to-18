@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying back-end services :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_deploying-backend-services.html">Deploying back-end services</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Deploying back-end services</h1>
+<div class="paragraph _abstract">
+<p>Create the <code>OpenStackControlPlane</code> custom resource (CR) with the basic back-end services deployed, and disable all the {rhos_prev_long} ({OpenStackShort}) services. This CR is the foundation of the control plane.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>The cloud that you want to adopt is running, and it is on the latest minor version of {OpenStackShort} {rhos_prev_ver}.</p>
+</li>
+<li>
+<p>All control plane and data plane hosts of the source cloud are running, and continue to run throughout the adoption procedure.</p>
+</li>
+<li>
+<p>The <code>openstack-operator</code> is deployed, but <code>OpenStackControlPlane</code> is
+not deployed.</p>
+</li>
+<li>
+<p>If you enabled TLS everywhere (TLS-e) on the {OpenStackShort} environment, you must copy the <code>tls</code> root CA from the {OpenStackShort} environment to the <code>rootca-internal</code> issuer.</p>
+</li>
+<li>
+<p>There are free PVs available for Galera and RabbitMQ.</p>
+</li>
+<li>
+<p>Set the desired admin password for the control plane deployment. This can
+be the admin password from your original deployment or a different password:</p>
+<div class="listingblock">
+<div class="content">
+<pre>ADMIN_PASSWORD=SomePassword</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the existing {OpenStackShort} deployment password:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>declare -A TRIPLEO_PASSWORDS
+TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
+ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AdminPassword:' | awk -F ': ' '{ print $2; }')</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set the service password variables to match the original deployment.
+Database passwords can differ in the control plane environment, but
+you must synchronize the service account passwords.</p>
+<div class="paragraph">
+<p>For example, in developer environments with {OpenStackPreviousInstaller} Standalone, the passwords can be extracted:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
+BARBICAN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' BarbicanPassword:' | awk -F ': ' '{ print $2; }')
+CEILOMETER_METERING_SECRET=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerMeteringSecret:' | awk -F ': ' '{ print $2; }')
+CEILOMETER_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerPassword:' | awk -F ': ' '{ print $2; }')
+CINDER_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CinderPassword:' | awk -F ': ' '{ print $2; }')
+GLANCE_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' GlancePassword:' | awk -F ': ' '{ print $2; }')
+HEAT_AUTH_ENCRYPTION_KEY=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' HeatAuthEncryptionKey:' | awk -F ': ' '{ print $2; }')
+HEAT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' HeatPassword:' | awk -F ': ' '{ print $2; }')
+HEAT_STACK_DOMAIN_ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' HeatStackDomainAdminPassword:' | awk -F ': ' '{ print $2; }')
+IRONIC_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' IronicPassword:' | awk -F ': ' '{ print $2; }')
+MANILA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' ManilaPassword:' | awk -F ': ' '{ print $2; }')
+NEUTRON_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NeutronPassword:' | awk -F ': ' '{ print $2; }')
+NOVA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NovaPassword:' | awk -F ': ' '{ print $2; }')
+OCTAVIA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' OctaviaPassword:' | awk -F ': ' '{ print $2; }')
+PLACEMENT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' PlacementPassword:' | awk -F ': ' '{ print $2; }')
+SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | awk -F ': ' '{ print $2; }')</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Ensure that you are using the {rhocp_long} namespace where you want the
+control plane to be deployed:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc project openstack</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If the <code>$ADMIN_PASSWORD</code> is different than the password you set
+in <code>osp-secret</code>, amend the <code>AdminPassword</code> key in the <code>osp-secret</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set service account passwords in <code>osp-secret</code> to match the service
+account passwords from the original deployment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
+$ oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"
+$ oc set data secret/osp-secret "CeilometerPassword=$CEILOMETER_PASSWORD"
+$ oc set data secret/osp-secret "CinderPassword=$CINDER_PASSWORD"
+$ oc set data secret/osp-secret "GlancePassword=$GLANCE_PASSWORD"
+$ oc set data secret/osp-secret "HeatAuthEncryptionKey=$HEAT_AUTH_ENCRYPTION_KEY"
+$ oc set data secret/osp-secret "HeatPassword=$HEAT_PASSWORD"
+$ oc set data secret/osp-secret "HeatStackDomainAdminPassword=$HEAT_STACK_DOMAIN_ADMIN_PASSWORD"
+$ oc set data secret/osp-secret "IronicPassword=$IRONIC_PASSWORD"
+$ oc set data secret/osp-secret "IronicInspectorPassword=$IRONIC_PASSWORD"
+$ oc set data secret/osp-secret "ManilaPassword=$MANILA_PASSWORD"
+$ oc set data secret/osp-secret "MetadataSecret=$METADATA_SECRET"
+$ oc set data secret/osp-secret "NeutronPassword=$NEUTRON_PASSWORD"
+$ oc set data secret/osp-secret "NovaPassword=$NOVA_PASSWORD"
+$ oc set data secret/osp-secret "OctaviaPassword=$OCTAVIA_PASSWORD"
+$ oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
+$ oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Deploy the <code>OpenStackControlPlane</code> CR. Ensure that you only enable the DNS, Galera, Memcached, and RabbitMQ services. All other services must
+be disabled:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ oc apply -f - &lt;&lt;EOF
+apiVersion: core.openstack.org/v1beta1
+kind: OpenStackControlPlane
+metadata:
+  name: openstack
+spec:
+  secret: osp-secret
+  storageClass: &lt;storage_class&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+
+  barbican:
+    enabled: false
+    template:
+      barbicanAPI: {}
+      barbicanWorker: {}
+      barbicanKeystoneListener: {}
+
+  cinder:
+    enabled: false
+    template:
+      cinderAPI: {}
+      cinderScheduler: {}
+      cinderBackup: {}
+      cinderVolumes: {}
+
+  dns:
+    template:
+      override:
+        service:
+          metadata:
+            annotations:
+              metallb.universe.tf/address-pool: ctlplane
+              metallb.universe.tf/allow-shared-ip: ctlplane
+              metallb.universe.tf/loadBalancerIPs: 192.168.122.80 <i class="conum" data-value="2"></i><b>(2)</b>
+
+          spec:
+            type: LoadBalancer
+      options:
+      - key: server
+        values:
+        - 192.168.122.1
+      replicas: 1
+
+  glance:
+    enabled: false
+    template:
+      glanceAPIs: {}
+
+  heat:
+    enabled: false
+    template: {}
+
+  horizon:
+    enabled: false
+    template: {}
+
+  ironic:
+    enabled: false
+    template:
+      ironicConductors: []
+
+  keystone:
+    enabled: false
+    template: {}
+
+  manila:
+    enabled: false
+    template:
+      manilaAPI: {}
+      manilaScheduler: {}
+      manilaShares: {}
+
+  galera:
+    enabled: true
+    templates:
+      openstack:
+        secret: osp-secret
+        replicas: 3
+        storageRequest: 5G
+      openstack-cell1: <i class="conum" data-value="3"></i><b>(3)</b>
+        secret: osp-secret
+        replicas: 3
+        storageRequest: 5G
+      openstack-cell2:
+        secret: osp-secret
+        replicas: 1
+        storageRequest: 5G
+      openstack-cell3:
+        secret: osp-secret
+        replicas: 1
+        storageRequest: 5G
+  memcached:
+    enabled: true
+    templates:
+      memcached:
+        replicas: 3
+
+  neutron:
+    enabled: false
+    template: {}
+
+  nova:
+    enabled: false
+    template: {}
+
+  ovn:
+    enabled: false
+    template:
+      ovnController:
+        networkAttachment: tenant
+        nodeSelector:
+          node: non-existing-node-name
+      ovnNorthd:
+        replicas: 0
+      ovnDBCluster:
+        ovndbcluster-nb:
+          replicas: 3
+          dbType: NB
+          networkAttachment: internalapi
+        ovndbcluster-sb:
+          replicas: 3
+          dbType: SB
+          networkAttachment: internalapi
+
+  placement:
+    enabled: false
+    template: {}
+
+  rabbitmq:
+    templates:
+      rabbitmq:
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/loadBalancerIPs: 172.17.0.85
+            spec:
+              type: LoadBalancer
+      rabbitmq-cell1:
+        persistence:
+          storage: 1G
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/loadBalancerIPs: 172.17.0.86
+
+            spec:
+              type: LoadBalancer
+      rabbitmq-cell2:
+        persistence:
+          storage: 1G
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/loadBalancerIPs: 172.17.0.87
+            spec:
+              type: LoadBalancer
+      rabbitmq-cell3:
+        persistence:
+          storage: 1G
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/loadBalancerIPs: 172.17.0.88
+            spec:
+              type: LoadBalancer
+  telemetry:
+    enabled: false
+  tls: <i class="conum" data-value="4"></i><b>(4)</b>
+    podLevel:
+      enabled: false
+    ingress:
+      enabled: false
+  swift:
+    enabled: false
+    template:
+      swiftRing:
+        ringReplicas: 1
+      swiftStorage:
+        replicas: 0
+      swiftProxy:
+        replicas: 1
+EOF</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Select an existing <code>&lt;storage_class&gt;</code> in your {OpenShiftShort} cluster.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Replace <code>&lt;loadBalancer_IP&gt;</code> with the LoadBalancer IP address.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This example provides the required infrastructure database and messaging services for 3 Compute cells named <code>cell1</code>, <code>cell2</code>, and <code>cell3</code>. Adjust the values for fields such as <code>replicas</code>, <code>storage</code>, or <code>storageRequest</code>, for each Compute cell as needed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If you enabled TLS-e in your {OpenStackShort} environment, in the <code>spec:tls</code> section set <code>tls</code> to the following:</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spec:
+  ...
+  tls:
+    podLevel:
+      enabled: true
+      internal:
+        ca:
+          customIssuer: rootca-internal
+      libvirt:
+        ca:
+          customIssuer: rootca-internal
+      ovn:
+        ca:
+          customIssuer: rootca-internal
+    ingress:
+      ca:
+        customIssuer: rootca-internal
+      enabled: true</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you use IPv6, change the load balancer IPs to the IPs in your environment, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+metallb.universe.tf/allow-shared-ip: ctlplane
+metallb.universe.tf/loadBalancerIPs: fd00:aaaa::80
+...
+metallb.universe.tf/address-pool: internalapi
+metallb.universe.tf/loadBalancerIPs: fd00:bbbb::85
+...
+metallb.universe.tf/address-pool: internalapi
+metallb.universe.tf/loadBalancerIPs: fd00:bbbb::86</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Verify that the Galera and RabbitMQ status is <code>Running</code> for all defined cells:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ RENAMED_CELLS="cell1 cell2 cell3"
+$ oc get pod openstack-galera-0 -o jsonpath='{.status.phase}{"\n"}'
+$ oc get pod rabbitmq-server-0 -o jsonpath='{.status.phase}{"\n"}'
+$ for CELL in $(echo $RENAMED_CELLS); do
+&gt;     oc get pod openstack-$CELL-galera-0 -o jsonpath='{.status.phase}{"\n"}'
+&gt;     oc get pod rabbitmq-$CELL-server-0 -o jsonpath='{.status.phase}{"\n"}'
+&gt; done</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The given cells names are later referred to by using the environment variable <code>RENAMED_CELLS</code>.
+During the database migration procedure, the Nova cells are renamed. <code>RENAMED_CELLS</code> variable represents the new cell names used in the RHOSO deployment.</p>
+</div>
+</li>
+<li>
+<p>Ensure that the statuses of all the Rabbitmq and Galera CRs are <code>Setup complete</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get Rabbitmqs,Galera
+NAME                                                                  STATUS   MESSAGE
+rabbitmq.rabbitmq.openstack.org/rabbitmq                              True     Setup complete
+rabbitmq.rabbitmq.openstack.org/rabbitmq-cell1                        True     Setup complete
+
+NAME                                                               READY   MESSAGE
+galera.mariadb.openstack.org/openstack                             True     Setup complete
+galera.mariadb.openstack.org/openstack-cell1                       True     Setup complete</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the <code>OpenStackControlPlane</code> CR is waiting for deployment
+of the <code>openstackclient</code> pod:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get OpenStackControlPlane openstack
+NAME        STATUS    MESSAGE
+openstack   Unknown   OpenStackControlPlane Client not started</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

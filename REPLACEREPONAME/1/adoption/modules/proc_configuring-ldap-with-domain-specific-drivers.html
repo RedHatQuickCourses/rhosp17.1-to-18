@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuring LDAP with domain-specific drivers :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_configuring-ldap-with-domain-specific-drivers.html">Configuring LDAP with domain-specific drivers</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuring LDAP with domain-specific drivers</h1>
+<div class="paragraph">
+<p>If you need to integrate the {identity_service_first_ref} with one or more LDAP servers using domain-specific configurations, you can enable domain-specific drivers and provide the necessary LDAP settings.</p>
+</div>
+<div class="paragraph">
+<p>This involves two main steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the secret that holds the domain-specific LDAP configuration files that the {identity_service} uses. Each file within the secret corresponds to an LDAP domain.</p>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> custom resource (CR) to enable domain-specific drivers for the {identity_service} and mount a secret that contains the LDAP configurations.</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>To create the <code>keystone-domains</code> secret that stores the actual LDAP configuration files that {identity_service} uses, create a local file that includes your LDAP configuration, for example, <code>keystone.myldapdomain.conf</code>:</p>
+<div class="paragraph">
+<p>The following example file includes the configuration for a single LDAP domain. If you have multiple LDAP domains, create a configuration file for each, for example, <code>keystone.DOMAIN_ONE.conf</code>, <code>keystone.DOMAIN_TWO.conf</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ini hljs" data-lang="ini">[identity]
+driver = ldap
+[ldap]
+url = ldap://&lt;ldap_server_host&gt;:&lt;ldap_server_port&gt;
+user = &lt;bind_dn_user&gt;
+password = &lt;bind_dn_password&gt;
+suffix = &lt;user_tree_dn&gt;
+query_scope = sub
+# User configuration
+user_tree_dn = &lt;user_tree_dn&gt;
+user_objectclass = &lt;user_object_class&gt;
+user_id_attribute = &lt;user_id_attribute&gt;
+user_name_attribute = &lt;user_name_attribute&gt;
+user_mail_attribute = &lt;user_mail_attribute&gt;
+user_enabled_attribute = &lt;user_enabled_attribute&gt;
+user_enabled_default = true
+# Group configuration
+group_tree_dn = &lt;group_tree_dn&gt;
+group_objectclass = &lt;group_object_class&gt;
+group_id_attribute = &lt;group_id_attribute&gt;
+group_name_attribute = &lt;group_name_attribute&gt;
+group_member_attribute = &lt;group_member_attribute&gt;
+group_members_are_ids = true</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace the values, such as <code>&lt;ldap_server_host&gt;</code>, <code>&lt;bind_dn_user&gt;</code>, <code>&lt;user_tree_dn&gt;</code>, and so on, with your LDAP server details.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Create the secret from this file:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc create secret generic keystone-domains --from-file=&lt;keystone.DOMAIN_NAME.conf&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;keystone.DOMAIN_NAME.conf&gt;</code> with the name of your local configuration file. If applicable, include additional configuration files by using the <code>--from-file</code> option. After creating the secret, you can remove the local configuration file if it is no longer needed, or store it securely.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The name of the file that you provide to <code>--from-file</code>, for example <code>keystone.DOMAIN_NAME.conf</code>, is critical. The {identity_service} uses this filename to map incoming authentication requests for a domain to the correct LDAP configuration. Ensure that <code>DOMAIN_NAME</code> matches the name of the domain you are configuring in the {identity_service}.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane &lt;cr_name&gt; --type=merge -p '
+spec:
+  keystone:
+    template:
+      customServiceConfig: |
+          [identity]
+          domain_specific_drivers_enabled = true
+      extraMounts:
+        - name: v1
+          region: r1
+          extraVol:
+            - propagation:
+              - Keystone
+              extraVolType: Conf
+              volumes:
+              - name: keystone-domains
+                secret:
+                  secretName: keystone-domains
+              mounts:
+              - name: keystone-domains
+                mountPath: "/etc/keystone/domains"
+                readOnly: true</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;cr_name&gt;</code> with the name of your <code>OpenStackControlPlane</code> CR (for example, <code>openstack</code>).</p>
+</li>
+<li>
+<p>This patch does the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sets <code>spec.keystone.template.customServiceConfig</code>. Ensure that you do not overwrite any previously defined value.</p>
+</li>
+<li>
+<p>Defines <code>spec.keystone.template.extraMounts</code> to mount a secret named <code>keystone-domains</code> into the {identity_service} pods at <code>/etc/keystone/domains</code>. This secret contains your LDAP configuration files.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You might need to wait a few minutes for the changes to propagate and for the {identity_service} pods to be updated.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that users from the LDAP domain are accessible:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -t openstackclient -- openstack user list --domain &lt;domain_name&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;domain_name&gt;</code> with your LDAP domain name.</p>
+<div class="paragraph">
+<p>This command returns a list of users from your LDAP server.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Verify that groups from the LDAP domain are accessible:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -t openstackclient -- openstack group list --domain &lt;domain_name&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command returns a list of groups from your LDAP server.</p>
+</div>
+</li>
+<li>
+<p>Test authentication with an LDAP user:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -t openstackclient -- openstack --os-auth-url &lt;keystone_auth_url&gt; --os-identity-api-version 3 --os-user-domain-name &lt;domain_name&gt; --os-username &lt;ldap_username&gt; --os-password &lt;ldap_password&gt; token issue</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;keystone_auth_url&gt;</code> with the {identity_service} authentication URL.</p>
+</li>
+<li>
+<p>Replace <code>&lt;ldap_username&gt;</code> and <code>&lt;ldap_password&gt;</code> with valid LDAP user credentials.</p>
+<div class="paragraph">
+<p>If successful, this command returns a token, confirming that LDAP authentication is working correctly.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Verify group membership for an LDAP user:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -t openstackclient -- openstack group contains user --group-domain &lt;domain_name&gt; --user-domain &lt;domain_name&gt; &lt;group_name&gt; &lt;username&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;domain_name&gt;</code>, <code>&lt;group_name&gt;</code>, and <code>&lt;username&gt;</code> with the appropriate values from your LDAP server.</p>
+<div class="paragraph">
+<p>This command verifies that the user is properly associated with the group through LDAP.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

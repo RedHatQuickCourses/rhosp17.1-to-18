@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Migrating Ceph Manager daemons to {Ceph} nodes :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_migrating-mgr-from-controller-nodes.html">Migrating Ceph Manager daemons to {Ceph} nodes</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Migrating Ceph Manager daemons to {Ceph} nodes</h1>
+<div class="paragraph _abstract">
+<p>You must migrate your Ceph Manager daemons from the {rhos_prev_long} ({OpenStackShort}) Controller nodes to a set of target nodes. Target nodes are either existing {Ceph} nodes, or {OpenStackShort} Compute nodes if {Ceph} is deployed by {OpenStackPreviousInstaller} with a Hyperconverged Infrastructure (HCI) topology.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The following procedure uses <code>cephadm</code> and the Ceph Orchestrator to drive the Ceph Manager migration, and the Ceph spec to modify the placement and reschedule the Ceph Manager daemons. Ceph Manager is run in an active/passive state. It also provides many modules, including the Ceph Orchestrator. Every potential module, such as the Ceph Dashboard, that is provided by <code>ceph-mgr</code> is implicitly migrated with Ceph Manager.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>SSH into the target node and enable the firewall rules that are required to reach a Ceph Manager service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>dports="6800:7300"
+ssh heat-admin@&lt;target_node&gt; sudo iptables -I INPUT \
+    -p tcp --match multiport --dports $dports -j ACCEPT;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;target_node&gt;</code> with the hostname of the hosts that are listed in the {Ceph} environment. Run <code>ceph orch host ls</code> to see the list of the hosts.</p>
+<div class="paragraph">
+<p>Repeat this step for each target node.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Check that the rules are properly applied to the target node and persist them:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo iptables-save
+$ sudo systemctl restart iptables</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The default dashboard port for <code>ceph-mgr</code> in a greenfield deployment is 8443. With director-deployed {Ceph}, the default port is 8444 because the service ran on the Controller node, and it was necessary to use this port to avoid a conflict. For adoption, update the dashboard port to 8443 in the <code>ceph-mgr</code> configuration and firewall rules.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Log in to <code>controller-0</code> and update the dashboard port in the <code>ceph-mgr</code> configuration to 8443:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo cephadm shell
+$ ceph config set mgr mgr/dashboard/server_port 8443
+$ ceph config set mgr mgr/dashboard/ssl_server_port 8443
+$ ceph mgr module disable dashboard
+$ ceph mgr module enable dashboard</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If <code>nftables</code> is used in the existing deployment, edit <code>/etc/nftables/tripleo-rules.nft</code>
+and add the following content:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># 113 ceph_mgr {'dport': ['6800-7300', 8443]}
+add rule inet filter TRIPLEO_INPUT tcp dport { 6800-7300,8443 } ct state new counter accept comment "113 ceph_mgr"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the file.</p>
+</li>
+<li>
+<p>Restart the <code>nftables</code> service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo systemctl restart nftables</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the rules are applied:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo nft list ruleset | grep ceph_mgr</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Prepare the target node to host the new Ceph Manager daemon, and add the <code>mgr</code>
+label to the target node:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo cephadm shell -- ceph orch host label add &lt;target_node&gt; mgr</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Repeat steps 1-7 for each target node that hosts a Ceph Manager daemon.</p>
+</li>
+<li>
+<p>Get the Ceph Manager spec:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ mkdir -p ${SPEC_DIR}
+$ sudo cephadm shell -- ceph orch ls --export mgr &gt; ${SPEC_DIR}/mgr</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the retrieved spec and add the <code>label: mgr</code> section to the <code>placement</code>
+section:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">service_type: mgr
+service_id: mgr
+placement:
+  label: mgr</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the spec.</p>
+</li>
+<li>
+<p>Apply the spec with <code>cephadm</code> by using the Ceph Orchestrator:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the new Ceph Manager daemons are created in the target nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo cephadm shell -- ceph orch ps | grep -i mgr
+$ sudo cephadm shell -- ceph -s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Ceph Manager daemon count should match the number of hosts where the <code>mgr</code> label is added.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The migration does not shrink the Ceph Manager daemons. The count grows by
+the number of target nodes, and migrating Ceph Monitor daemons to {Ceph} nodes
+decommissions the stand-by Ceph Manager instances. For more information, see
+<a href="#migrating-mon-from-controller-nodes_migrating-ceph-rbd">Migrating Ceph Monitor daemons to {Ceph} nodes</a>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

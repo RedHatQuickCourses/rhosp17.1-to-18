@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Enabling the high availability for Compute instances service :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_enabling-high-availability-for-instances.html">Enabling the high availability for Compute instances service</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Enabling the high availability for Compute instances service</h1>
+<div class="paragraph _abstract">
+<p>To enable the high availability for Compute instances (Instance HA) service, you create the following resources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fencing secret.</p>
+</li>
+<li>
+<p>Configuration map. You can create the configuration map manually, or the configuration map is created automatically when you deploy the Instance HA resource. However, you must create the configuration map manually if you want to disable the Instance HA service.</p>
+</li>
+<li>
+<p>Instance HA resource.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have created the <code>fencing-secret.yaml</code> configuration file. For more information, see <a href="#maintaining-instance-ha-functionality-after-adoption_preparing-instance-HA">Maintaining the Instance HA functionality after adoption</a>.</p>
+</li>
+<li>
+<p>You have disabled Pacemaker on your Compute nodes. For more information, see <a href="#preventing-pacemaker-from-monitoring-compute-nodes_preparing-instance-HA">Preventing Pacemaker from monitoring Compute nodes</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create the secret:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f fencing-secret.yaml -n openstack</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Optional: Create the Instance HA configuration map and set the <code>DISABLED</code> parameter to <code>false</code>. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; EOF &gt; iha-cm.yaml
+kind: ConfigMap
+metadata:
+  name: instanceha-0-config
+  namespace: openstack
+apiVersion: v1
+data:
+  config.yaml: |
+    config:
+      EVACUABLE_TAG: "evacuable"
+      TAGGED_IMAGES: "true"
+      TAGGED_FLAVORS: "true"
+      TAGGED_AGGREGATES: "true"
+      SMART_EVACUATION: "false"
+      DELTA: "30"
+      DELAY: "0"
+      POLL: "45"
+      THRESHOLD: "50"
+      WORKERS: "4"
+      RESERVED_HOSTS: "false"
+      LEAVE_DISABLED: "false"
+      CHECK_KDUMP: "false"
+      LOGLEVEL: "info"
+      DISABLED: "false"
+EOF</pre>
+</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Apply the configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f iha-cm.yaml -n openstack</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to restrict which Compute nodes are evacuated, create host aggregates and set them by using the <code>EVACUABLE_TAG</code> parameter. Alternatively, you can set the <code>TAGGED_AGGREGATES</code> parameter to <code>false</code> to enable monitoring and evacuation of all your Compute nodes. For more information about Instance HA service parameters, see <a href="{ha-for-instances}/assembly_deploying-and-configuring-the-high-availability-for-compute-instances-service_instance-ha#proc_editing-the-instance-ha-service-parameters_instance-ha">Editing the Instance HA service parameters</a> in <em>Configuring high availability for instances</em>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create an Instance HA resource and reference the fencing secret and configuration map. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; EOF &gt; iha.yaml
+apiVersion: instanceha.openstack.org/v1beta1
+kind: InstanceHa
+metadata:
+  name: instanceha-0
+  namespace: openstack
+spec:
+  caBundleSecretName: combined-ca-bundle
+  instanceHaConfigMap: &lt;instanceha-0-config&gt;
+  fencingSecret: fencing-secret
+EOF</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>instanceha-0-config</code>: Specifies the name of the Instance HA configuration map that you created. Leave blank to have the <code>infra-operator</code> automatically create a configuration map. You can then edit the values as needed.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Deploy the Instance HA resource:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f iha.yaml -n openstack</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Next steps</div>
+<ul>
+<li>
+<p>After you complete the {rhos_long_noacro} adoption, remove the Pacemaker components from the Compute nodes. You must run the following commands on each Compute node:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo systemctl stop pacemaker_remote
+$ sudo systemctl stop pcsd
+$ sudo systemctl stop pcsd-ruby.service
+$ sudo systemctl disable pacemaker_remote
+$ sudo systemctl disable pcsd
+$ sudo systemctl disable pcsd-ruby.service
+$ sudo dnf remove pacemaker pacemaker-remote pcs pcsd -y</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

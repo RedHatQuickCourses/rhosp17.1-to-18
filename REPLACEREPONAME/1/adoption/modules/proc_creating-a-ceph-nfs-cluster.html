@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Creating an NFS Ganesha cluster :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_creating-a-ceph-nfs-cluster.html">Creating an NFS Ganesha cluster</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Creating an NFS Ganesha cluster</h1>
+<div class="paragraph _abstract">
+<p>If you use CephFS through NFS with the {rhos_component_storage_file_first_ref}, you must create a new clustered NFS service on the {Ceph} cluster. This service replaces the standalone, Pacemaker-controlled <code>ceph-nfs</code> service that you use in {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver}.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Identify the {Ceph} nodes to deploy the new clustered NFS service, for example, <code>cephstorage-0</code>, <code>cephstorage-1</code>, <code>cephstorage-2</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must deploy this service on the <code>StorageNFS</code> isolated network so that you can mount your existing shares through the new NFS export locations.
+You can deploy the new clustered NFS service on your existing CephStorage nodes or HCI nodes, or on new hardware that you enrolled in the {Ceph} cluster.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>If you deployed your {Ceph} nodes with {OpenStackPreviousInstaller}, propagate the <code>StorageNFS</code> network to the target nodes where the <code>ceph-nfs</code> service is deployed.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the target nodes are not managed by director, you cannot use this procedure to configure the network. An administrator must manually configure all the required networks.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Identify the node definition file, <code>overcloud-baremetal-deploy.yaml</code>, that is used in the {OpenStackShort} environment.
+For more information about identifying the <code>overcloud-baremetal-deploy.yaml</code> file, see <a href="{customizing-rhoso}/index#assembly_customizing-overcloud-networks">Customizing overcloud networks</a> in <em>{customizing-rhoso-t}</em>.</p>
+</li>
+<li>
+<p>Edit the networks that are associated with the {CephCluster} nodes to include the <code>StorageNFS</code> network:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- name: CephStorage
+  count: 3
+  hostname_format: cephstorage-%index%
+  instances:
+  - hostname: cephstorage-0
+    name: ceph-0
+  - hostname: cephstorage-1
+    name: ceph-1
+  - hostname: cephstorage-2
+    name: ceph-2
+  defaults:
+    profile: ceph-storage
+    network_config:
+      template: /home/stack/network/nic-configs/ceph-storage.j2
+      network_config_update: true
+    networks:
+    - network: ctlplane
+      vif: true
+    - network: storage
+    - network: storage_mgmt
+    - network: storage_nfs</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the network configuration template file, for example, <code>/home/stack/network/nic-configs/ceph-storage.j2</code>, for the {CephCluster} nodes
+to include an interface that connects to the <code>StorageNFS</code> network:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- type: vlan
+  device: nic2
+  vlan_id: {{ storage_nfs_vlan_id }}
+  addresses:
+  - ip_netmask: {{ storage_nfs_ip }}/{{ storage_nfs_cidr }}
+  routes: {{ storage_nfs_host_routes }}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Update the {CephCluster} nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack overcloud node provision \
+    --stack overcloud   \
+    --network-config -y  \
+    -o overcloud-baremetal-deployed-storage_nfs.yaml \
+    --concurrency 2 \
+    /home/stack/network/baremetal_deployment.yaml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the update is complete, ensure that a new interface is created in the{CephCluster} nodes and that they are tagged with the VLAN that is associated with <code>StorageNFS</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Identify the IP address from the <code>StorageNFS</code> network to use as the Virtual IP
+address (VIP) for the Ceph NFS service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack port list -c "Fixed IP Addresses" --network storage_nfs</pre>
+</div>
+</div>
+</li>
+<li>
+<p>In a running <code>cephadm</code> shell, identify the hosts for the NFS service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ceph orch host ls</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Label each host that you identified. Repeat this command for each host that you want to label:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ceph orch host label add &lt;hostname&gt; nfs</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;hostname&gt;</code> with the name of the host that you identified.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Create the NFS cluster:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ceph nfs cluster create cephfs \
+    "label:nfs" \
+    --ingress \
+    --virtual-ip=&lt;VIP&gt; \
+    --ingress-mode=haproxy-protocol</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;VIP&gt;</code> with the VIP for the Ceph NFS service.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must set the <code>ingress-mode</code> argument to <code>haproxy-protocol</code>. No other
+ingress-mode is supported. This ingress mode allows you to enforce client
+restrictions through the {rhos_component_storage_file}.
+For more information on deploying the clustered Ceph NFS service, see the
+<a href="{defaultCephURL}/operations_guide/index#management-of-nfs-ganesha-gateway-using-the-ceph-orchestrator">Management of NFS-Ganesha gateway using the Ceph Orchestrator (Limited Availability)</a> in <em>Red Hat Ceph Storage 7 Operations Guide</em>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Check the status of the NFS cluster:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ceph nfs cluster ls
+$ ceph nfs cluster info cephfs</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

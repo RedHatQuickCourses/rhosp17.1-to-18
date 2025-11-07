@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{OpenShiftShort} preparation for {block_storage} adoption :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="con_openshift-preparation-for-block-storage-adoption.html">{OpenShiftShort} preparation for {block_storage} adoption</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">{OpenShiftShort} preparation for {block_storage} adoption</h1>
+<div class="paragraph _abstract">
+<p>Before you deploy {rhos_prev_long} ({OpenStackShort}) in {rhocp_long} nodes, ensure that the networks are ready, that you decide which {OpenShiftShort} nodes to restrict, and that you make any necessary changes to the {OpenShiftShort} nodes.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Node selection</dt>
+<dd>
+<p>You might need to restrict the {OpenShiftShort} nodes where the {block_storage} volume and backup services run.</p>
+<div class="paragraph">
+<p>An example of when you need to restrict nodes for a specific {block_storage} is when you deploy the {block_storage} with the LVM driver. In that scenario, the LVM data where the volumes are stored only exists in a specific host, so you need to pin the Block Storage-volume service to that specific {OpenShiftShort} node. Running the service on any other {OpenShiftShort} node does not work. You cannot use the {OpenShiftShort} host node name to restrict the LVM back end. You need to identify the LVM back end by using a unique label, an existing label, or a new label:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc label nodes worker0 lvm=cinder-volumes</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: core.openstack.org/v1beta1
+kind: OpenStackControlPlane
+metadata:
+  name: openstack
+spec:
+  secret: osp-secret
+  storageClass: local-storage
+  cinder:
+    enabled: true
+    template:
+      cinderVolumes:
+        lvm-iscsi:
+          nodeSelector:
+            lvm: cinder-volumes
+&lt; . . . &gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information about node selection, see <a href="{defaultOCPURL}/nodes/index#nodes-scheduler-node-selectors-about_nodes-scheduler-node-selectors">About node selectors</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If your nodes do not have enough local disk space for temporary images, you can use a remote NFS location by setting the extra volumes feature, <code>extraMounts</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">Transport protocols</dt>
+<dd>
+<p>Some changes to the storage transport protocols might be required for {OpenShiftShort}:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you use a <code>MachineConfig</code> to make changes to {OpenShiftShort} nodes, the nodes reboot.</p>
+</li>
+<li>
+<p>Check the back-end sections that are listed in the <code>enabled_backends</code> configuration option in your <code>cinder.conf</code> file to determine the enabled storage back-end sections.</p>
+</li>
+<li>
+<p>Depending on the back end, you can find the transport protocol by viewing the <code>volume_driver</code> or <code>target_protocol</code> configuration options.</p>
+</li>
+<li>
+<p>The <code>iscsid</code> service, <code>multipathd</code> service, and <code>NVMe-TCP</code> kernel modules start automatically on data plane nodes.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NFS</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>{OpenShiftShort} connects to NFS back ends without additional changes.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Rados Block Device and {Ceph}</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>{OpenShiftShort} connects to {Ceph} back ends without additional changes. You must provide credentials and configuration files to the services.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">iSCSI</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>To connect to iSCSI volumes, the iSCSI initiator must run on the
+{OpenShiftShort} hosts where the volume and backup services run. The Linux Open iSCSI initiator does not support network namespaces, so you must only run one instance of the service for the normal {OpenShiftShort} usage, as well as
+the {OpenShiftShort} CSI plugins and the {OpenStackShort} services.</p>
+</li>
+<li>
+<p>If you are not already running <code>iscsid</code> on the {OpenShiftShort} nodes, then you must apply a <code>MachineConfig</code>. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+    service: cinder
+  name: 99-master-cinder-enable-iscsid
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    systemd:
+      units:
+      - enabled: true
+        name: iscsid.service</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you use labels to restrict the nodes where the Block Storage services run, you must use a <code>MachineConfigPool</code> to limit the effects of the
+<code>MachineConfig</code> to the nodes where your services might run. For more information, see <a href="{defaultOCPURL}/nodes/index#nodes-scheduler-node-selectors-about_nodes-scheduler-node-selectors">About node selectors</a>.</p>
+</li>
+<li>
+<p>If you are using a single node deployment to test the process, replace <code>worker</code> with <code>master</code> in the <code>MachineConfig</code>.</p>
+</li>
+<li>
+<p>For production deployments that use iSCSI volumes, configure multipathing for better I/O.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">FC</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>The {block_storage} volume and {block_storage} backup services must run in an {OpenShiftShort} host that has host bus adapters (HBAs). If some nodes do not have HBAs, then use labels to restrict where these services run. For more information, see <a href="{defaultOCPURL}/nodes/index#nodes-scheduler-node-selectors-about_nodes-scheduler-node-selectors">About node selectors</a>.</p>
+</li>
+<li>
+<p>If you have virtualized {OpenShiftShort} clusters that use FC you need to expose the host HBAs inside the virtual machine.</p>
+</li>
+<li>
+<p>For production deployments that use FC volumes, configure multipathing for better I/O.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">NVMe-TCP</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>To connect to NVMe-TCP volumes, load NVMe-TCP kernel modules on the {OpenShiftShort} hosts.</p>
+</li>
+<li>
+<p>If you do not already load the <code>nvme-fabrics</code> module on the {OpenShiftShort} nodes where the volume and backup services are going to run, then you must apply a <code>MachineConfig</code>. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+    service: cinder
+  name: 99-master-cinder-load-nvme-fabrics
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+        - path: /etc/modules-load.d/nvme_fabrics.conf
+          overwrite: false
+          # Mode must be decimal, this is 0644
+          mode: 420
+          user:
+            name: root
+          group:
+            name: root
+          contents:
+            # Source can be a http, https, tftp, s3, gs, or data as defined in rfc2397.
+            # This is the rfc2397 text/plain string format
+            source: data:,nvme-fabrics</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you use labels to restrict the nodes where Block Storage
+services run, use a <code>MachineConfigPool</code> to limit the effects of the <code>MachineConfig</code> to the nodes where your services run. For more information, see <a href="{defaultOCPURL}/nodes/index#nodes-scheduler-node-selectors-about_nodes-scheduler-node-selectors">About node selectors</a>.</p>
+</li>
+<li>
+<p>If you use a single node deployment to test the process, replace <code>worker</code> with <code>master</code> in the <code>MachineConfig</code>.</p>
+</li>
+<li>
+<p>Only load the <code>nvme-fabrics</code> module because it loads the transport-specific modules, such as TCP, RDMA, or FC, as needed.</p>
+</li>
+<li>
+<p>For production deployments that use NVMe-TCP volumes, use multipathing for better I/O. For NVMe-TCP volumes, {OpenShiftShort} uses native multipathing, called ANA.</p>
+</li>
+<li>
+<p>After the {OpenShiftShort} nodes reboot and load the <code>nvme-fabrics</code> module, you can confirm that the operating system is configured and that it supports ANA by checking the host:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat /sys/module/nvme_core/parameters/multipath</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+ANA does not use the Linux Multipathing Device Mapper, but {OpenShiftShort} requires <code>multipathd</code> to run on Compute nodes for the {compute_service_first_ref} to be able to use multipathing. Multipathing is automatically configured on data plane nodes when they are provisioned.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Multipathing</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Use multipathing for iSCSI and FC protocols. To configure multipathing on these protocols, you perform the following tasks:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prepare the {OpenShiftShort} hosts</p>
+</li>
+<li>
+<p>Configure the Block Storage services</p>
+</li>
+<li>
+<p>Prepare the {compute_service} nodes</p>
+</li>
+<li>
+<p>Configure the {compute_service}</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>To prepare the {OpenShiftShort} hosts, ensure that the Linux Multipath Device Mapper is configured and running on the {OpenShiftShort} hosts by using <code>MachineConfig</code>. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># Includes the /etc/multipathd.conf contents and the systemd unit changes
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+    service: cinder
+  name: 99-master-cinder-enable-multipathd
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+        - path: /etc/multipath.conf
+          overwrite: false
+          # Mode must be decimal, this is 0600
+          mode: 384
+          user:
+            name: root
+          group:
+            name: root
+          contents:
+            # Source can be a http, https, tftp, s3, gs, or data as defined in rfc2397.
+            # This is the rfc2397 text/plain string format
+            source: data:,defaults%20%7B%0A%20%20user_friendly_names%20no%0A%20%20recheck_wwid%20yes%0A%20%20skip_kpartx%20yes%0A%20%20find_multipaths%20yes%0A%7D%0A%0Ablacklist%20%7B%0A%7D
+    systemd:
+      units:
+      - enabled: true
+        name: multipathd.service</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you use labels to restrict the nodes where Block Storage services run, you need to use a <code>MachineConfigPool</code> to limit the effects of the <code>MachineConfig</code> to only the nodes where your services run. For more information, see <a href="{defaultOCPURL}/nodes/index#nodes-scheduler-node-selectors-about_nodes-scheduler-node-selectors">About node selectors</a>.</p>
+</li>
+<li>
+<p>If you are using a single node deployment to test the process, replace <code>worker</code> with <code>master</code> in the <code>MachineConfig</code>.</p>
+</li>
+<li>
+<p>Cinder volume and backup are configured by default to use multipathing.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

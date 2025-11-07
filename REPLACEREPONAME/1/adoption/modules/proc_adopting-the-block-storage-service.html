@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting the {block_storage} :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_adopting-the-block-storage-service.html">Adopting the {block_storage}</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting the {block_storage}</h1>
+<div class="paragraph _abstract">
+<p>To adopt a {OpenStackPreviousInstaller}-deployed {block_storage_first_ref}, create the manifest based on the existing <code>cinder.conf</code> file, deploy the {block_storage}, and validate the new deployment.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have reviewed the {block_storage} limitations. For more information, see <a href="#block-storage-limitations_storage-requirements">Limitations for adopting the {block_storage}</a>.</p>
+</li>
+<li>
+<p>You have planned the placement of the Block Storage services.</p>
+</li>
+<li>
+<p>You have prepared the {rhocp_long} nodes where the volume and backup services run. For more information, see <a href="#openshift-preparation-for-block-storage-adoption_storage-requirements">{OpenShiftShort} preparation for {block_storage} adoption</a>.</p>
+</li>
+<li>
+<p>The {block_storage_first_ref} is stopped.</p>
+</li>
+<li>
+<p>The service databases are imported into the control plane MariaDB.</p>
+</li>
+<li>
+<p>The {identity_service_first_ref} and {key_manager_first_ref} are adopted.</p>
+</li>
+<li>
+<p>The Storage network is correctly configured on the {OpenShiftShort} cluster.</p>
+</li>
+<li>
+<p>The contents of <code>cinder.conf</code> file. Download the file so that you can access it locally:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf &gt; cinder.conf</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a new file, for example, <code>cinder_api.patch</code>, and apply the configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;patch_name&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;patch_name&gt;</code> with the name of your patch file.</p>
+<div class="paragraph">
+<p>The following example shows a <code>cinder_api.patch</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  extraMounts:
+  - extraVol:
+    - extraVolType: Ceph
+      mounts:
+      - mountPath: /etc/ceph
+        name: ceph
+        readOnly: true
+      propagation:
+      - CinderVolume
+      - CinderBackup
+      - Glance
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-conf-files
+  cinder:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      databaseAccount: cinder
+      secret: osp-secret
+      cinderAPI:
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+              spec:
+                type: LoadBalancer
+        replicas: 1
+        customServiceConfig: |
+          [DEFAULT]
+          default_volume_type=tripleo
+      cinderScheduler:
+        replicas: 0
+      cinderBackup:
+        networkAttachments:
+        - storage
+        replicas: 0
+      cinderVolumes:
+        ceph:
+          networkAttachments:
+          - storage
+          replicas: 0</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Retrieve the list of the previous scheduler and backup services:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack volume service list
+
++------------------+------------------------+------+---------+-------+----------------------------+
+| Binary           | Host                   | Zone | Status  | State | Updated At                 |
++------------------+------------------------+------+---------+-------+----------------------------+
+| cinder-scheduler | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
+| cinder-backup    | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
+| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
++------------------+------------------------+------+---------+-------+----------------------------+</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove services for hosts that are in the <code>down</code> state:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove &lt;service_binary&gt; &lt;service_host&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;service_binary&gt;</code> with the name of the binary, for example, <code>cinder-backup</code>.</p>
+</li>
+<li>
+<p>Replace <code>&lt;service_host&gt;</code> with the host name, for example, <code>cinder-backup-0</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Deploy the scheduler, backup, and volume services:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create another file, for example, <code>cinder_services.patch</code>, and apply the configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;patch_name&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Replace <code>&lt;patch_name&gt;</code> with the name of your patch file.</p>
+</li>
+<li>
+<p>The following example shows a <code>cinder_services.patch</code> file for a Ceph RBD deployment:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  cinder:
+    enabled: true
+    template:
+      cinderScheduler:
+        replicas: 1
+      cinderBackup:
+        networkAttachments:
+        - storage
+        replicas: 1
+        customServiceConfig: |
+          [DEFAULT]
+          backup_driver=cinder.backup.drivers.ceph.CephBackupDriver
+          backup_ceph_conf=/etc/ceph/ceph.conf
+          backup_ceph_user=openstack
+          backup_ceph_pool=backups
+      cinderVolumes:
+        ceph:
+          networkAttachments:
+          - storage
+          replicas: 1
+          customServiceConfig: |
+            [tripleo_ceph]
+            backend_host=hostgroup
+            volume_backend_name=tripleo_ceph
+            volume_driver=cinder.volume.drivers.rbd.RBDDriver
+            rbd_ceph_conf=/etc/ceph/ceph.conf
+            rbd_user=openstack
+            rbd_pool=volumes
+            rbd_flatten_volume_from_snapshot=False
+            report_discard_supported=True</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Ensure that you use the same configuration group name for the driver that you used in the source cluster. In this example, the driver configuration group in <code>customServiceConfig</code> is called <code>tripleo_ceph</code> because it reflects the value of the configuration group name in the <code>cinder.conf</code> file of the source OpenStack cluster.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configure the NetApp NFS Block Storage volume service:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp NFS storage. You can find the credentials in the <code>cinder.conf</code> file that was generated from the {OpenStackPreviousInstaller} deployment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    service: cinder
+    component: cinder-volume
+  name: cinder-volume-ontap-secrets
+type: Opaque
+stringData:
+  ontap-cinder-secrets: |
+    [tripleo_netapp]
+    netapp_login= netapp_username
+    netapp_password= netapp_password
+    netapp_vserver= netapp_vserver
+    nas_host= netapp_nfsip
+    nas_share_path=/netapp_nfspath
+    netapp_pool_name_search_pattern=(netapp_poolpattern)
+EOF</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy NetApp NFS Block Storage volume back end:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;cinder_netappNFS.patch&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;cinder_netappNFS.patch&gt;</code> with the name of the patch file for your NetApp NFS Block Storage volume back end.</p>
+<div class="paragraph">
+<p>The following example shows a <code>cinder_netappNFS.patch</code> file that configures a NetApp NFS Block Storage volume service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  cinder:
+    enabled: true
+    template:
+      cinderVolumes:
+        ontap-nfs:
+          networkAttachments:
+            - storage
+          customServiceConfig: |
+            [tripleo_netapp]
+            volume_backend_name=ontap-nfs
+            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
+            nfs_snapshot_support=true
+            nas_secure_file_operations=false
+            nas_secure_file_permissions=false
+            netapp_server_hostname= netapp_backendip
+            netapp_server_port=80
+            netapp_storage_protocol=nfs
+            netapp_storage_family=ontap_cluster
+          customServiceConfigSecrets:
+          - cinder-volume-ontap-secrets</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure the NetApp iSCSI Block Storage volume service:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp iSCSI storage. You can find the credentials in the <code>cinder.conf</code> file that was generated from the {OpenStackPreviousInstaller} deployment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    service: cinder
+    component: cinder-volume
+  name: cinder-volume-ontap-secrets
+type: Opaque
+stringData:
+  ontap-cinder-secrets: |
+    [tripleo_netapp]
+    netapp_server_hostname = netapp_host
+    netapp_login = netapp_username
+    netapp_password = netapp_password
+    netapp_vserver = netapp_vserver
+    netapp_pool_name_search_pattern=(netapp_poolpattern)
+EOF</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> custom resource (CR) to deploy the NetApp iSCSI Block Storage volume back end:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;cinder_netappISCSI.patch&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;cinder_netappISCSI.patch&gt;</code> with the name of the patch file for your NetApp iSCSI Block Storage volume back end.</p>
+<div class="paragraph">
+<p>The following example shows a <code>cinder_netappISCSI.patch</code> file that configures a NetApp iSCSI Block Storage volume service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spec:
+  cinder:
+    enabled: true
+    template:
+      cinderVolumes:
+        ontap-iscsi:
+          networkAttachments:
+            - storage
+          customServiceConfig: |
+            [tripleo_netapp]
+            volume_backend_name=ontap-iscsi
+            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
+            netapp_storage_protocol=iscsi
+            netapp_storage_family=ontap_cluster
+            consistencygroup_support=True
+          customServiceConfigSecrets:
+            - cinder-volume-ontap-secrets</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Check if all the services are up and running:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack volume service list
+
++------------------+--------------------------+------+---------+-------+----------------------------+
+| Binary           | Host                     | Zone | Status  | State | Updated At                 |
++------------------+--------------------------+------+---------+-------+----------------------------+
+| cinder-volume    | hostgroup@tripleo_netapp | nova | enabled | up    | 2023-06-28T17:00:03.000000 |
+| cinder-scheduler | cinder-scheduler-0       | nova | enabled | up    | 2023-06-28T17:00:02.000000 |
+| cinder-backup    | cinder-backup-0          | nova | enabled | up    | 2023-06-28T17:00:01.000000 |
++------------------+--------------------------+------+---------+-------+----------------------------+</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Apply the DB data migrations:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are not required to run the data migrations at this step, but you must run them before the next upgrade. However, for adoption, you can run the migrations now to ensure that there are no issues before you run production workloads on the deployment.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Ensure that the <code>openstack</code> alias is defined:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ alias openstack="oc exec -t openstackclient -- openstack"</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack endpoint list --service &lt;endpoint&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;endpoint&gt;</code> with the name of the endpoint that you want to confirm.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Confirm that the Block Storage services are running:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack volume service list</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Cinder API services do not appear in the list. However, if you get a response from the <code>openstack volume service list</code> command, that means at least one of the cinder API services is running.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Confirm that you have your previous volume types, volumes, snapshots, and backups:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack volume type list
+$ openstack volume list
+$ openstack volume snapshot list
+$ openstack volume backup list</pre>
+</div>
+</div>
+</li>
+<li>
+<p>To confirm that the configuration is working, perform the following steps:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a volume from an image to check that the connection to {image_service_first_ref} is working:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack volume create --image cirros --bootable --size 1 disk_new</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Back up the previous attached volume:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;backup_name&gt;</code> with the name of your new backup location.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You do not boot a {compute_service_first_ref} instance by using the new <code>volume from</code> image or try to detach the previous volume because the {compute_service} and the {block_storage} are still not connected.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

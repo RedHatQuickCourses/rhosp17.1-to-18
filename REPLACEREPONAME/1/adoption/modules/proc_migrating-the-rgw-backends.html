@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Migrating the {Ceph} RGW back ends :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_migrating-the-rgw-backends.html">Migrating the {Ceph} RGW back ends</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Migrating the {Ceph} RGW back ends</h1>
+<div class="paragraph _abstract">
+<p>You must migrate your Ceph Object Gateway (RGW) back ends from your Controller nodes to your {Ceph} nodes. To ensure that you distribute the correct amount of services to your available nodes, you use <code>cephadm</code> labels to refer to a group of nodes where a given daemon type is deployed. For more information about the cardinality diagram, see <a href="#ceph-daemon-cardinality_migrating-ceph">{Ceph} daemon cardinality</a>.
+The following procedure assumes that you have three target nodes, <code>cephstorage-0</code>, <code>cephstorage-1</code>, <code>cephstorage-2</code>.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Add the RGW label to the {Ceph} nodes that you want to migrate your RGW back ends to:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo cephadm shell -- ceph orch host label add cephstorage-0 rgw;
+$ sudo cephadm shell -- ceph orch host label add cephstorage-1 rgw;
+$ sudo cephadm shell -- ceph orch host label add cephstorage-2 rgw;
+
+Added label rgw to host cephstorage-0
+Added label rgw to host cephstorage-1
+Added label rgw to host cephstorage-2
+
+$ sudo cephadm shell -- ceph orch host ls
+
+HOST       	ADDR       	LABELS      	STATUS
+cephstorage-0  192.168.24.54  osd rgw
+cephstorage-1  192.168.24.44  osd rgw
+cephstorage-2  192.168.24.30  osd rgw
+controller-0   192.168.24.45  _admin mon mgr
+controller-1   192.168.24.11  _admin mon mgr
+controller-2   192.168.24.38  _admin mon mgr
+
+6 hosts in cluster</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Locate the RGW spec and dump in the spec directory:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ mkdir -p ${SPEC_DIR}
+$ sudo cephadm shell -- ceph orch ls --export rgw &gt; ${SPEC_DIR}/rgw
+$ cat ${SPEC_DIR}/rgw
+
+networks:
+- 172.17.3.0/24
+placement:
+  hosts:
+  - controller-0
+  - controller-1
+  - controller-2
+service_id: rgw
+service_name: rgw.rgw
+service_type: rgw
+spec:
+  rgw_frontend_port: 8080
+  rgw_realm: default
+  rgw_zone: default</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example assumes that <code>172.17.3.0/24</code> is the <code>storage</code> network.</p>
+</div>
+</li>
+<li>
+<p>In the <code>placement</code> section, ensure that the <code>label</code> and <code>rgw_frontend_port</code> values are set:</p>
+<div class="listingblock">
+<div class="content">
+<pre>---
+networks:
+- 172.17.3.0/24<i class="conum" data-value="1"></i><b>(1)</b>
+placement:
+  label: rgw <i class="conum" data-value="2"></i><b>(2)</b>
+service_id: rgw
+service_name: rgw.rgw
+service_type: rgw
+spec:
+  rgw_frontend_port: 8090 <i class="conum" data-value="3"></i><b>(3)</b>
+  rgw_realm: default
+  rgw_zone: default
+  rgw_frontend_ssl_certificate: ... <i class="conum" data-value="4"></i><b>(4)</b>
+  ssl: true</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add the storage network where the RGW back ends are deployed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Replace the Controller nodes with the <code>label: rgw</code> label.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Change the <code>rgw_frontend_port</code> value to <code>8090</code> to avoid conflicts with the Ceph ingress daemon.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Optional: if TLS is enabled, add the SSL certificate and key concatenation as described in <a href="{configuring-storage}/assembly_configuring-red-hat-ceph-storage-as-the-backend-for-rhosp-storage#proc_ceph-configure-rgw-with-tls_ceph-back-end">Configuring RGW with TLS for an external Red Hat Ceph Storage cluster</a> in <em>{configuring-storage-t}</em>.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Apply the new RGW spec by using the orchestrator CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ sudo cephadm shell -m ${SPEC_DIR}/rgw -- ceph orch apply -i /mnt/rgw</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command triggers the redeploy, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+osd.9                     	cephstorage-2
+rgw.rgw.cephstorage-0.wsjlgx  cephstorage-0  172.17.3.23:8090   starting
+rgw.rgw.cephstorage-1.qynkan  cephstorage-1  172.17.3.26:8090   starting
+rgw.rgw.cephstorage-2.krycit  cephstorage-2  172.17.3.81:8090   starting
+rgw.rgw.controller-1.eyvrzw   controller-1   172.17.3.146:8080  running (5h)
+rgw.rgw.controller-2.navbxa   controller-2   172.17.3.66:8080   running (5h)
+
+...
+osd.9                     	cephstorage-2
+rgw.rgw.cephstorage-0.wsjlgx  cephstorage-0  172.17.3.23:8090  running (19s)
+rgw.rgw.cephstorage-1.qynkan  cephstorage-1  172.17.3.26:8090  running (16s)
+rgw.rgw.cephstorage-2.krycit  cephstorage-2  172.17.3.81:8090  running (13s)</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the new RGW back ends are reachable on the new ports, so you can enable an ingress daemon on port <code>8080</code> later. Log in to each {CephCluster} node that includes RGW and add the <code>iptables</code> rule to allow connections to both 8080 and 8090 ports in the {CephCluster} nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ iptables -I INPUT -p tcp -m tcp --dport 8080 -m conntrack --ctstate NEW -m comment --comment "ceph rgw ingress" -j ACCEPT
+$ iptables -I INPUT -p tcp -m tcp --dport 8090 -m conntrack --ctstate NEW -m comment --comment "ceph rgw backends" -j ACCEPT
+$ sudo iptables-save
+$ sudo systemctl restart iptables</pre>
+</div>
+</div>
+</li>
+<li>
+<p>If <code>nftables</code> is used in the existing deployment, edit <code>/etc/nftables/tripleo-rules.nft</code>
+and add the following content:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># 100 ceph_rgw {'dport': ['8080','8090']}
+add rule inet filter TRIPLEO_INPUT tcp dport { 8080,8090 } ct state new counter accept comment "100 ceph_rgw"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the file.</p>
+</li>
+<li>
+<p>Restart the <code>nftables</code> service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo systemctl restart nftables</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the rules are applied:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo nft list ruleset | grep ceph_rgw</pre>
+</div>
+</div>
+</li>
+<li>
+<p>From a Controller node, such as <code>controller-0</code>, try to reach the RGW back ends:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl http://cephstorage-0.storage:8090;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should observe the following output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"&gt;&lt;Owner&gt;&lt;ID&gt;anonymous&lt;/ID&gt;&lt;DisplayName&gt;&lt;/DisplayName&gt;&lt;/Owner&gt;&lt;Buckets&gt;&lt;/Buckets&gt;&lt;/ListAllMyBucketsResult&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat the verification for each node where a RGW daemon is deployed.</p>
+</div>
+</li>
+<li>
+<p>If you migrated RGW back ends to the {Ceph} nodes, there is no <code>internalAPI</code> network, except in the case of HCI nodes. You must reconfigure the RGW keystone endpoint to point to the external network that you propagated:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[ceph: root@controller-0 /]# ceph config dump | grep keystone
+global   basic rgw_keystone_url  http://172.16.1.111:5000
+
+[ceph: root@controller-0 /]# ceph config set global rgw_keystone_url http://&lt;keystone_endpoint&gt;:5000</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;keystone_endpoint&gt;</code> with the {identity_service_first_ref} internal endpoint of the service that is deployed in the <code>OpenStackControlPlane</code> CR when you adopt the {identity_service}. For more information, see <a href="#adopting-the-identity-service_adopt-control-plane">Adopting the {identity_service}</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

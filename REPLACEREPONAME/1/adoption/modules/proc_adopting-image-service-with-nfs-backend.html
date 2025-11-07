@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting the {image_service} that is deployed with an NFS back end :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_adopting-image-service-with-nfs-backend.html">Adopting the {image_service} that is deployed with an NFS back end</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting the {image_service} that is deployed with an NFS back end</h1>
+<div class="paragraph _abstract">
+<p>Adopt the {image_service_first_ref} that you deployed with an NFS back end. To complete the following procedure, ensure that your environment meets the following criteria:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Storage network is propagated to the {rhos_prev_long} ({OpenStackShort}) control plane.</p>
+</li>
+<li>
+<p>The {image_service} can reach the Storage network and connect to the nfs-server through the port <code>2049</code>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+<li>
+<p>In the source cloud, verify the NFS parameters that the overcloud uses to configure the {image_service} back end. Specifically, in your{OpenStackPreviousInstaller} heat templates, find the following variables that override the default content that is provided by the <code>glance-nfs.yaml</code> file in the
+<code>/usr/share/openstack-tripleo-heat-templates/environments/storage</code> directory:</p>
+<div class="listingblock">
+<div class="content">
+<pre>GlanceBackend: file
+GlanceNfsEnabled: true
+GlanceNfsShare: 192.168.24.1:/var/nfs</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In this example, the <code>GlanceBackend</code> variable shows that the {image_service} has no notion of an NFS back end. The variable is using the <code>File</code> driver and, in the background, the <code>filesystem_store_datadir</code>. The <code>filesystem_store_datadir</code> is mapped to the export value provided by the <code>GlanceNfsShare</code> variable instead of <code>/var/lib/glance/images/</code>.
+If you do not export the <code>GlanceNfsShare</code> through a network that is propagated to the adopted {rhos_long} control plane, you must stop the <code>nfs-server</code> and remap the export to the <code>storage</code> network. Before doing so, ensure that the {image_service} is stopped in the source Controller nodes.</p>
+</div>
+<div class="paragraph">
+<p>In the control plane, the {image_service} is attached to the Storage network, then propagated through the associated <code>NetworkAttachmentsDefinition</code> custom resource (CR), and the resulting pods already have the right permissions to handle the {image_service} traffic through this network.
+In a deployed {OpenStackShort} control plane, you can verify that the network mapping matches with what has been deployed in the {OpenStackPreviousInstaller}-based environment by checking both the <code>NodeNetworkConfigPolicy</code> (<code>nncp</code>) and the <code>NetworkAttachmentDefinition</code> (<code>net-attach-def</code>). The following is an example of the output that you should check in the {rhocp_long} environment to make sure that there are no issues with the propagated networks:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get nncp
+NAME                        STATUS      REASON
+enp6s0-crc-8cf2w-master-0   Available   SuccessfullyConfigured
+
+$ oc get net-attach-def
+NAME
+ctlplane
+internalapi
+storage
+tenant
+
+$ oc get ipaddresspool -n metallb-system
+NAME          AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
+ctlplane      true          false             ["192.168.122.80-192.168.122.90"]
+internalapi   true          false             ["172.17.0.80-172.17.0.90"]
+storage       true          false             ["172.18.0.80-172.18.0.90"]
+tenant        true          false             ["172.19.0.80-172.19.0.90"]</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Adopt the {image_service} and create a new <code>default</code> <code>GlanceAPI</code> instance that is connected with the existing NFS share:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat &lt;&lt; EOF &gt; glance_nfs_patch.yaml
+
+spec:
+  extraMounts:
+  - extraVol:
+    - extraVolType: Nfs
+      mounts:
+      - mountPath: /var/lib/glance/images
+        name: nfs
+      propagation:
+      - Glance
+      volumes:
+      - name: nfs
+        nfs:
+          path: &lt;exported_path&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+          server: &lt;ip_address&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    name: r1
+    region: r1
+  glance:
+    enabled: true
+    template:
+      databaseInstance: openstack
+      customServiceConfig: |
+        [DEFAULT]
+        enabled_backends = default_backend:file
+        [glance_store]
+        default_backend = default_backend
+        [default_backend]
+        filesystem_store_datadir = /var/lib/glance/images/
+      storage:
+        storageRequest: 10G
+      keystoneEndpoint: nfs
+      glanceAPIs:
+        nfs:
+          replicas: 3
+          type: single
+          override:
+            service:
+              internal:
+                metadata:
+                  annotations:
+                    metallb.universe.tf/address-pool: internalapi
+                    metallb.universe.tf/allow-shared-ip: internalapi
+                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="3"></i><b>(3)</b>
+                spec:
+                  type: LoadBalancer
+          networkAttachments:
+          - storage
+EOF</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Replace <code>&lt;exported_path&gt;</code> with the exported path in the <code>nfs-server</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Replace <code>&lt;ip_address&gt;</code> with the IP address that you use to communicate with the <code>nfs-server</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with an NFS back end:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file glance_nfs_patch.yaml</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to remove the default {image_service}:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'path': '/spec/glance/template/glanceAPIs/default'}]"</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>When <code>GlanceAPI</code> is active, confirm that you can see a single API instance:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get pods -l service=glance
+NAME                      READY   STATUS    RESTARTS
+glance-nfs-single-0   2/2     Running   0
+glance-nfs-single-1   2/2     Running   0
+glance-nfs-single-2   2/2     Running   0</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the description of the pod reports the following output:</p>
+<div class="listingblock">
+<div class="content">
+<pre>Mounts:
+...
+  nfs:
+    Type:      NFS (an NFS mount that lasts the lifetime of a pod)
+    Server:    {{ server ip address }}
+    Path:      {{ nfs export path }}
+    ReadOnly:  false
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the mountpoint that points to <code>/var/lib/glance/images</code> is mapped to the expected <code>nfs server ip</code> and <code>nfs path</code> that you defined in the new default <code>GlanceAPI</code> instance:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc rsh -c glance-api glance-default-single-0
+
+sh-5.1# mount
+...
+...
+{{ ip address }}:/var/nfs on /var/lib/glance/images type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=172.18.0.5,local_lock=none,addr=172.18.0.5)
+...
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that the UUID is created in the exported directory on the NFS node. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc rsh openstackclient
+$ openstack image list
+
+sh-5.1$  curl -L -o /tmp/cirros-0.6.3-x86_64-disk.img http://download.cirros-cloud.net/0.6.3/cirros-0.6.3-x86_64-disk.img
+...
+...
+
+sh-5.1$ openstack image create --container-format bare --disk-format raw --file /tmp/cirros-0.6.3-x86_64-disk.img cirros
+...
+...
+
+sh-5.1$ openstack image list
++--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 634482ca-4002-4a6d-b1d5-64502ad02630 | cirros | active |
++--------------------------------------+--------+--------+</pre>
+</div>
+</div>
+</li>
+<li>
+<p>On the <code>nfs-server</code> node, the same <code>uuid</code> is in the exported <code>/var/nfs</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ ls /var/nfs/
+634482ca-4002-4a6d-b1d5-64502ad02630</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

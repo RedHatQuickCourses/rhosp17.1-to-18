@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying a {Ceph} ingress daemon :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_deploying-a-ceph-ingress-daemon.html">Deploying a {Ceph} ingress daemon</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Deploying a {Ceph} ingress daemon</h1>
+<div class="paragraph _abstract">
+<p>To deploy the Ceph ingress daemon, you perform the following actions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Remove the existing <code>ceph_rgw</code> configuration.</p>
+</li>
+<li>
+<p>Clean up the configuration created by {OpenStackPreviousInstaller}.</p>
+</li>
+<li>
+<p>Redeploy the {object_storage_first_ref}.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When you deploy the ingress daemon, two new containers are created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HAProxy, which you use to reach the back ends.</p>
+</li>
+<li>
+<p>Keepalived, which you use to own the virtual IP address.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You use the <code>rgw</code> label to distribute the ingress daemon to only the number of nodes that host Ceph Object Gateway (RGW) daemons. For more information about distributing daemons among your nodes, see <a href="#ceph-daemon-cardinality_migrating-ceph">{Ceph} daemon cardinality</a>.</p>
+</div>
+<div class="paragraph">
+<p>After you complete this procedure, you can reach the RGW back end from the ingress daemon and use RGW through the {object_storage} CLI.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Log in to each Controller node and remove the following configuration from the <code>/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg</code> file:</p>
+<div class="listingblock">
+<div class="content">
+<pre>listen ceph_rgw
+  bind 10.0.0.103:8080 transparent
+  mode http
+  balance leastconn
+  http-request set-header X-Forwarded-Proto https if { ssl_fc }
+  http-request set-header X-Forwarded-Proto http if !{ ssl_fc }
+  http-request set-header X-Forwarded-Port %[dst_port]
+  option httpchk GET /swift/healthcheck
+  option httplog
+  option forwardfor
+   server controller-0.storage.redhat.local 172.17.3.73:8080 check fall 5 inter 2000 rise 2
+  server controller-1.storage.redhat.local 172.17.3.146:8080 check fall 5 inter 2000 rise 2
+  server controller-2.storage.redhat.local 172.17.3.156:8080 check fall 5 inter 2000 rise 2</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Restart <code>haproxy-bundle</code> and confirm that it is started:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[root@controller-0 ~]# sudo pcs resource restart haproxy-bundle
+haproxy-bundle successfully restarted
+
+
+[root@controller-0 ~]# sudo pcs status | grep haproxy
+
+  * Container bundle set: haproxy-bundle [undercloud-0.ctlplane.redhat.local:8787/rh-osbs/rhosp17-openstack-haproxy:pcmklatest]:
+    * haproxy-bundle-podman-0   (ocf:heartbeat:podman):  Started controller-0
+    * haproxy-bundle-podman-1   (ocf:heartbeat:podman):  Started controller-1
+    * haproxy-bundle-podman-2   (ocf:heartbeat:podman):  Started controller-2</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that no process is connected to port 8080:</p>
+<div class="listingblock">
+<div class="content">
+<pre>[root@controller-0 ~]# ss -antop | grep 8080
+[root@controller-0 ~]#</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can expect the {object_storage_first_ref} CLI to fail to establish the connection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(overcloud) [root@cephstorage-0 ~]# swift list
+
+HTTPConnectionPool(host='10.0.0.103', port=8080): Max retries exceeded with url: /swift/v1/AUTH_852f24425bb54fa896476af48cbe35d3?format=json (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x7fc41beb0430&gt;: Failed to establish a new connection: [Errno 111] Connection refused'))</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set the required images for both HAProxy and Keepalived:</p>
+<div class="listingblock">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a file called <code>rgw_ingress</code> in <code>controller-0</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ vim ${SPEC_DIR}/rgw_ingress</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Paste the following content into the <code>rgw_ingress</code> file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">---
+service_type: ingress
+service_id: rgw.rgw
+placement:
+  label: rgw
+spec:
+  backend_service: rgw.rgw
+  virtual_ip: 10.0.0.89/24
+  frontend_port: 8080
+  monitor_port: 8898
+  virtual_interface_networks:
+    - &lt;external_network&gt;
+  ssl_cert: ...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;external_network&gt;</code> with your external network, for example, <code>10.0.0.0/24</code>. For more information, see <a href="#completing-prerequisites-for-migrating-ceph-rgw_ceph-prerequisites">Completing prerequisites for migrating {Ceph} RGW</a>.</p>
+</li>
+<li>
+<p>If TLS is enabled, add the  SSL certificate and key concatenation as described in <a href="{configuring-storage}/assembly_configuring-red-hat-ceph-storage-as-the-backend-for-rhosp-storage#proc_ceph-configure-rgw-with-tls_ceph-back-end">Configuring RGW with TLS for an external Red Hat Ceph Storage cluster</a> in <em>{configuring-storage-t}</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Apply the <code>rgw_ingress</code> spec by using the Ceph orchestrator CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+$ cephadm shell -m ${SPEC_DIR}/rgw_ingress -- ceph orch apply -i /mnt/rgw_ingress</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait until the ingress is deployed and query the resulting endpoint:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ sudo cephadm shell -- ceph orch ls
+
+NAME                 	PORTS            	RUNNING  REFRESHED  AGE  PLACEMENT
+crash                                         	6/6  6m ago 	3d   *
+ingress.rgw.rgw      	10.0.0.89:8080,8898  	6/6  37s ago	60s  label:rgw
+mds.mds                   3/3  6m ago 	3d   controller-0;controller-1;controller-2
+mgr                       3/3  6m ago 	3d   controller-0;controller-1;controller-2
+mon                       3/3  6m ago 	3d   controller-0;controller-1;controller-2
+osd.default_drive_group   15  37s ago	3d   cephstorage-0;cephstorage-1;cephstorage-2
+rgw.rgw   ?:8090          3/3  37s ago	4m   label:rgw</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl 10.0.0.89:8080
+
+---
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"&gt;&lt;Owner&gt;&lt;ID&gt;anonymous&lt;/ID&gt;&lt;DisplayName&gt;&lt;/DisplayName&gt;&lt;/Owner&gt;&lt;Buckets&gt;&lt;/Buckets&gt;&lt;/ListAllMyBucketsResult&gt;[ceph: root@controller-0 /]#
+—</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

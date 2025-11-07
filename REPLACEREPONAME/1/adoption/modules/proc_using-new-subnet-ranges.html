@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuring new subnet ranges :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_using-new-subnet-ranges.html">Configuring new subnet ranges</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuring new subnet ranges</h1>
+<div class="admonitionblock note _abstract">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are using IPv6, you can reuse existing subnet ranges in most cases. For more information about existing subnet ranges, see <a href="#reusing-existing-subnet-ranges_{context}">Reusing existing subnet ranges</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can define new IP ranges for control plane services that belong to a different subnet that is not used in the existing cluster. Then you configure link local IP routing between the existing and new subnets to enable existing and new service deployments to communicate. This involves using the {OpenStackPreviousInstaller} mechanism on a pre-adopted cluster to configure additional link local routes. This enables the data plane deployment to reach out to {rhos_prev_long} ({OpenStackShort}) nodes by using the existing subnet addresses. You can use new subnet ranges with any existing subnet configuration, and when the existing cluster subnet ranges do not have enough free IP addresses for the new control plane services.</p>
+</div>
+<div class="paragraph">
+<p>You must size the new subnet appropriately to accommodate the new control
+plane services. There are no specific requirements for the
+existing deployment allocation pools that are already consumed by the {OpenStackShort} environment.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Defining a new subnet for Storage and Storage management is not supported because {compute_service_first_ref} and {Ceph} do not allow modifying those networks during adoption.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the following procedure, you configure <code>NetworkAttachmentDefinition</code> custom resources (CRs) to use a different subnet from what is configured in the <code>network_config</code> section of the <code>OpenStackDataPlaneNodeSet</code> CR for the same networks. The new range in the <code>NetworkAttachmentDefinition</code> CR is used for control plane services, while the existing range in the <code>OpenStackDataPlaneNodeSet</code> CR is used to manage IP Address Management (IPAM) for data plane nodes.</p>
+</div>
+<div class="paragraph">
+<p>The values that are used in the following procedure are examples. Use values that are specific to your configuration.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Configure link local routes on the existing deployment nodes for the control plane subnets. This is done through {OpenStackPreviousInstaller} configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre>network_config:
+  - type: ovs_bridge
+    name: br-ctlplane
+    routes:
+    - ip_netmask: 0.0.0.0/0
+      next_hop: 192.168.1.1
+    - ip_netmask: 172.31.0.0/24 <i class="conum" data-value="1"></i><b>(1)</b>
+      next_hop: 192.168.1.100 <i class="conum" data-value="2"></i><b>(2)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The new control plane subnet.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The control plane IP address of the existing data plane node.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Repeat this configuration for other networks that need to use different subnets for the new and existing parts of the deployment.</p>
+</div>
+</li>
+<li>
+<p>Apply the new configuration to every {OpenStackShort} node:</p>
+<div class="listingblock">
+<div class="content">
+<pre>(undercloud)$ openstack overcloud network provision \
+ --output  &lt;deployment_file&gt; \
+[--templates &lt;templates_directory&gt;]/home/stack/templates/&lt;networks_definition_file&gt;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(undercloud)$ openstack overcloud node provision \
+ --stack &lt;stack&gt; \
+ --network-config \
+ --output &lt;deployment_file&gt; \
+[--templates &lt;templates_directory&gt;]/home/stack/templates/&lt;node_definition_file&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Optional: Include the <code>--templates</code> option to use your own templates instead of the default templates located in <code>/usr/share/openstack-tripleo-heat-templates</code>. Replace <code>&lt;templates_directory&gt;</code> with the path to the directory that contains your templates.</p>
+</li>
+<li>
+<p>Replace <code>&lt;stack&gt;</code> with the name of the stack for which the bare-metal nodes are provisioned. If not specified, the default is <code>overcloud</code>.</p>
+</li>
+<li>
+<p>Include the <code>--network-config</code> optional argument to provide the network definitions to the <code>cli-overcloud-node-network-config.yaml</code> Ansible playbook. The <code>cli-overcloud-node-network-config.yaml</code> playbook uses the <code>os-net-config</code> tool to apply the network configuration on the deployed nodes. If you do not use <code>--network-config</code> to provide the network definitions, then you must configure the <code>{{role.name}}NetworkConfigTemplate</code> parameters in your <code>network-environment.yaml</code> file, otherwise the default network definitions are used.</p>
+</li>
+<li>
+<p>Replace <code>&lt;deployment_file&gt;</code> with the name of the heat environment file to generate for inclusion in the deployment command, for example <code>/home/stack/templates/overcloud-baremetal-deployed.yaml</code>.</p>
+</li>
+<li>
+<p>Replace <code>&lt;node_definition_file&gt;</code> with the name of your node definition file, for example, <code>overcloud-baremetal-deploy.yaml</code>. Ensure that the <code>network_config_update</code> variable is set to <code>true</code> in the node definition file.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Network configuration changes are not applied by default to avoid
+the risk of network disruption. You must enforce the changes by setting the
+<code>StandaloneNetworkConfigUpdate: true</code> in the {OpenStackPreviousInstaller} configuration files.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Confirm that there are new link local routes to the new subnet on each node. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># ip route | grep 172
+172.31.0.0/24 via 192.168.122.100 dev br-ctlplane</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You also must configure link local routes to existing deployment on {rhos_long} worker nodes. This is achieved by adding <code>routes</code> entries to the <code>NodeNetworkConfigurationPolicy</code> CRs for each network. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>  - destination: 192.168.122.0/24 <i class="conum" data-value="1"></i><b>(1)</b>
+    next-hop-interface: ospbr <i class="conum" data-value="2"></i><b>(2)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The original subnet of the isolated network on the data plane.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The {rhocp_long} worker network interface that corresponds to the isolated network on the data plane.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As a result, the following route is added to your {OpenShiftShort} nodes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># ip route | grep 192
+192.168.122.0/24 dev ospbr proto static scope link</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Later, during the data plane adoption, in the <code>network_config</code> section of the <code>OpenStackDataPlaneNodeSet</code> CR, add the same link local routes for the new control plane subnet ranges. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>  nodeTemplate:
+    ansible:
+      ansibleUser: root
+      ansibleVars:
+        additional_ctlplane_host_routes:
+        - ip_netmask: 172.31.0.0/24
+          next_hop: '{{ ctlplane_ip }}'
+        edpm_network_config_template: |
+          network_config:
+          - type: ovs_bridge
+            routes: {{ ctlplane_host_routes + additional_ctlplane_host_routes }}
+            ...</pre>
+</div>
+</div>
+</li>
+<li>
+<p>List the IP addresses that are used for the data plane nodes in the existing deployment as <code>ansibleHost</code> and <code>fixedIP</code>. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>  nodes:
+    standalone:
+      ansible:
+        ansibleHost: 192.168.122.100
+        ansibleUser: ""
+      hostName: standalone
+      networks:
+      - defaultRoute: true
+        fixedIP: 192.168.122.100
+        name: ctlplane
+        subnetName: subnet1</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Do not change {OpenStackShort} node IP addresses during the adoption process. List previously used IP addresses in the <code>fixedIP</code> fields for each node entry in the <code>nodes</code> section of the <code>OpenStackDataPlaneNodeSet</code> CR.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Expand the SSH range for the firewall configuration to include both subnets to allow SSH access to data plane nodes from both subnets:</p>
+<div class="listingblock">
+<div class="content">
+<pre>  edpm_sshd_allowed_ranges:
+  - 192.168.122.0/24
+  - 172.31.0.0/24</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This provides SSH access from the new subnet to the {OpenStackShort} nodes as well as the {OpenStackShort} subnets.</p>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

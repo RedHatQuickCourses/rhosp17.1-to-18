@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuration, Installation, and Use of Red Hat OpenStack Services on OpenShift :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="prev" href="../index.html">
+    <link rel="next" href="install-operators.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">FIXME Course Title</a></li>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="prereqs.html">Perform OpenShift Prerequisite</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuration, Installation, and Use of Red Hat OpenStack Services on OpenShift</h1>
+<div class="sect1">
+<h2 id="_prerequisites_for_installation"><a class="anchor" href="#_prerequisites_for_installation"></a>Prerequisites for Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some prerequisites needed to install Red Hat OpenStack Services on OpenShift (RHOSO) are already included in the lab environment such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An operational OpenShift cluster which supports Multus CNI</p>
+</li>
+<li>
+<p>oc command line tool on your workstation (workstation host)</p>
+</li>
+<li>
+<p>k9s command line tool on your workstation (workstation host)</p>
+</li>
+<li>
+<p>podman command line tool on your workstation (workstation host)</p>
+</li>
+<li>
+<p>Access to repositories which contain the Dev Preview code</p>
+</li>
+<li>
+<p>Access to an existing registry or create a local Quay registry</p>
+</li>
+<li>
+<p>Example YAML files are available in this repository which can be cloned or copy and pasted for use.
+For ease of instructions it will be assumed the repo has been cloned</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_install_the_prerequisite_operators"><a class="anchor" href="#_install_the_prerequisite_operators"></a>Install the Prerequisite Operators</h3>
+<div class="paragraph">
+<p>There are three operators that are required to be installed before you can install the OpenStack Operator, the <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli" target="_blank" rel="noopener">NMState  Operator</a> the <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install" target="_blank" rel="noopener">MetalLB  Operator</a>  and the <a href="https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html" target="_blank" rel="noopener">Cert-Manager + Operator</a></p>
+</div>
+<div class="sect3">
+<h4 id="_accessing_the_cluster"><a class="anchor" href="#_accessing_the_cluster"></a>Accessing the Cluster</h4>
+<div class="paragraph">
+<p>From the workstation, access to the utility host</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh utility</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+Make sure you can reach out to the OpenShift cluster, for instance, by listing the nodes in your cluster:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME       STATUS   ROLES                         AGE    VERSION
+master01   Ready    control-plane,master,worker   163d   v1.31.6
+master02   Ready    control-plane,master,worker   163d   v1.31.6
+master03   Ready    control-plane,master,worker   163d   v1.31.6</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_nmstate_operator"><a class="anchor" href="#_nmstate_operator"></a>NMState Operator</h4>
+<div class="paragraph">
+<p>The <strong>nmstate</strong> Operator is already installed in this environment.</p>
+</div>
+<div class="paragraph">
+<p>Confirm that NMstate operator is running.
+Repeat this command until you see the desired output:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>Name                                              Phase
+kubernetes-nmstate-operator.4.18.0-202504021503   Succeeded</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create instance of the <strong>nmstate</strong> operator:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: nmstate.io/v1
+kind: NMState
+metadata:
+  name: nmstate
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm that the deployment for the <strong>nmstate</strong> operator is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n openshift-nmstate</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME                                      READY   STATUS    RESTARTS   AGE
+nmstate-console-plugin-687c479db7-dqfrf   1/1     Running   0          68s
+nmstate-handler-s2cn7                     1/1     Running   0          68s
+nmstate-handler-sd6hk                     1/1     Running   0          68s
+nmstate-handler-sspw7                     1/1     Running   0          68s
+nmstate-metrics-7466f9f9c9-qdtbh          2/2     Running   0          68s
+nmstate-operator-76596f9cfd-zkjdv         1/1     Running   2          62d
+nmstate-webhook-65587bcb7f-xgvsf          1/1     Running   0          68s</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_metallb_operato0r"><a class="anchor" href="#_metallb_operato0r"></a>MetalLB Operato0r</h4>
+<div class="paragraph">
+<p>The <strong>metallb</strong> operator is already installed in this environment.</p>
+</div>
+<div class="paragraph">
+<p>Confirm the <strong>metallb</strong> operator is installed:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusterserviceversion -n metallb-system \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>Name                                    Phase
+metallb-operator.v4.18.0-202508201347   Succeeded
+node-maintenance-operator.v5.4.0        Succeeded</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that the deployment for the controller is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get deployment -n metallb-system controller</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that the daemon set for the speaker is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get daemonset -n metallb-system speaker</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cert_manager_operator"><a class="anchor" href="#_cert_manager_operator"></a>Cert-Manager Operator</h4>
+<div class="paragraph">
+<p>Create the <strong>cert-manager-operator</strong> Operator namespace:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: cert-manager-operator
+    labels:
+      pod-security.kubernetes.io/enforce: privileged
+      security.openshift.io/scc.podSecurityLabelSync: "false"
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create the <strong>OperatorGroup</strong>:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  targetNamespaces:
+  - cert-manager-operator
+  upgradeStrategy: Default
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm the OperatorGroup is installed in the namespace:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get operatorgroup -n cert-manager-operator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Subscribe to the <strong>cert-manager</strong> Operator:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: cs-redhat-operator-index
+  sourceNamespace: openshift-marketplace
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm the <strong>cert-manager</strong> installplan is in the namespace:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get installplan -n cert-manager-operator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm the <strong>cert-manager</strong> operator is installed:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusterserviceversion -n cert-manager-operator \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that cert-manager pods are up and running by entering the following command:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n cert-manager</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat command until all pods are showing READY 1/1</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME                                      READY   STATUS    RESTARTS   AGE
+cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
+cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></span>
+  <span class="next"><a href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

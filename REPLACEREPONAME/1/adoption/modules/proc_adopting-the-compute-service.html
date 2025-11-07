@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting the {compute_service} :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_adopting-the-compute-service.html">Adopting the {compute_service}</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting the {compute_service}</h1>
+<div class="paragraph _abstract">
+<p>To adopt the {compute_service_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) where the {compute_service} is disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment. The following procedure describes a single-cell setup.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+<li>
+<p>You have defined the following shell variables. Replace the following example values with the values that are correct for your environment:</p>
+<div class="listingblock">
+<div class="content">
+<pre>alias openstack="oc exec -t openstackclient -- openstack"
+
+DEFAULT_CELL_NAME="cell3"
+RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The source cloud <code>default</code> cell takes a new <code>$DEFAULT_CELL_NAME</code>. In a multi-cell adoption scenario, the 'default' cell might retain its original name,<code>DEFAULT_CELL_NAME=default</code>, or become renamed as a cell that is free for use. Do not use other existing cell names for <code>DEFAULT_CELL_NAME</code>, except for <code>default</code>.</p>
+</li>
+<li>
+<p>If you deployed the source cloud with a <code>default</code> cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:</p>
+<div class="listingblock">
+<div class="content">
+<pre>DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {compute_service}:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This procedure assumes that {compute_service} metadata is deployed on the top level and not on each cell level. If the {OpenStackShort} deployment has a per-cell metadata deployment, adjust the following patch as needed. You cannot run the metadata service in <code>cell0</code>.
+To enable the metadata services of a local cell, set the <code>enabled</code> property in the <code>metadataServiceTemplate</code> field of the local cell to <code>true</code> in the <code>OpenStackControlPlane</code> CR.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ rm -f celltemplates
+for CELL in $(echo $RENAMED_CELLS); do
+ $ cat &gt;&gt; celltemplates &lt;&lt; EOF
+        ${CELL}:
+          hasAPIAccess: true <i class="conum" data-value="1"></i><b>(1)</b>
+          cellDatabaseAccount: nova-$CELL
+          cellDatabaseInstance: openstack-$CELL <i class="conum" data-value="2"></i><b>(2)</b>
+          cellMessageBusInstance: rabbitmq-$CELL <i class="conum" data-value="3"></i><b>(3)</b>
+          metadataServiceTemplate:
+            enabled: false
+            override:
+                service:
+                  metadata:
+                    annotations:
+                      metallb.universe.tf/address-pool: internalapi
+                      metallb.universe.tf/allow-shared-ip: internalapi
+                      metallb.universe.tf/loadBalancerIPs: 172.17.0.$(( 79 + ${CELL##*cell} ))
+                  spec:
+                    type: LoadBalancer
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+EOF
+done
+
+$ cat &gt; oscp-patch.yaml &lt;&lt; EOF
+spec:
+  nova:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      secret: osp-secret
+      apiDatabaseAccount: nova-api
+      apiServiceTemplate:
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="4"></i><b>(4)</b>
+              spec:
+                type: LoadBalancer
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      metadataServiceTemplate:
+        enabled: true
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/allow-shared-ip: internalapi
+                metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+            spec:
+              type: LoadBalancer
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      schedulerServiceTemplate:
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      cellTemplates:
+        cell0:
+          hasAPIAccess: true
+          cellDatabaseAccount: nova-cell0
+          cellDatabaseInstance: openstack
+          cellMessageBusInstance: rabbitmq
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+EOF
+$ cat celltemplates &gt;&gt; oscp-patch.yaml
+$ oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>In the source cloud, cells are always configured with the main Nova API database upcall access. You can disable upcall access to the API by setting <code>hasAPIAccess</code> to <code>false</code>. However, do not make changes to the API during adoption.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The database instance that is used by the cell. The database instance names must match the names that are defined in the <code>OpenStackControlPlane</code> CR that you created in when you deployed the back-end services as described in <a href="#deploying-backend-services__migrating-databases">Deploying back-end services</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The message bus instance that is used by the cell. The message bus instance names must match the names that are defined in the <code>OpenStackControlPlane</code> CR.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>If you are adopting the {compute_service} with the {bare_metal_first_ref}, append the <code>novaComputeTemplates</code> field with the following content in each cell in the {compute_service} CR patch. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">        cell1:
+          novaComputeTemplates:
+            standalone:
+              customServiceConfig: |
+                [DEFAULT]
+                host = &lt;hostname&gt;
+                [workarounds]
+                disable_compute_service_check_for_ffu=true
+              computeDriver: ironic.IronicDriver
+        ...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;hostname&gt;</code> with the hostname of the node that is running the <code>ironic</code> Compute driver in the source cloud.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Wait for the CRs for the Compute control plane services to be ready:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc wait --for condition=Ready --timeout=300s Nova/nova</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The local Conductor services are started for each cell, while the superconductor runs in <code>cell0</code>.
+Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for all imported Compute services until the external data plane is imported, and until the Compute services are fast-forward upgraded. For more information, see <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a> and <a href="#performing-a-fast-forward-upgrade-on-compute-services_data-plane">Upgrading Compute services</a>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Check that {compute_service} endpoints are defined and pointing to the
+control plane FQDNs, and that the Nova API responds:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack endpoint list | grep nova
+$ openstack server list</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Compare the outputs with the topology-specific configuration in <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ for CELL in $(echo $CELLS); do
+  set +u
+  . ~/.source_cloud_exported_variables_$CELL
+  set -u
+  RCELL=$CELL
+  [ "$CELL" = "default" ] &amp;&amp; RCELL=$DEFAULT_CELL_NAME
+
+  echo "comparing $CELL to $RCELL"
+  echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
+$ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
+done</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following changes are expected for each cell:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>cellX</code> <code>nova</code> database and username become <code>nova_cellX</code>.</p>
+</li>
+<li>
+<p>The <code>default</code> cell is renamed to <code>DEFAULT_CELL_NAME</code>. The <code>default</code> cell might retain the original name if there are multiple cells.</p>
+</li>
+<li>
+<p>The RabbitMQ transport URL no longer uses <code>guest</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At this point, the {compute_service} control plane services do not control the existing {compute_service} workloads. The control plane manages the data plane only after the data adoption process is completed. For more information, see <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+To import external Compute services to the {rhos_acro} data plane, you must upgrade them first.
+For more information, see <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a>, and <a href="#performing-a-fast-forward-upgrade-on-compute-services_data-plane">Performing a fast-forward upgrade on Compute services</a>.
+</td>
+</tr>
+</table>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

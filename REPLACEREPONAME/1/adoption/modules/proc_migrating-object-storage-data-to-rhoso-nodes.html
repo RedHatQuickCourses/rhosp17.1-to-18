@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Migrating the {object_storage} data from {OpenStackShort} to {rhos_acro} nodes :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="proc_migrating-object-storage-data-to-rhoso-nodes.html">Migrating the {object_storage} data from {OpenStackShort} to {rhos_acro} nodes</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Migrating the {object_storage} data from {OpenStackShort} to {rhos_acro} nodes</h1>
+<div class="paragraph _abstract">
+<p>The {object_storage_first_ref} migration involves the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add new nodes to the {object_storage} rings.</p>
+</li>
+<li>
+<p>Set weights of existing nodes to 0.</p>
+</li>
+<li>
+<p>Rebalance rings by moving one replica.</p>
+</li>
+<li>
+<p>Copy rings to old nodes and restart services.</p>
+</li>
+<li>
+<p>Check replication status and repeat the previous two steps until the old nodes are drained.</p>
+</li>
+<li>
+<p>Remove the old nodes from the rings.</p>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Adopt the {object_storage}. For more information, see <a href="#adopting-the-object-storage-service_adopt-control-plane">Adopting the {object_storage}</a>.</p>
+</li>
+<li>
+<p>For DNS servers, ensure that all existing nodes are able to resolve the hostnames of the {rhocp_long} pods, for example, by using the external IP of the DNSMasq service as the nameserver in <code>/etc/resolv.conf</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc get service dnsmasq-dns -o jsonpath="{.status.loadBalancer.ingress[0].ip}" | $CONTROLLER1_SSH sudo tee /etc/resolv.conf</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Track the current status of the replication by using the <code>swift-dispersion</code> tool:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-populate'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command might need a few minutes to complete. It creates 0-byte objects that are distributed across the {object_storage} deployment, and you can use the <code>swift-dispersion-report</code> afterward to show the current replication status:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-report'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output of the <code>swift-dispersion-report</code> command looks similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Queried 1024 containers for dispersion reporting, 5s, 0 retries
+100.00% of container copies found (3072 of 3072)
+Sample represents 100.00% of the container partition space
+Queried 1024 objects for dispersion reporting, 4s, 0 retries
+There were 1024 partitions missing 0 copies.
+100.00% of object copies found (3072 of 3072)
+Sample represents 100.00% of the object partition space</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Add new nodes by scaling up the SwiftStorage resource from 0 to 3:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc patch openstackcontrolplane openstack --type=merge -p='{"spec":{"swift":{"template":{"swiftStorage":{"replicas": 3}}}}}'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command creates three storage instances on the {rhocp_long} cluster that use Persistent Volume Claims.</p>
+</div>
+</li>
+<li>
+<p>Wait until all three pods are running and the rings include the new devices:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc wait pods --for condition=Ready -l component=swift-storage
+$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search --device pv'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>From the current rings, get the storage management IP addresses of the nodes to drain:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search _' | tail -n +2 | awk '{print $4}' | sort -u</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output looks similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>172.20.0.100
+swift-storage-0.swift-storage.openstack.svc
+swift-storage-1.swift-storage.openstack.svc
+swift-storage-2.swift-storage.openstack.svc</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Drain the old nodes. In the following example, the old node <code>172.20.0.100</code> is drained:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+swift-ring-tool get
+swift-ring-tool drain 172.20.0.100
+swift-ring-tool rebalance
+swift-ring-tool push'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on your deployment, you might have more nodes to include in the command.</p>
+</div>
+</li>
+<li>
+<p>Copy and apply the updated rings to the original nodes. Run the
+ssh commands for your existing nodes that store the {object_storage} data:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc extract --confirm cm/swift-ring-files
+$CONTROLLER1_SSH "tar -C /var/lib/config-data/puppet-generated/swift/etc/swift/ -xzf -" &lt; swiftrings.tar.gz
+$CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Track the replication progress by using the <code>swift-dispersion-report</code> tool:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c "swift-ring-tool get &amp;&amp; swift-dispersion-report"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output shows less than 100% of copies found. Repeat the command until all container and object copies are found:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Queried 1024 containers for dispersion reporting, 6s, 0 retries
+There were 5 partitions missing 1 copy.
+99.84% of container copies found (3067 of 3072)
+Sample represents 100.00% of the container partition space
+Queried 1024 objects for dispersion reporting, 7s, 0 retries
+There were 739 partitions missing 1 copy.
+There were 285 partitions missing 0 copies.
+75.94% of object copies found (2333 of 3072)
+Sample represents 100.00% of the object partition space</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Move the next replica to the new nodes by rebalancing and distributing the rings:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+swift-ring-tool get
+swift-ring-tool rebalance
+swift-ring-tool push'
+
+$ oc extract --confirm cm/swift-ring-files
+$CONTROLLER1_SSH "tar -C /var/lib/config-data/puppet-generated/swift/etc/swift/ -xzf -" &lt; swiftrings.tar.gz
+$CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Monitor the <code>swift-dispersion-report</code> output again, wait until all copies are found, and then repeat this step until all your replicas are moved to the new nodes.</p>
+</div>
+</li>
+<li>
+<p>Remove the nodes from the rings:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+swift-ring-tool get
+swift-ring-tool remove 172.20.0.100
+swift-ring-tool rebalance
+swift-ring-tool push'</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Even if all replicas are on the new nodes and the <code>swift-dispersion-report</code> command reports 100% of the copies found, there might still be data on the old nodes. The replicators remove this data, but it might take more time.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Check the disk usage of all disks in the cluster:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-recon -d'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that there are no more <code>*.db</code> or <code>*.data</code> files in the <code>/srv/node</code> directory on the nodes:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$CONTROLLER1_SSH "find /srv/node/ -type f -name '*.db' -o -name '*.data' | wc -l"</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

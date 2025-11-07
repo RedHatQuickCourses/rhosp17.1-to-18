@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>About node roles :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="REPLACEREPONAME" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">FIXME Course Title</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">FIXME Course Title</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">FIXME Course Title</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">FIXME Course Title</a></li>
+    <li><a href="con_node-roles.html">About node roles</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">About node roles</h1>
+<div class="paragraph _abstract">
+<p>In {OpenStackPreviousInstaller} deployments you had 5 different standard roles
+for the nodes: <code>Controller</code>, <code>Compute</code>, <code>Networker</code>, <code>Ceph Storage</code>, <code>Swift
+Storage</code>, but in the control plane you make a distinction based on where things
+are running, in {OpenShift} ({OpenShiftShort}) or external to it.</p>
+</div>
+<div class="paragraph">
+<p>When adopting a {OpenStackPreviousInstaller} {rhos_prev_long} ({OpenStackShort}) your <code>Compute</code> nodes will directly become
+external nodes, so there should not be much additional planning needed there.
+Your <code>Networker</code> nodes will also become external nodes.
+In most cases your <code>Controller</code> nodes would also become external nodes to avoid dataplane outage during adoption. This is because when there are no
+dedicated <code>Networker</code> nodes in {OpenStackPreviousInstaller}, <code>Controller</code> nodes act as OVN gateway chassis i.e external SNAT and Centralized
+Floating IP(if DVR disabled) traffic goes through these nodes and removing these nodes during adoption will lead to some outage and this
+should be avoided. Such disruption should be planned post adoption.</p>
+</div>
+<div class="paragraph">
+<p>In many deployments being adopted the <code>Controller</code> nodes will require some
+thought because you have many {OpenShiftShort} nodes where the Controller services
+could run, and you have to decide which ones you want to use, how you are going to use them, and make sure those nodes are ready to run the services.</p>
+</div>
+<div class="paragraph">
+<p>In most deployments running {OpenStackShort} services on <code>master</code> nodes can have a
+seriously adverse impact on the {OpenShiftShort} cluster, so it is recommended that you place {OpenStackShort} services on non <code>master</code> nodes.</p>
+</div>
+<div class="paragraph">
+<p>By default {OpenStackShort} Operators deploy {OpenStackShort} services on any worker node, but
+that is not necessarily what&#8217;s best for all deployments, and there may be even
+services that won&#8217;t even work deployed like that.</p>
+</div>
+<div class="paragraph">
+<p>When planing a deployment it&#8217;s good to remember that not all the services on an
+{OpenStackShort} deployments are the same as they have very different requirements.</p>
+</div>
+<div class="paragraph">
+<p>Looking at the Block Storage service (cinder) component you can clearly see different requirements for
+its services: the cinder-scheduler is a very light service with low
+memory, disk, network, and CPU usage; cinder-api service has a higher network
+usage due to resource listing requests; the cinder-volume service will have a
+high disk and network usage since many of its operations are in the data path
+(offline volume migration, create volume from image, etc.), and then you have
+the cinder-backup service which has high memory, network, and CPU (to compress
+data) requirements.</p>
+</div>
+<div class="paragraph">
+<p>The {image_service_first_ref} and {object_storage_first_ref} components are in the data path, as well as RabbitMQ and Galera services.</p>
+</div>
+<div class="paragraph">
+<p>Given these requirements it may be preferable not to let these services wander
+all over your {OpenShiftShort} worker nodes with the possibility of impacting other
+workloads, or maybe you don&#8217;t mind the light services wandering around but you
+want to pin down the heavy ones to a set of infrastructure nodes.</p>
+</div>
+<div class="paragraph">
+<p>There are also hardware restrictions to take into consideration, because if you
+are using a Fibre Channel (FC) Block Storage service backend you need the cinder-volume,
+cinder-backup, and maybe even the {image_service_first_ref} (if it&#8217;s using the Block Storage service as a backend)
+services to run on a {OpenShiftShort} host that has an HBA.</p>
+</div>
+<div class="paragraph">
+<p>The {OpenStackShort} Operators allow a great deal of flexibility on where to run the
+{OpenStackShort} services, as you can use node labels to define which {OpenShiftShort} nodes
+are eligible to run the different {OpenStackShort} services.  Refer to the <a href="#about-node-selector_{context}">About node
+selector</a> to learn more about using labels to define
+placement of the {OpenStackShort} services.</p>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
