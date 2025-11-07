@@ -1,0 +1,79 @@
+== Preparing RHOCP for RHOSP Network Isolation
+
+Networking IP ranges table:
+
+[cols="7*", options="header"]
+|======================================================================================================================================================================================
+|             | VLAN | CIDR             | NetConfig allocationRange                               | MetalLB IPAddressPool range | net-attach-def ipam range | OCP worker nncp range    
+|  ctlplane   |  n/a | 172.25.249.0/24    | 172.25.249.100 - 172.25.249.120 172.25.249.150 - 172.25.249.200 | 172.25.249.80 - 172.25.249.90   | 172.25.249.30 - 172.25.249.70 | 172.25.249.10 - 172.25.249.12
+| external    | n/a  | 192.168.51.0/24    | 192.168.51.61 - 192.168.51.90                               | n/a                         | n/a                       | n/a                      
+| internalapi | n/a   | 192.168.52.0/24    | 192.168.52.100 - 192.168.52.250                             | 192.168.52.80 - 192.168.52.90   | 192.168.52.30 - 192.168.52.70 | 192.168.52.10 - 192.168.52.12
+| storage     | n/a   | 192.168.50.0/24    | 192.168.50.100 - 192.168.50.250                             | 192.168.50.80 - 192.168.50.90   | 192.168.50.30 - 192.168.50.70 | 192.168.50.10 - 192.168.50.12
+| tenant      | n/a   | 192.168.53.0/24    | 192.168.53.100 - 192.168.53.250                             | 192.168.50.80 - 192.168.50.90   | 192.168.53.30 - 192.168.53.70 | 192.168.53.10 - 192.168.53.12
+|======================================================================================================================================================================================
+
+
+We will be using a preconfigured set of yaml files in the `files` directory which start with `osp-ng-nncp-`.
+There are 3 files for worker nodes.
+
+Change to the `files` directory:
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Apply preconfigured yamls indivdually:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-nncp-w1.yaml
+oc apply -f osp-ng-nncp-w2.yaml
+oc apply -f osp-ng-nncp-w3.yaml
+----
+
+Wait until they are in an available state before proceeding:
+
+[source,bash,role=execute]
+----
+oc get nncp -w
+----
+
+Type Control + C when you see that the nncp has moved to SuccessfullyConfigured state
+
+.Sample Output
+[source,bash]
+----
+NAME                                STATUS      REASON
+osp-multi-nic-worker-ocp4-worker1   Available   SuccessfullyConfigured
+osp-multi-nic-worker-ocp4-worker2   Available   SuccessfullyConfigured
+osp-multi-nic-worker-ocp4-worker3   Available   SuccessfullyConfigured
+----
+
+Before proceeding configure a *nad* resource for each isolated network to attach a service pod to the network:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-netattach.yaml
+----
+
+Once the nodes are available and attached configure the *MetalLB IP address range* using a preconfigured yaml file:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-metal-lb-ip-address-pools.yaml
+----
+
+Configure a *L2Advertisement* resource which will define which node advertises a service to the local network which has been preconfigured for your demo environment:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-metal-lb-l2-advertisements.yaml
+----
+
+Run the following command to enable global IP forwarding:
+
+[source,bash,role=execute]
+----
+oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge
+----

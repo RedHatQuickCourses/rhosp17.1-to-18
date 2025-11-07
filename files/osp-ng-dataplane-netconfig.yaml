@@ -1,0 +1,59 @@
+apiVersion: network.openstack.org/v1beta1
+kind: NetConfig
+metadata:
+  name: openstacknetconfig
+  namespace: openstack
+spec:
+  networks:
+  - name: ctlplane
+    dnsDomain: ctlplane.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.25.249.120
+        start: 172.25.249.100
+      - end: 172.25.249.200
+        start: 172.25.249.150
+      cidr: 172.25.249.0/24
+      gateway: 172.25.249.1
+  - name: internalapi 
+    dnsDomain: internalapi.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 192.168.52.250
+        start: 192.168.52.100
+      excludeAddresses:
+      - 192.168.52.10
+      - 192.168.52.12
+      cidr: 192.168.52.0/24
+  - name: tenant
+    dnsDomain: tenant.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 192.168.53.250
+        start: 192.168.53.100
+      excludeAddresses:
+      - 192.168.53.10
+      - 192.168.53.12
+      cidr: 192.168.53.0/24
+  - name: storage
+    dnsDomain: storage.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 192.168.50.250
+        start: 192.168.50.100
+      excludeAddresses:
+      - 192.168.50.10
+      - 192.168.50.12
+      cidr: 192.168.50.0/24
+  - name: external
+    dnsDomain: external.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.25.250.100
+        start: 172.25.250.19
+      cidr: 172.25.250.0/24

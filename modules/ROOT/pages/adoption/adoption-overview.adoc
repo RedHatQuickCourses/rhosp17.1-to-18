@@ -1,0 +1,2 @@
+include::adoption-attributes.adoc[]
+include::assemblies/assembly_rhoso-180-adoption-overview.adoc[leveloffset=+1]

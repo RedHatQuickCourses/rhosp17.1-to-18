@@ -1,0 +1,2 @@
+include::adoption-attributes.adoc[]
+include::assemblies/assembly_migrating-databases-to-the-control-plane.adoc[leveloffset=+1]

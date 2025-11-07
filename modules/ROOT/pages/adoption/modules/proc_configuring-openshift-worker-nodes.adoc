@@ -1,0 +1,76 @@
+:_mod-docs-content-type: PROCEDURE
+[id="configuring-openshift-worker-nodes_{context}"]
+
+= Configuring isolated networks on {OpenShiftShort} worker nodes
+
+[role="_abstract"]
+To connect service pods to isolated networks on {rhocp_long} worker nodes that run {rhos_prev_long} services, physical network configuration on the hypervisor is required.
+
+This configuration is managed by the NMState operator, which uses `NodeNetworkConfigurationPolicy` custom resources (CRs) to define the desired network configuration for the nodes.
+
+// TODO: Move this to the IPv6 section once it is fully documented, both upstream and downstream.
+
+.Procedure
+
+* For each {OpenShiftShort} worker node, define a `NodeNetworkConfigurationPolicy` CR that describes the desired network configuration. For example:
++
+----
+apiVersion: v1
+items:
+- apiVersion: nmstate.io/v1
+  kind: NodeNetworkConfigurationPolicy
+  spec:
+    desiredState:
+      interfaces:
+      - description: internalapi vlan interface
+        ipv4:
+          address:
+          - ip: 172.17.0.10
+            prefix-length: 24
+          dhcp: false
+          enabled: true
+        ipv6:
+          enabled: false
+        name: enp6s0.20
+        state: up
+        type: vlan
+        vlan:
+          base-iface: enp6s0
+          id: 20
+          reorder-headers: true
+      - description: storage vlan interface
+        ipv4:
+          address:
+          - ip: 172.18.0.10
+            prefix-length: 24
+          dhcp: false
+          enabled: true
+        ipv6:
+          enabled: false
+        name: enp6s0.21
+        state: up
+        type: vlan
+        vlan:
+          base-iface: enp6s0
+          id: 21
+          reorder-headers: true
+      - description: tenant vlan interface
+        ipv4:
+          address:
+          - ip: 172.19.0.10
+            prefix-length: 24
+          dhcp: false
+          enabled: true
+        ipv6:
+          enabled: false
+        name: enp6s0.22
+        state: up
+        type: vlan
+        vlan:
+          base-iface: enp6s0
+          id: 22
+          reorder-headers: true
+    nodeSelector:
+      kubernetes.io/hostname: ocp-worker-0
+      node-role.kubernetes.io/worker: ""
+----

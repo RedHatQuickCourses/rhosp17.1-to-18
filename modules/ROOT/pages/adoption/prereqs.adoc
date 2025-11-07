@@ -1,0 +1,216 @@
+= Configuration, Installation, and Use of Red Hat OpenStack Services on OpenShift
+
+== Prerequisites for Installation
+
+Some prerequisites needed to install Red Hat OpenStack Services on OpenShift (RHOSO) are already included in the lab environment such as:
+
+* An operational OpenShift cluster which supports Multus CNI
+* oc command line tool on your workstation (workstation host)
+* k9s command line tool on your workstation (workstation host)
+* podman command line tool on your workstation (workstation host)
+* Access to repositories which contain the Dev Preview code
+* Access to an existing registry or create a local Quay registry
+* Example YAML files are available in this repository which can be cloned or copy and pasted for use.
+For ease of instructions it will be assumed the repo has been cloned
+
+=== Install the Prerequisite Operators
+
+There are three operators that are required to be installed before you can install the OpenStack Operator, the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli[NMState  Operator^] the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install[MetalLB  Operator^]  and the https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html[Cert-Manager + Operator^]
+
+==== Accessing the Cluster
+
+From the workstation, access to the utility host
++
+[source,bash,role=execute,subs=attributes]
+----
+ssh utility
+----
++
+Make sure you can reach out to the OpenShift cluster, for instance, by listing the nodes in your cluster:
+
+[source,bash,role=execute]
+----
+oc get nodes
+----
+
+.Sample Output
+----
+NAME       STATUS   ROLES                         AGE    VERSION
+master01   Ready    control-plane,master,worker   163d   v1.31.6
+master02   Ready    control-plane,master,worker   163d   v1.31.6
+master03   Ready    control-plane,master,worker   163d   v1.31.6
+----
+
+==== NMState Operator
+
+The *nmstate* Operator is already installed in this environment.
+
+Confirm that NMstate operator is running.
+Repeat this command until you see the desired output:
+
+[source,bash,role=execute]
+----
+oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase
+----
+
+.Sample Output
+----
+Name                                              Phase
+kubernetes-nmstate-operator.4.18.0-202504021503   Succeeded
+----
+
+Create instance of the *nmstate* operator:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: nmstate.io/v1
+kind: NMState
+metadata:
+  name: nmstate
+EOF
+----
+
+Confirm that the deployment for the *nmstate* operator is running:
+
+[source,bash,role=execute]
+----
+oc get pods -n openshift-nmstate
+----
+
+.Sample Output
+----
+NAME                                      READY   STATUS    RESTARTS   AGE
+nmstate-console-plugin-687c479db7-dqfrf   1/1     Running   0          68s
+nmstate-handler-s2cn7                     1/1     Running   0          68s
+nmstate-handler-sd6hk                     1/1     Running   0          68s
+nmstate-handler-sspw7                     1/1     Running   0          68s
+nmstate-metrics-7466f9f9c9-qdtbh          2/2     Running   0          68s
+nmstate-operator-76596f9cfd-zkjdv         1/1     Running   2          62d
+nmstate-webhook-65587bcb7f-xgvsf          1/1     Running   0          68s
+----
+
+==== MetalLB Operato0r
+
+
+The *metallb* operator is already installed in this environment.
+
+Confirm the *metallb* operator is installed:
+
+[source,bash,role=execute]
+----
+oc get clusterserviceversion -n metallb-system \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase
+----
+
+.Sample Output
+----
+Name                                    Phase
+metallb-operator.v4.18.0-202508201347   Succeeded
+node-maintenance-operator.v5.4.0        Succeeded
+----
+
+Verify that the deployment for the controller is running:
+
+[source,bash,role=execute]
+----
+oc get deployment -n metallb-system controller
+----
+
+Verify that the daemon set for the speaker is running:
+
+[source,bash,role=execute]
+----
+oc get daemonset -n metallb-system speaker
+----
+
+==== Cert-Manager Operator
+
+Create the *cert-manager-operator* Operator namespace:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: cert-manager-operator
+    labels:
+      pod-security.kubernetes.io/enforce: privileged
+      security.openshift.io/scc.podSecurityLabelSync: "false"
+EOF
+----
+
+Create the *OperatorGroup*:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  targetNamespaces:
+  - cert-manager-operator
+  upgradeStrategy: Default
+EOF
+----
+
+Confirm the OperatorGroup is installed in the namespace:
+
+[source,bash,role=execute]
+----
+oc get operatorgroup -n cert-manager-operator
+----
+
+Subscribe to the *cert-manager* Operator:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: cs-redhat-operator-index
+  sourceNamespace: openshift-marketplace
+EOF
+----
+
+Confirm the *cert-manager* installplan is in the namespace:
+
+[source,bash,role=execute]
+----
+oc get installplan -n cert-manager-operator
+----
+
+Confirm the *cert-manager* operator is installed:
+
+[source,bash,role=execute]
+----
+oc get clusterserviceversion -n cert-manager-operator \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase
+----
+
+Verify that cert-manager pods are up and running by entering the following command:
+
+[source,bash,role=execute]
+----
+oc get pods -n cert-manager
+----
+
+Repeat command until all pods are showing READY 1/1
+
+.Sample Output
+----
+NAME                                      READY   STATUS    RESTARTS   AGE
+cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
+cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s
+----

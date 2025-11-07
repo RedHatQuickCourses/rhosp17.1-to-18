@@ -1,5 +1,5 @@
 site:
-  title: FIXME Course Title
+  title: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
   start_page: REPLACEREPONAME::index.adoc
 
 content:

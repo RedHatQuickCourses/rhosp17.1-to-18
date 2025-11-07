@@ -1,0 +1,73 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: osp-multi-nic-worker-ocp4-worker3
+spec:
+  desiredState:
+    interfaces:
+    - description: Configuring internalapi ens6
+      ipv4:
+        address:
+        - ip: 192.168.52.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: ens6
+      state: up
+      type: ethernet
+    - description: Configuring tenat ens7
+      ipv4:
+        address:
+        - ip: 192.168.53.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: ens7
+      state: up
+      type: ethernet
+    - description: Configuring external ens5
+      ipv4:
+        address:
+        - ip: 172.25.250.18
+          prefix-length: 16
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: ens5
+      state: up
+      type: ethernet
+    - description: Configuring ctlplane ens9
+      ipv4:
+        address:
+        - ip: 172.25.249.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: ens9
+      state: up
+      type: ethernet
+    - description: Unconfigure old ctlplane ens8
+      ipv4:
+        address: []
+        enabled: false
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: ens8
+      state: down
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: master03
+    node-role.kubernetes.io/worker: ""

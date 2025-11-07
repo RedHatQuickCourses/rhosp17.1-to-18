@@ -1,0 +1,2 @@
+include::adoption-attributes.adoc[]
+include::assemblies/assembly_adopting-the-data-plane.adoc[leveloffset=+1]
