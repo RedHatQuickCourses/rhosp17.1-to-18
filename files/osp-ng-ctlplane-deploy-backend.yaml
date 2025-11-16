@@ -41,16 +41,13 @@ spec:
       options:
       - key: server
         values:
-        - 172.30.0.10
+        - 172.25.250.254
       replicas: 1
 
   glance:
     enabled: false
     template:
-      glanceAPIs:
-        default:
-          replicas: 0
-          type: single
+      glanceAPIs: {}
 
   heat:
     enabled: false

@@ -20,12 +20,12 @@ spec:
     - ssh-known-hosts
     - run-os
     - reboot-os
+    - ceph-client
     - install-certs
     - ovn
     - neutron-metadata
     - libvirt
     - nova
-    - telemetry
   preProvisioned: true
   nodes:
       overcloud-novacompute-0:
@@ -71,7 +71,18 @@ spec:
           subnetName: subnet1
           fixedIP: 172.25.250.22
   nodeTemplate:
+    extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        secret:
+          secretName: ceph-conf-files
+      mounts:
+      - name: ceph
+        mountPath: "/etc/ceph"
+        readOnly: true
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    managementNetwork: ctlplane
     ansible:
       ansibleUser: student
       ansibleVarsFrom:
