@@ -106,7 +106,7 @@ spec:
            ---
            network_config:
            - type: interface
-             name: eth0
+             name: ens3
              mtu: 1500
              dns_servers: {{ ctlplane_dns_nameservers }}
              domain: {{ dns_search_domains }}
@@ -114,7 +114,7 @@ spec:
              addresses:
              - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
            - type: interface
-             name: eth1
+             name: ens4
              mtu: 1500
              use_dhcp: false
              addresses:
@@ -122,10 +122,10 @@ spec:
                  {{ storage_ip }}/{{ storage_cidr }}
              routes: {{ storage_host_routes }}
            - type: interface
-             name: eth2
+             name: ens5
              use_dhcp: true        
            - type: interface
-             name: eth3
+             name: ens6
              mtu: 1500
              use_dhcp: false
              addresses:
@@ -133,16 +133,22 @@ spec:
                  {{ internalapi_ip }}/{{ internalapi_cidr }}
              routes: {{ internalapi_host_routes }}
            - type: interface
-             name: eth4
-             use_dhcp: false    
-           - type: interface
-             name: eth5
+             name: ens7
+             use_dhcp: false   
+           - type: ovs_bridge
+             name: br-tenant
              mtu: 1500
              use_dhcp: false
              addresses:
              - ip_netmask:
                  {{ tenant_ip }}/{{ tenant_cidr }}
              routes: {{ tenant_host_routes }}
+             members:
+             - type: interface
+               name: ens8
+               mtu: 1500
+               # force the MAC address of the bridge to this interface
+               primary: true 
            - type: ovs_bridge
              name: br-ex
              mtu: 1500
@@ -153,7 +159,7 @@ spec:
              routes: {{ external_host_routes }}
              members:
              - type: interface
-               name: eth6
+               name: ens9
                mtu: 1500
                # force the MAC address of the bridge to this interface
                primary: true
