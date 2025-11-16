@@ -27,6 +27,8 @@ spec:
     - libvirt
     - nova
   preProvisioned: true
+  networkAttachments:
+    - ctlplane
   nodes:
       overcloud-novacompute-0:
         hostName: overcloud-novacompute-0.localdomain
