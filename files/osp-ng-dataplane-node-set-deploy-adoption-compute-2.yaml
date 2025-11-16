@@ -136,6 +136,11 @@ spec:
                mtu: 1500
                # force the MAC address of the bridge to this interface
                primary: true
+         edpm_network_config_nmstate: false
+         # Control resolv.conf management by NetworkManager
+         # false = disable NetworkManager resolv.conf update (default)
+         # true = enable NetworkManager resolv.conf update
+         edpm_bootstrap_network_resolvconf_update: false
          edpm_network_config_hide_sensitive_logs: false
          #
          # These vars are for the network config templates themselves and are
