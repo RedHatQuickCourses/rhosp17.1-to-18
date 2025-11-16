@@ -86,7 +86,7 @@ spec:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     managementNetwork: ctlplane
     ansible:
-      ansibleUser: student
+      ansibleUser: tripleo-admin
       ansibleVarsFrom:
       - secretRef:
           name: subscription-manager
