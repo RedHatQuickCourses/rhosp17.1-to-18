@@ -188,6 +188,7 @@ spec:
          ovn_monitor_all: true
          edpm_ovn_remote_probe_interval: 60000
          edpm_ovn_ofctrl_wait_before_clear: 8000
+         edpm_tuned_profile: virtual-host
 
          # edpm_nodes_validation
          edpm_nodes_validation_validate_controllers_icmp: false
