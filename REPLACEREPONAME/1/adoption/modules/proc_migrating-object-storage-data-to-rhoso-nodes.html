@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -202,7 +140,7 @@
 <p>For DNS servers, ensure that all existing nodes are able to resolve the hostnames of the {rhocp_long} pods, for example, by using the external IP of the DNSMasq service as the nameserver in <code>/etc/resolv.conf</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get service dnsmasq-dns -o jsonpath="{.status.loadBalancer.ingress[0].ip}" | $CONTROLLER1_SSH sudo tee /etc/resolv.conf</pre>
+<pre>oc get service dnsmasq-dns -o jsonpath="{.status.loadBalancer.ingress[0].ip}" | $CONTROLLER1_SSH sudo tee /etc/resolv.conf</pre>
 </div>
 </div>
 </li>
@@ -210,7 +148,7 @@
 <p>Track the current status of the replication by using the <code>swift-dispersion</code> tool:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-populate'</pre>
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-populate'</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -218,7 +156,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-report'</pre>
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-dispersion-report'</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -245,7 +183,7 @@ Sample represents 100.00% of the object partition space</pre>
 <p>Add new nodes by scaling up the SwiftStorage resource from 0 to 3:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge -p='{"spec":{"swift":{"template":{"swiftStorage":{"replicas": 3}}}}}'</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge -p='{"spec":{"swift":{"template":{"swiftStorage":{"replicas": 3}}}}}'</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -256,8 +194,8 @@ Sample represents 100.00% of the object partition space</pre>
 <p>Wait until all three pods are running and the rings include the new devices:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait pods --for condition=Ready -l component=swift-storage
-$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search --device pv'</pre>
+<pre>oc wait pods --for condition=Ready -l component=swift-storage
+oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search --device pv'</pre>
 </div>
 </div>
 </li>
@@ -265,7 +203,7 @@ $ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring
 <p>From the current rings, get the storage management IP addresses of the nodes to drain:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search _' | tail -n +2 | awk '{print $4}' | sort -u</pre>
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-ring-builder object.builder search _' | tail -n +2 | awk '{print $4}' | sort -u</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -284,7 +222,7 @@ swift-storage-2.swift-storage.openstack.svc</pre>
 <p>Drain the old nodes. In the following example, the old node <code>172.20.0.100</code> is drained:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
 swift-ring-tool get
 swift-ring-tool drain 172.20.0.100
 swift-ring-tool rebalance
@@ -300,7 +238,7 @@ swift-ring-tool push'</pre>
 ssh commands for your existing nodes that store the {object_storage} data:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc extract --confirm cm/swift-ring-files
+<pre>oc extract --confirm cm/swift-ring-files
 $CONTROLLER1_SSH "tar -C /var/lib/config-data/puppet-generated/swift/etc/swift/ -xzf -" &lt; swiftrings.tar.gz
 $CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
 </div>
@@ -310,7 +248,7 @@ $CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
 <p>Track the replication progress by using the <code>swift-dispersion-report</code> tool:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c "swift-ring-tool get &amp;&amp; swift-dispersion-report"</pre>
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c "swift-ring-tool get &amp;&amp; swift-dispersion-report"</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -334,12 +272,12 @@ Sample represents 100.00% of the object partition space</pre>
 <p>Move the next replica to the new nodes by rebalancing and distributing the rings:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
 swift-ring-tool get
 swift-ring-tool rebalance
 swift-ring-tool push'
 
-$ oc extract --confirm cm/swift-ring-files
+oc extract --confirm cm/swift-ring-files
 $CONTROLLER1_SSH "tar -C /var/lib/config-data/puppet-generated/swift/etc/swift/ -xzf -" &lt; swiftrings.tar.gz
 $CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
 </div>
@@ -352,7 +290,7 @@ $CONTROLLER1_SSH "systemctl restart tripleo_swift_*"</pre>
 <p>Remove the nodes from the rings:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c '
 swift-ring-tool get
 swift-ring-tool remove 172.20.0.100
 swift-ring-tool rebalance
@@ -381,7 +319,7 @@ Even if all replicas are on the new nodes and the <code>swift-dispersion-report<
 <p>Check the disk usage of all disks in the cluster:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-recon -d'</pre>
+<pre>oc debug --keep-labels=true job/swift-ring-rebalance -- /bin/sh -c 'swift-ring-tool get &amp;&amp; swift-recon -d'</pre>
 </div>
 </div>
 </li>

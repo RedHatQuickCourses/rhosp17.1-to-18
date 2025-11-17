@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -238,7 +176,7 @@ If you run the {Ceph} externalization procedure after you migrate the {rhos_prev
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ ceph config dump
+<pre>ceph config dump
 ...
 ...</pre>
 </div>
@@ -248,7 +186,7 @@ If you run the {Ceph} externalization procedure after you migrate the {rhos_prev
 <p>Remove the undercloud container images:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_base \
+<pre>cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_base \
 for i in prometheus grafana alertmanager node_exporter; do \
     cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_$i \
 done</pre>

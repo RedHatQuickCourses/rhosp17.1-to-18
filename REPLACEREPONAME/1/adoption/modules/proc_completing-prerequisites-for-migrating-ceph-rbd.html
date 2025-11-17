@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -223,7 +161,7 @@ template: templates/single_nic_vlans/single_nic_vlans_storage.j2</code></pre>
 <p>Add the missing network:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack overcloud node provision \
+<pre>openstack overcloud node provision \
 -o overcloud-baremetal-deployed-0.yaml --stack overcloud-0 \
 /--network-config -y --concurrency 2 /home/stack/metalsmith-0.yaml</pre>
 </div>

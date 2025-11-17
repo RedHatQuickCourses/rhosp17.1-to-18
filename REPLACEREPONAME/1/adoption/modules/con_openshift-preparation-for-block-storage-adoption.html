@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -180,7 +118,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc label nodes worker0 lvm=cinder-volumes</pre>
+<pre>oc label nodes worker0 lvm=cinder-volumes</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -191,7 +129,7 @@ metadata:
   name: openstack
 spec:
   secret: osp-secret
-  storageClass: local-storage
+  storageClass: lnfs-storage
   cinder:
     enabled: true
     template:
@@ -374,7 +312,7 @@ services run, use a <code>MachineConfigPool</code> to limit the effects of the <
 <p>After the {OpenShiftShort} nodes reboot and load the <code>nvme-fabrics</code> module, you can confirm that the operating system is configured and that it supports ANA by checking the host:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat /sys/module/nvme_core/parameters/multipath</pre>
+<pre>cat /sys/module/nvme_core/parameters/multipath</pre>
 </div>
 </div>
 <div class="admonitionblock important">

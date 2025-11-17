@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -230,7 +168,7 @@ group_members_are_ids = true</code></pre>
 <p>Create the secret from this file:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc create secret generic keystone-domains --from-file=&lt;keystone.DOMAIN_NAME.conf&gt;</pre>
+<pre>oc create secret generic keystone-domains --from-file=&lt;keystone.DOMAIN_NAME.conf&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -257,7 +195,7 @@ The name of the file that you provide to <code>--from-file</code>, for example <
 <p>Patch the <code>OpenStackControlPlane</code> CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane &lt;cr_name&gt; --type=merge -p '
+<pre>oc patch openstackcontrolplane &lt;cr_name&gt; --type=merge -p '
 spec:
   keystone:
     template:
@@ -323,7 +261,7 @@ You might need to wait a few minutes for the changes to propagate and for the {i
 <p>Verify that users from the LDAP domain are accessible:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -t openstackclient -- openstack user list --domain &lt;domain_name&gt;</pre>
+<pre>oc exec -t openstackclient -- openstack user list --domain &lt;domain_name&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -341,7 +279,7 @@ You might need to wait a few minutes for the changes to propagate and for the {i
 <p>Verify that groups from the LDAP domain are accessible:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -t openstackclient -- openstack group list --domain &lt;domain_name&gt;</pre>
+<pre>oc exec -t openstackclient -- openstack group list --domain &lt;domain_name&gt;</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -352,7 +290,7 @@ You might need to wait a few minutes for the changes to propagate and for the {i
 <p>Test authentication with an LDAP user:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -t openstackclient -- openstack --os-auth-url &lt;keystone_auth_url&gt; --os-identity-api-version 3 --os-user-domain-name &lt;domain_name&gt; --os-username &lt;ldap_username&gt; --os-password &lt;ldap_password&gt; token issue</pre>
+<pre>oc exec -t openstackclient -- openstack --os-auth-url &lt;keystone_auth_url&gt; --os-identity-api-version 3 --os-user-domain-name &lt;domain_name&gt; --os-username &lt;ldap_username&gt; --os-password &lt;ldap_password&gt; token issue</pre>
 </div>
 </div>
 <div class="ulist">
@@ -373,7 +311,7 @@ You might need to wait a few minutes for the changes to propagate and for the {i
 <p>Verify group membership for an LDAP user:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -t openstackclient -- openstack group contains user --group-domain &lt;domain_name&gt; --user-domain &lt;domain_name&gt; &lt;group_name&gt; &lt;username&gt;</pre>
+<pre>oc exec -t openstackclient -- openstack group contains user --group-domain &lt;domain_name&gt; --user-domain &lt;domain_name&gt; &lt;group_name&gt; &lt;username&gt;</pre>
 </div>
 </div>
 <div class="ulist">

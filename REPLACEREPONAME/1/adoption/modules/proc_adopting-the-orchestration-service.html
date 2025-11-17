@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -195,41 +133,25 @@ is disabled. The patch starts the service with the configuration parameters that
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Retrieve the existing <code>auth_encryption_key</code> and <code>service</code> passwords. You use these passwords to patch the <code>osp-secret</code>. In the following example, the <code>auth_encryption_key</code> is used as <code>HeatAuthEncryptionKey</code> and the <code>service</code> password is used as <code>HeatPassword</code>:</p>
-<div class="listingblock">
+<p>Retrieve the existing <code>auth_encryption_key</code> and <code>service</code> passwords. You use these passwords to patch the <code>osp-secret</code>. In the following example, the <code>auth_encryption_key</code> is used as <code>HeatAuthEncryptionKey</code> and the <code>service</code> password is used as <code>HeatPassword</code>, in the <strong>utility server</strong>:</p>
+<div class="listingblock execute">
 <div class="content">
-<pre>[stack@rhosp17 ~]$ grep -E 'HeatPassword|HeatAuth|HeatStackDomainAdmin' ~/overcloud-deploy/overcloud/overcloud-passwords.yaml
-  HeatAuthEncryptionKey: Q60Hj8PqbrDNu2dDCbyIQE2dibpQUPg2
-  HeatPassword: dU2N0Vr2bdelYH7eQonAwPfI3
-  HeatStackDomainAdminPassword: dU2N0Vr2bdelYH7eQonAwPfI3</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Log in to a Controller node and verify the <code>auth_encryption_key</code> value in use:</p>
-<div class="listingblock">
-<div class="content">
-<pre>[stack@rhosp17 ~]$ ansible -i overcloud-deploy/overcloud/config-download/overcloud/tripleo-ansible-inventory.yaml overcloud-controller-0 -m shell -a "grep auth_encryption_key /var/lib/config-data/puppet-generated/heat/etc/heat/heat.conf | grep -Ev '^#|^$'" -b
-overcloud-controller-0 | CHANGED | rc=0 &gt;&gt;
-auth_encryption_key=Q60Hj8PqbrDNu2dDCbyIQE2dibpQUPg2</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Encode the password to Base64 format:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ echo Q60Hj8PqbrDNu2dDCbyIQE2dibpQUPg2 | base64
-UTYwSGo4UHFickROdTJkRENieUlRRTJkaWJwUVVQZzIK</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">HEAT_AUTH_ENCRYPTION_KEY_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatAuthEncryptionKey:' | awk -F ': ' '{ print $2; }')
+HEAT_AUTH_ENCRYPTION_KEY_BASE64=$(echo -n "$HEAT_AUTH_ENCRYPTION_KEY_PASSWORD" | base64)
+HEAT_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatPassword:' | awk -F ': ' '{ print $2; }')
+HEAT_PASSWORD_BASE64=$(echo -n "$HEAT_PASSWORD" | base64)
+HEAT_STACK_DOMAIN_ADMIN_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatStackDomainAdminPassword:' | awk -F ': ' '{ print $2; }')
+HEAT_STACK_DOMAIN_ADMIN_PASSWORD_BASE64=$(echo -n "$HEAT_STACK_DOMAIN_ADMIN_PASSWORD" | base64)</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Patch the <code>osp-secret</code> to update the <code>HeatAuthEncryptionKey</code> and <code>HeatPassword</code> parameters. These values must match the values in the {OpenStackPreviousInstaller} {orchestration} configuration:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>$ oc patch secret osp-secret --type='json' -p='[{"op" : "replace" ,"path" : "/data/HeatAuthEncryptionKey" ,"value" : "UTYwSGo4UHFickROdTJkRENieUlRRTJkaWJwUVVQZzIK"}]'
-secret/osp-secret patched</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatAuthEncryptionKey', 'value': '$HEAT_AUTH_ENCRYPTION_KEY_BASE64'}]"
+oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatPassword', 'value': '$HEAT_PASSWORD_BASE64'}]"
+oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatStackDomainAdminPassword', 'value': '$HEAT_STACK_DOMAIN_ADMIN_PASSWORD_BASE64'}]"</code></pre>
 </div>
 </div>
 </li>
@@ -237,7 +159,7 @@ secret/osp-secret patched</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {orchestration}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   heat:
     enabled: true
@@ -265,7 +187,7 @@ spec:
 <p>Ensure that the statuses of all the CRs are <code>Setup complete</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI
+<pre>oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI
 NAME                           STATUS   MESSAGE
 heat.heat.openstack.org/heat   True     Setup complete
 
@@ -284,7 +206,7 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 <p>Check that the {orchestration} is registered in the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it openstackclient -- openstack service list -c Name -c Type
+<pre>oc exec -it openstackclient -- openstack service list -c Name -c Type
 +------------+----------------+
 | Name       | Type           |
 +------------+----------------+
@@ -302,7 +224,7 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
+<pre>oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
 - Enabled: true
   ID: 1da7df5b25b94d1cae85e3ad736b25a5
   Interface: public
@@ -324,7 +246,7 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 <p>Check that the {orchestration} engine services are running:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it openstackclient -- openstack orchestration service list -f yaml
+<pre>oc exec -it openstackclient -- openstack orchestration service list -f yaml
 - Binary: heat-engine
   Engine ID: b16ad899-815a-4b0c-9f2e-e6d9c74aa200
   Host: heat-engine-6d47856868-p7pzz
@@ -360,7 +282,7 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 <p>Verify that you can see your {orchestration} stacks:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack stack list -f yaml
+<pre>openstack stack list -f yaml
 - Creation Time: '2023-10-11T22:03:20Z'
   ID: 20f95925-7443-49cb-9561-a1ab736749ba
   Project: 4eacd0d1cab04427bc315805c28e66c9

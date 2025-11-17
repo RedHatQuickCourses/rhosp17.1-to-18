@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -194,7 +132,8 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh 172.25.250.15
 sudo -i
-su - stack</code></pre>
+su - stack
+. stackrc</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -267,7 +206,18 @@ sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</code></pre>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
-scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre>
+scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/
+scp ~/.ssh/lab_rsa* lab@utility:~/.ssh/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <strong>utility host</strong> log in to the Red Hat registry and create the secret:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile
+podman login registry.redhat.io --authfile authfile
+oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -277,16 +227,17 @@ scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre
 <p>In the <strong>utility host</strong>, define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
-$ declare -A TRIPLEO_PASSWORDS
-$ CELLS="default cell1 cell2"
-$ for CELL in $(echo $CELLS); do
-&gt;    TRIPLEO_PASSWORDS[$CELL]="$PASSWORD_FILE"
-&gt; done
-$ declare -A SOURCE_DB_ROOT_PASSWORD
-$ for CELL in $(echo $CELLS); do
-&gt;     SOURCE_DB_ROOT_PASSWORD[$CELL]=$(cat ${TRIPLEO_PASSWORDS[$CELL]} | grep ' MysqlRootPassword:' | awk -F ': ' '{ print $2; }')
-&gt; done</pre>
+<pre>PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
+MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
+declare -A TRIPLEO_PASSWORDS
+CELLS="default"
+for CELL in $(echo $CELLS); do
+  TRIPLEO_PASSWORDS[$CELL]="$PASSWORD_FILE"
+done
+declare -A SOURCE_DB_ROOT_PASSWORD
+for CELL in $(echo $CELLS); do
+  SOURCE_DB_ROOT_PASSWORD[$CELL]=$(cat ${TRIPLEO_PASSWORDS[$CELL]} | grep ' MysqlRootPassword:' | awk -F ': ' '{ print $2; }')
+done</pre>
 </div>
 </div>
 </li>
@@ -294,14 +245,12 @@ $ for CELL in $(echo $CELLS); do
 <p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
-$ MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
+<pre>MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
+MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
+CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
 
-
-$ declare -A SOURCE_MARIADB_IP
-$ SOURCE_MARIADB_IP[default]=192.168.52.55
-$ SOURCE_MARIADB_IP[cell1]=192.168.52.55
-$ SOURCE_MARIADB_IP[cell2]=192.168.52.55</pre>
+declare -A SOURCE_MARIADB_IP
+SOURCE_MARIADB_IP[default]=192.168.52.55</pre>
 </div>
 </div>
 </li>
@@ -329,12 +278,12 @@ The source cloud always uses the same password for cells databases. For that rea
 <p>Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ unset PULL_OPENSTACK_CONFIGURATION_DATABASES
-$ declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
-$ for CELL in $(echo $CELLS); do
-&gt;     PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;         mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
-&gt; done</pre>
+<pre>unset PULL_OPENSTACK_CONFIGURATION_DATABASES
+declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
+for CELL in $(echo $CELLS); do
+  PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
+done</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -358,23 +307,23 @@ Additional cells use the <code>nova</code> database of their local Galera cluste
 <p>Run <code>mysqlcheck</code> on the {OpenStackShort} database to check for inaccuracies:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
-$ declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
-$ run_mysqlcheck() {
-&gt;     PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;         mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" | grep -v OK)
-&gt; }
-$ for CELL in $(echo $CELLS); do
-&gt;     run_mysqlcheck $CELL
-&gt; done
-$ if [ "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" != "" ]; then
-&gt;     for CELL in $(echo $CELLS); do
-&gt;         MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;             mysql_upgrade -v -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}")
-&gt;         # rerun mysqlcheck to check if problem is resolved
-&gt;         run_mysqlcheck
-&gt;     done
-&gt; fi</pre>
+<pre>unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+run_mysqlcheck() {
+  PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" | grep -v OK)
+}
+for CELL in $(echo $CELLS); do
+  run_mysqlcheck $CELL
+done
+if [ "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" != "" ]; then
+  for CELL in $(echo $CELLS); do
+    MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+      mysql_upgrade -v -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}")
+    # rerun mysqlcheck to check if problem is resolved
+    run_mysqlcheck
+  done
+fi</pre>
 </div>
 </div>
 </li>
@@ -392,13 +341,13 @@ $ if [ "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" != "" ]; then
 <p>Get the hostnames of the registered Compute services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-$ declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-$ for CELL in $(echo $CELLS); do
-&gt;     PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;         mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e \
-&gt;             "select host from nova.services where services.binary='nova-compute' and deleted=0;")
-&gt; done</pre>
+<pre>unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+for CELL in $(echo $CELLS); do
+  PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e \
+      "select host from nova.services where services.binary='nova-compute' and deleted=0;")
+done</pre>
 </div>
 </div>
 </li>
@@ -414,34 +363,34 @@ $ for CELL in $(echo $CELLS); do
 <p>Store the exported variables for future use:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ unset SRIOV_AGENTS
-$ declare -xA SRIOV_AGENTS <i class="conum" data-value="1"></i><b>(1)</b>
-$ for CELL in $(echo $CELLS); do
-&gt;     RCELL=$CELL
-&gt;     [ "$CELL" = "$DEFAULT_CELL_NAME" ] &amp;&amp; RCELL=default
-&gt;     cat &gt; ~/.source_cloud_exported_variables_$CELL &lt;&lt; EOF
-&gt; unset PULL_OPENSTACK_CONFIGURATION_DATABASES
-&gt; unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
-&gt; unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-&gt; declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
-&gt; declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
-&gt; declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-&gt; PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;     mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e 'SHOW databases;')"
-&gt; PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;     mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$RCELL]} -u root -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} | grep -v OK)"
-&gt; PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;     mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e \
-&gt;     "select host from nova.services where services.binary='nova-compute' and deleted=0;")"
-&gt; if [ "$RCELL" = "default" ]; then
-&gt;     PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-&gt;         mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} nova_api -e \
-&gt;             'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')"
-&gt;     PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS="$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)"
-&gt; fi
-&gt; EOF
-&gt; done
-$ chmod 0600 ~/.source_cloud_exported_variables*</pre>
+<pre>unset SRIOV_AGENTS
+declare -xA SRIOV_AGENTS <i class="conum" data-value="1"></i><b>(1)</b>
+for CELL in $(echo $CELLS); do
+  RCELL=$CELL
+  [ "$CELL" = "$DEFAULT_CELL_NAME" ] &amp;&amp; RCELL=default
+  cat &gt; ~/.source_cloud_exported_variables_$CELL &lt;&lt; EOF
+unset PULL_OPENSTACK_CONFIGURATION_DATABASES
+unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
+declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e 'SHOW databases;')"
+PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$RCELL]} -u root -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} | grep -v OK)"
+PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e \
+  "select host from nova.services where services.binary='nova-compute' and deleted=0;")"
+if [ "$RCELL" = "default" ]; then
+  PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} nova_api -e \
+      'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')"
+  PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS="$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)"
+fi
+EOF
+done
+chmod 0600 ~/.source_cloud_exported_variables*</pre>
 </div>
 </div>
 <div class="colist arabic">

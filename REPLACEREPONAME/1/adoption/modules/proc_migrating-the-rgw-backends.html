@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -178,15 +116,15 @@ The following procedure assumes that you have three target nodes, <code>cephstor
 <p>Add the RGW label to the {Ceph} nodes that you want to migrate your RGW back ends to:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host label add cephstorage-0 rgw;
-$ sudo cephadm shell -- ceph orch host label add cephstorage-1 rgw;
-$ sudo cephadm shell -- ceph orch host label add cephstorage-2 rgw;
+<pre>sudo cephadm shell -- ceph orch host label add cephstorage-0 rgw;
+sudo cephadm shell -- ceph orch host label add cephstorage-1 rgw;
+sudo cephadm shell -- ceph orch host label add cephstorage-2 rgw;
 
 Added label rgw to host cephstorage-0
 Added label rgw to host cephstorage-1
 Added label rgw to host cephstorage-2
 
-$ sudo cephadm shell -- ceph orch host ls
+sudo cephadm shell -- ceph orch host ls
 
 HOST       	ADDR       	LABELS      	STATUS
 cephstorage-0  192.168.24.54  osd rgw
@@ -204,10 +142,10 @@ controller-2   192.168.24.38  _admin mon mgr
 <p>Locate the RGW spec and dump in the spec directory:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ mkdir -p ${SPEC_DIR}
-$ sudo cephadm shell -- ceph orch ls --export rgw &gt; ${SPEC_DIR}/rgw
-$ cat ${SPEC_DIR}/rgw
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+mkdir -p ${SPEC_DIR}
+sudo cephadm shell -- ceph orch ls --export rgw &gt; ${SPEC_DIR}/rgw
+cat ${SPEC_DIR}/rgw
 
 networks:
 - 172.17.3.0/24
@@ -274,8 +212,8 @@ spec:
 <p>Apply the new RGW spec by using the orchestrator CLI:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/rgw -- ceph orch apply -i /mnt/rgw</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/rgw -- ceph orch apply -i /mnt/rgw</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -303,10 +241,10 @@ rgw.rgw.cephstorage-2.krycit  cephstorage-2  172.17.3.81:8090  running (13s)</pr
 <p>Ensure that the new RGW back ends are reachable on the new ports, so you can enable an ingress daemon on port <code>8080</code> later. Log in to each {CephCluster} node that includes RGW and add the <code>iptables</code> rule to allow connections to both 8080 and 8090 ports in the {CephCluster} nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ iptables -I INPUT -p tcp -m tcp --dport 8080 -m conntrack --ctstate NEW -m comment --comment "ceph rgw ingress" -j ACCEPT
-$ iptables -I INPUT -p tcp -m tcp --dport 8090 -m conntrack --ctstate NEW -m comment --comment "ceph rgw backends" -j ACCEPT
-$ sudo iptables-save
-$ sudo systemctl restart iptables</pre>
+<pre>iptables -I INPUT -p tcp -m tcp --dport 8080 -m conntrack --ctstate NEW -m comment --comment "ceph rgw ingress" -j ACCEPT
+iptables -I INPUT -p tcp -m tcp --dport 8090 -m conntrack --ctstate NEW -m comment --comment "ceph rgw backends" -j ACCEPT
+sudo iptables-save
+sudo systemctl restart iptables</pre>
 </div>
 </div>
 </li>
@@ -327,7 +265,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 8080,8090 } ct state new counter 
 <p>Restart the <code>nftables</code> service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo systemctl restart nftables</pre>
+<pre>sudo systemctl restart nftables</pre>
 </div>
 </div>
 </li>
@@ -335,7 +273,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 8080,8090 } ct state new counter 
 <p>Verify that the rules are applied:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo nft list ruleset | grep ceph_rgw</pre>
+<pre>sudo nft list ruleset | grep ceph_rgw</pre>
 </div>
 </div>
 </li>
@@ -343,7 +281,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 8080,8090 } ct state new counter 
 <p>From a Controller node, such as <code>controller-0</code>, try to reach the RGW back ends:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ curl http://cephstorage-0.storage:8090;</pre>
+<pre>curl http://cephstorage-0.storage:8090;</pre>
 </div>
 </div>
 <div class="paragraph">

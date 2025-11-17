@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -177,7 +115,7 @@
 <p>Create the keystone secret that includes the Fernet keys that were copied from the {OpenStackShort} environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   CredentialKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/0 | base64 -w 0)
@@ -201,7 +139,7 @@ EOF</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   keystone:
     enabled: true
@@ -215,7 +153,7 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
       databaseInstance: openstack
@@ -223,20 +161,22 @@ spec:
 '</pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
-</tr>
-</table>
+</li>
+<li>
+<p>Wait for the openstackclient reaching the running phase:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while ! oc get pods -n openstack | grep openstackclient ; do echo "waiting for osc pod"; sleep 5; done
+oc wait --for=condition=Ready pod/openstackclient --timeout=30s
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstackclient</code></pre>
+</div>
 </div>
 </li>
 <li>
 <p>Create an alias to use the <code>openstack</code> command in the {rhos_long} deployment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
 </div>
 </div>
 </li>
@@ -245,7 +185,7 @@ spec:
 control plane, excluding the {identity_service} and its endpoints:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
+<pre>openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
 
 for service in aodh heat heat-cfn barbican cinderv3 glance gnocchi manila manilav2 neutron nova placement swift ironic-inspector ironic octavia; do
   openstack service list | awk "/ $service /{ print \$2; }" | xargs -r ${BASH_ALIASES[openstack]} service delete || true
@@ -265,7 +205,7 @@ done</pre>
 <p>Confirm that the {identity_service} endpoints are defined and are pointing to the control plane FQDNs:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep keystone</pre>
+<pre>openstack endpoint list | grep keystone</pre>
 </div>
 </div>
 </li>
@@ -273,7 +213,7 @@ done</pre>
 <p>Wait for the <code>OpenStackControlPlane</code> resource to become <code>Ready</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack</pre>
+<pre>oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack</pre>
 </div>
 </div>
 </li>

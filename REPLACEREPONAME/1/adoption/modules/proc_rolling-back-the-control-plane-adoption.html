@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -326,8 +264,8 @@ done</pre>
 <p>If the Ceph NFS service is running on the deployment as a {rhos_component_storage_file_first_ref} back end, you must restore the Pacemaker order and colocation constraints for the <code>openstack-manila-share</code> service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo pcs constraint order start ceph-nfs then openstack-manila-share kind=Optional id=order-ceph-nfs-openstack-manila-share-Optional
-$ sudo pcs constraint colocation add openstack-manila-share with ceph-nfs score=INFINITY id=colocation-openstack-manila-share-ceph-nfs-INFINITY</pre>
+<pre>sudo pcs constraint order start ceph-nfs then openstack-manila-share kind=Optional id=order-ceph-nfs-openstack-manila-share-Optional
+sudo pcs constraint colocation add openstack-manila-share with ceph-nfs score=INFINITY id=colocation-openstack-manila-share-ceph-nfs-INFINITY</pre>
 </div>
 </div>
 </li>
@@ -339,8 +277,8 @@ can run <code>openstack</code> CLI commands such as <code>openstack server list<
 <p>Remove the partially or fully deployed control plane so that you can attempt the adoption again later:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete --ignore-not-found=true --wait=false openstackcontrolplane/openstack
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc delete --ignore-not-found=true --wait=false openstackcontrolplane/openstack
+oc patch openstackcontrolplane openstack --type=merge --patch '
 metadata:
   finalizers: []
 ' || true
@@ -352,10 +290,10 @@ while oc get pod | grep openstack-galera-0; do
     sleep 2
 done
 
-$ oc delete --ignore-not-found=true --wait=false pod mariadb-copy-data
-$ oc delete --ignore-not-found=true --wait=false pvc mariadb-data
-$ oc delete --ignore-not-found=true --wait=false pod ovn-copy-data
-$ oc delete --ignore-not-found=true secret osp-secret</pre>
+oc delete --ignore-not-found=true --wait=false pod mariadb-copy-data
+oc delete --ignore-not-found=true --wait=false pvc mariadb-data
+oc delete --ignore-not-found=true --wait=false pod ovn-copy-data
+oc delete --ignore-not-found=true secret osp-secret</pre>
 </div>
 </div>
 </li>

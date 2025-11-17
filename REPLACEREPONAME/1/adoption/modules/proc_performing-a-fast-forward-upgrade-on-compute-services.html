@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -212,8 +150,8 @@ done</pre>
 <p>Wait for the {compute_service} data plane services version to update for all the cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
+<pre>for CELL in $(echo $RENAMED_CELLS); do
+oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
     -e "select a.version from nova_${CELL}.services a join nova_${CELL}.services b where a.version!=b.version and a.binary='nova-compute' and a.deleted=0;"
 done</pre>
 </div>
@@ -240,9 +178,9 @@ done</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR to remove the pre-fast-forward upgrade workarounds from the Compute control plane services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ rm -f celltemplates
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ cat &gt;&gt; celltemplates &lt;&lt; EOF
+<pre>rm -f celltemplates
+for CELL in $(echo $RENAMED_CELLS); do
+cat &gt;&gt; celltemplates &lt;&lt; EOF
         ${CELL}:
           metadataServiceTemplate:
             customServiceConfig: |
@@ -255,7 +193,7 @@ $ cat &gt;&gt; celltemplates &lt;&lt; EOF
 EOF
 done
 
-$ cat &gt; oscp-patch.yaml &lt;&lt; EOF
+cat &gt; oscp-patch.yaml &lt;&lt; EOF
 spec:
   nova:
     template:
@@ -278,44 +216,15 @@ spec:
               [workarounds]
               disable_compute_service_check_for_ffu=false
 EOF
-$ cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
+cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
 </div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If you are adopting the {compute_service} with the {bare_metal_first_ref}, append the following <code>novaComputeTemplates</code> in the <code>cell&lt;X&gt;</code> section of the {compute_service} CR patch:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">        cell&lt;X&gt;:
-          novaComputeTemplates:
-            &lt;hostname&gt;: <i class="conum" data-value="1"></i><b>(1)</b>
-              customServiceConfig: |
-                [DEFAULT]
-                host = &lt;hostname&gt;
-                [workarounds]
-                disable_compute_service_check_for_ffu=true
-              computeDriver: ironic.IronicDriver
-        ...</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Replace <code>&lt;hostname&gt;</code> with the hostname of the node that is running the <code>ironic</code> Compute driver in the source cloud of <code>cell&lt;X&gt;</code>.</td>
-</tr>
-</table>
-</div>
-</li>
-</ul>
 </div>
 </li>
 <li>
 <p>Apply the patch file:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml</pre>
 </div>
 </div>
 </li>
@@ -323,7 +232,7 @@ $ cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
 <p>Wait until the Compute control plane services CRs are ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready --timeout=300s Nova/nova</pre>
+<pre>oc wait --for condition=Ready --timeout=300s Nova/nova</pre>
 </div>
 </div>
 </li>
@@ -331,10 +240,10 @@ $ cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
 <p>Remove the pre-fast-forward upgrade workarounds from the Compute data plane services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc get Openstackdataplanenodeset openstack-${CELL} || continue
-$ oc apply -f - &lt;&lt;EOF
+<pre>oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
+for CELL in $(echo $RENAMED_CELLS); do
+oc get Openstackdataplanenodeset openstack-${CELL} || continue
+oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
@@ -355,7 +264,7 @@ done</pre>
 <p>Wait for the Compute data plane services to be ready for all the cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m</pre>
+<pre>oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m</pre>
 </div>
 </div>
 </li>
@@ -363,9 +272,9 @@ done</pre>
 <p>Run Compute database online migrations to complete the upgrade:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
+<pre>oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
+for CELL in $(echo $RENAMED_CELLS); do
+oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
 done</pre>
 </div>
 </div>
@@ -374,7 +283,7 @@ done</pre>
 <p>Discover the Compute hosts in the cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</pre>
+<pre>oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</pre>
 </div>
 </div>
 </li>

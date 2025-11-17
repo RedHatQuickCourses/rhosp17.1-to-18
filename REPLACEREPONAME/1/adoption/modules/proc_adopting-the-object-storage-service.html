@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -188,7 +126,7 @@
 <p>Create the <code>swift-conf</code> secret that includes the {object_storage} hash path suffix and prefix:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -204,7 +142,7 @@ EOF</pre>
 <p>Create the <code>swift-ring-files</code> <code>ConfigMap</code> that includes the {object_storage} ring files:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -222,7 +160,7 @@ EOF</pre>
 <p>Patch the <code>OpenStackControlPlane</code> custom resource to deploy the {object_storage}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   swift:
     enabled: true
@@ -234,7 +172,7 @@ spec:
         replicas: 0
         networkAttachments:
         - storage
-        storageClass: local-storage <i class="conum" data-value="1"></i><b>(1)</b>
+        storageClass: lnfs-storage <i class="conum" data-value="1"></i><b>(1)</b>
         storageRequest: 10Gi
       swiftProxy:
         secret: osp-secret
@@ -249,7 +187,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="2"></i><b>(2)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="2"></i><b>(2)</b>
               spec:
                 type: LoadBalancer
         networkAttachments: <i class="conum" data-value="3"></i><b>(3)</b>
@@ -283,7 +221,7 @@ spec:
 <p>Inspect the resulting {object_storage} pods:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get pods -l component=swift-proxy</pre>
+<pre>oc get pods -l component=swift-proxy</pre>
 </div>
 </div>
 </li>
@@ -291,13 +229,13 @@ spec:
 <p>Verify that the Object Storage proxy service is registered in the {identity_service_first_ref}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack service list | grep swift
+<pre>openstack service list | grep swift
 | b5b9b1d3c79241aa867fa2d05f2bbd52 | swift    | object-store |</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep swift
+<pre>openstack endpoint list | grep swift
 | 32ee4bd555414ab48f2dc90a19e1bcd5 | regionOne | swift        | object-store | True    | public    | https://swift-public-openstack.apps-crc.testing/v1/AUTH_%(tenant_id)s |
 | db4b8547d3ae4e7999154b203c6a5bed | regionOne | swift        | object-store | True    | internal  | http://swift-internal.openstack.svc:8080/v1/AUTH_%(tenant_id)s        |</pre>
 </div>
@@ -307,21 +245,21 @@ spec:
 <p>Verify that you are able to upload and download objects:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack container create test
+<pre>openstack container create test
 +---------------------------------------+-----------+------------------------------------+
 | account                               | container | x-trans-id                         |
 +---------------------------------------+-----------+------------------------------------+
 | AUTH_4d9be0a9193e4577820d187acdd2714a | test      | txe5f9a10ce21e4cddad473-0065ce41b9 |
 +---------------------------------------+-----------+------------------------------------+
 
-$ openstack object create test --name obj &lt;(echo "Hello World!")
+openstack object create test --name obj &lt;(echo "Hello World!")
 +--------+-----------+----------------------------------+
 | object | container | etag                             |
 +--------+-----------+----------------------------------+
 | obj    | test      | d41d8cd98f00b204e9800998ecf8427e |
 +--------+-----------+----------------------------------+
 
-$ openstack object save test obj --file -
+openstack object save test obj --file -
 Hello World!</pre>
 </div>
 </div>

@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -213,18 +151,18 @@ In a deployed {OpenStackShort} control plane, you can verify that the network ma
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get nncp
+<pre>oc get nncp
 NAME                        STATUS      REASON
 enp6s0-crc-8cf2w-master-0   Available   SuccessfullyConfigured
 
-$ oc get net-attach-def
+oc get net-attach-def
 NAME
 ctlplane
 internalapi
 storage
 tenant
 
-$ oc get ipaddresspool -n metallb-system
+oc get ipaddresspool -n metallb-system
 NAME          AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
 ctlplane      true          false             ["192.168.122.80-192.168.122.90"]
 internalapi   true          false             ["172.17.0.80-172.17.0.90"]
@@ -246,7 +184,7 @@ tenant        true          false             ["172.19.0.80-172.19.0.90"]</pre>
 <p>Adopt the {image_service} and create a new <code>default</code> <code>GlanceAPI</code> instance that is connected with the existing NFS share:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF &gt; glance_nfs_patch.yaml
+<pre>cat &lt;&lt; EOF &gt; glance_nfs_patch.yaml
 
 spec:
   extraMounts:
@@ -289,7 +227,7 @@ spec:
                   annotations:
                     metallb.universe.tf/address-pool: internalapi
                     metallb.universe.tf/allow-shared-ip: internalapi
-                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="3"></i><b>(3)</b>
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="3"></i><b>(3)</b>
                 spec:
                   type: LoadBalancer
           networkAttachments:
@@ -318,7 +256,7 @@ EOF</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with an NFS back end:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file glance_nfs_patch.yaml</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file glance_nfs_patch.yaml</pre>
 </div>
 </div>
 </li>
@@ -326,7 +264,7 @@ EOF</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR to remove the default {image_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'path': '/spec/glance/template/glanceAPIs/default'}]"</pre>
+<pre>oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'path': '/spec/glance/template/glanceAPIs/default'}]"</pre>
 </div>
 </div>
 </li>
@@ -339,7 +277,7 @@ EOF</pre>
 <p>When <code>GlanceAPI</code> is active, confirm that you can see a single API instance:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get pods -l service=glance
+<pre>oc get pods -l service=glance
 NAME                      READY   STATUS    RESTARTS
 glance-nfs-single-0   2/2     Running   0
 glance-nfs-single-1   2/2     Running   0
@@ -366,7 +304,7 @@ glance-nfs-single-2   2/2     Running   0</pre>
 <p>Check that the mountpoint that points to <code>/var/lib/glance/images</code> is mapped to the expected <code>nfs server ip</code> and <code>nfs path</code> that you defined in the new default <code>GlanceAPI</code> instance:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh -c glance-api glance-default-single-0
+<pre>oc rsh -c glance-api glance-default-single-0
 
 sh-5.1# mount
 ...
@@ -381,8 +319,8 @@ sh-5.1# mount
 <p>Confirm that the UUID is created in the exported directory on the NFS node. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh openstackclient
-$ openstack image list
+<pre>oc rsh openstackclient
+openstack image list
 
 sh-5.1$  curl -L -o /tmp/cirros-0.6.3-x86_64-disk.img http://download.cirros-cloud.net/0.6.3/cirros-0.6.3-x86_64-disk.img
 ...
@@ -405,7 +343,7 @@ sh-5.1$ openstack image list
 <p>On the <code>nfs-server</code> node, the same <code>uuid</code> is in the exported <code>/var/nfs</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ls /var/nfs/
+<pre>ls /var/nfs/
 634482ca-4002-4a6d-b1d5-64502ad02630</pre>
 </div>
 </div>

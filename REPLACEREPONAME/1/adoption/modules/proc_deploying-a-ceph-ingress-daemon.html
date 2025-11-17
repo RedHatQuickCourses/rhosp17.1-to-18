@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -273,8 +211,8 @@ HTTPConnectionPool(host='10.0.0.103', port=8080): Max retries exceeded with url:
 <p>Create a file called <code>rgw_ingress</code> in <code>controller-0</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ vim ${SPEC_DIR}/rgw_ingress</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+vim ${SPEC_DIR}/rgw_ingress</pre>
 </div>
 </div>
 </li>
@@ -312,8 +250,8 @@ spec:
 <p>Apply the <code>rgw_ingress</code> spec by using the Ceph orchestrator CLI:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ cephadm shell -m ${SPEC_DIR}/rgw_ingress -- ceph orch apply -i /mnt/rgw_ingress</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+cephadm shell -m ${SPEC_DIR}/rgw_ingress -- ceph orch apply -i /mnt/rgw_ingress</pre>
 </div>
 </div>
 </li>
@@ -321,7 +259,7 @@ $ cephadm shell -m ${SPEC_DIR}/rgw_ingress -- ceph orch apply -i /mnt/rgw_ingres
 <p>Wait until the ingress is deployed and query the resulting endpoint:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch ls
+<pre>sudo cephadm shell -- ceph orch ls
 
 NAME                 	PORTS            	RUNNING  REFRESHED  AGE  PLACEMENT
 crash                                         	6/6  6m ago 	3d   *
@@ -335,7 +273,7 @@ rgw.rgw   ?:8090          3/3  37s ago	4m   label:rgw</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ curl 10.0.0.89:8080
+<pre>curl 10.0.0.89:8080
 
 ---
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"&gt;&lt;Owner&gt;&lt;ID&gt;anonymous&lt;/ID&gt;&lt;DisplayName&gt;&lt;/DisplayName&gt;&lt;/Owner&gt;&lt;Buckets&gt;&lt;/Buckets&gt;&lt;/ListAllMyBucketsResult&gt;[ceph: root@controller-0 /]#

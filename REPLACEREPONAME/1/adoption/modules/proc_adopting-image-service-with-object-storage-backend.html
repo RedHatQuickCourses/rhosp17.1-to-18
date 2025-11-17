@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -237,7 +175,7 @@ spec
                   annotations:
                     metallb.universe.tf/address-pool: internalapi
                     metallb.universe.tf/allow-shared-ip: internalapi
-                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="1"></i><b>(1)</b>
                 spec:
                   type: LoadBalancer
           networkAttachments:
@@ -270,7 +208,7 @@ After the {object_storage}, and in particular <code>SwiftProxy</code>, is adopte
 <p>Verify that <code>SwiftProxy</code> is available:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get pod -l component=swift-proxy | grep Running
+<pre>oc get pod -l component=swift-proxy | grep Running
 swift-proxy-75cb47f65-92rxq   3/3     Running   0</pre>
 </div>
 </div>
@@ -279,7 +217,7 @@ swift-proxy-75cb47f65-92rxq   3/3     Running   0</pre>
 <p>Patch the <code>GlanceAPI</code> service that is deployed in the control plane:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=glance_swift.patch</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=glance_swift.patch</pre>
 </div>
 </div>
 </li>

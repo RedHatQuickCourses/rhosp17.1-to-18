@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -177,8 +115,8 @@
 <p>On the source node, back up the <code>/etc/ceph/</code> directory to run <code>cephadm</code> and get a shell for the {Ceph} cluster from the source node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ mkdir -p $HOME/ceph_client_backup
-$ sudo cp -R /etc/ceph $HOME/ceph_client_backup</pre>
+<pre>mkdir -p $HOME/ceph_client_backup
+sudo cp -R /etc/ceph $HOME/ceph_client_backup</pre>
 </div>
 </div>
 </li>
@@ -186,7 +124,7 @@ $ sudo cp -R /etc/ceph $HOME/ceph_client_backup</pre>
 <p>Identify the active <code>ceph-mgr</code> instance:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph mgr stat</pre>
+<pre>sudo cephadm shell -- ceph mgr stat</pre>
 </div>
 </div>
 </li>
@@ -194,7 +132,7 @@ $ sudo cp -R /etc/ceph $HOME/ceph_client_backup</pre>
 <p>Fail the <code>ceph-mgr</code> if it is active on the source node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph mgr fail &lt;mgr_instance&gt;</pre>
+<pre>sudo cephadm shell -- ceph mgr fail &lt;mgr_instance&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -209,7 +147,7 @@ $ sudo cp -R /etc/ceph $HOME/ceph_client_backup</pre>
 <p>From the <code>cephadm</code> shell, remove the labels on the source node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for label in mon mgr _admin; do
+<pre>for label in mon mgr _admin; do
     sudo cephadm shell -- ceph orch host label rm &lt;source_node&gt; $label;
 done</pre>
 </div>
@@ -226,7 +164,7 @@ done</pre>
 <p>Optional: Ensure that you remove the Ceph Monitor daemon from the source node if it is still running:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch daemon rm mon.&lt;source_node&gt; --force</pre>
+<pre>sudo cephadm shell -- ceph orch daemon rm mon.&lt;source_node&gt; --force</pre>
 </div>
 </div>
 </li>
@@ -234,7 +172,7 @@ done</pre>
 <p>Drain the source node to remove any leftover daemons:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host drain &lt;source_node&gt;</pre>
+<pre>sudo cephadm shell -- ceph orch host drain &lt;source_node&gt;</pre>
 </div>
 </div>
 </li>
@@ -242,7 +180,7 @@ done</pre>
 <p>Remove the source node host from the {CephCluster} cluster:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host rm &lt;source_node&gt; --force</pre>
+<pre>sudo cephadm shell -- ceph orch host rm &lt;source_node&gt; --force</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -273,8 +211,8 @@ CONTAINER ID  IMAGE                                                             
 <p>Confirm that mons are still in quorum:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph -s
-$ sudo cephadm shell -- ceph orch ps | grep -i mon</pre>
+<pre>sudo cephadm shell -- ceph -s
+sudo cephadm shell -- ceph orch ps | grep -i mon</pre>
 </div>
 </div>
 </li>

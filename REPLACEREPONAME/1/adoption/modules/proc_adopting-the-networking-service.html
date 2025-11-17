@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -205,7 +143,7 @@ configuration parameters that are provided by the {rhos_prev_long} ({OpenStackSh
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {networking_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   neutron:
     enabled: true
@@ -219,7 +157,7 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
       databaseInstance: openstack
@@ -229,40 +167,6 @@ spec:
       - internalapi
 '</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If you used the <code>neutron-dhcp-agent</code> in your {OpenStackShort} {rhos_prev_ver} deployment and you still need to use it after adoption, you must enable the <code>dhcp_agent_notification</code> for the <code>neutron-api</code> service:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ oc patch openstackcontrolplane openstack --type=merge --patch '
- spec:
-  neutron:
-    template:
-      customServiceConfig: |
-        [DEFAULT]
-        dhcp_agent_notification = True
-'</code></pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </li>
 </ul>
@@ -274,7 +178,7 @@ spec:
 <p>Inspect the resulting {networking_service} pods:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get pods -l service=neutron</pre>
+<pre>oc get pods -l service=neutron</pre>
 </div>
 </div>
 </li>
@@ -282,12 +186,12 @@ spec:
 <p>Ensure that the <code>Neutron API</code> service is registered in the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack service list | grep network</pre>
+<pre>openstack service list | grep network</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ openstack endpoint list | grep network
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">openstack endpoint list | grep network
 
 | 6a805bd6c9f54658ad2f24e5a0ae0ab6 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps-crc.testing  |
 | b943243e596847a9a317c8ce1800fa98 | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696        |</code></pre>
@@ -298,9 +202,9 @@ spec:
 <p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack network create net
-$ openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet
-$ openstack router create router</pre>
+<pre>openstack network create net
+openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet
+openstack router create router</pre>
 </div>
 </div>
 </li>

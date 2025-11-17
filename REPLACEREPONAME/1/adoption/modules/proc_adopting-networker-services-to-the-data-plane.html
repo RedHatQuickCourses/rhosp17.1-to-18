@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -168,23 +106,17 @@
 <article class="doc">
 <h1 class="page">Adopting Networker services to the {rhos_acro} data plane</h1>
 <div class="paragraph _abstract">
-<p>Adopt the Networker services in your existing {rhos_prev_long} deployment to the {rhos_long} data plane. The <code>Networker</code> services could be running on <code>Conroller</code> nodes or dedicated <code>Networker</code> nodes. You decide which services you want to run on the Networker nodes, and create a separate <code>OpenStackDataPlaneNodeSet</code> custom resource (CR) for the Networker nodes. You might also decide to implement the following options if they apply to your environment:</p>
+<p>Adopt the Networker services in your existing {rhos_prev_long} deployment to the {rhos_long} data plane. In this environment, the <code>Networker</code> services run on dedicated <code>Networker</code> nodes. You decide which services you want to run on the Networker nodes, and create a separate <code>OpenStackDataPlaneNodeSet</code> custom resource (CR) for the Networker nodes. You might also decide to implement the following options if they apply to your environment:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Depending on your topology, you might need to run the <code>neutron-metadata</code> service on the nodes, specifically when you want to serve metadata to SR-IOV ports that are hosted on Compute nodes.</p>
-</li>
-<li>
 <p>If you want to continue running OVN gateway services on Networker nodes, keep <code>ovn</code> service in the list to deploy.</p>
-</li>
-<li>
-<p>Optional: You can run the <code>neutron-dhcp</code> service on your Networker nodes instead of your Compute nodes. You might not need to use <code>neutron-dhcp</code> with OVN, unless your deployment uses DHCP relays, or advanced DHCP options that are supported by dnsmasq but not by the OVN DHCP implementation.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Adopt each Controller or Networker node in your existing {rhos_prev_long} deployment to the {rhos_long} when your node is set as an OVN chassis gateway. Any node with
+<p>Adopt each Networker node in your existing {rhos_prev_long} deployment to the {rhos_long} when your node is set as an OVN chassis gateway. Any node with
 parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway chassis. In this case, such nodes will become edpm networker nodes after adoption.</p>
 </div>
 <div class="olist arabic">
@@ -193,7 +125,7 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <p>Check for the nodes where <code>OVN Controller Gateway agent</code> agents are running. The list of agents varies depending on the services you enabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec openstackclient -- openstack network agent list
+<pre>oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
@@ -256,7 +188,7 @@ You can reuse most of the <code>nodeTemplate</code> section from the <code>OpenS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneNodeSet
 metadata:
@@ -448,7 +380,7 @@ external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn
 <p>Optional: Enable <code>neutron-metadata</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
+<pre>oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
   {
     "op": "add",
     "path": "/spec/services/-",
@@ -468,7 +400,7 @@ external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn
 <p>Optional: Enable <code>neutron-dhcp</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
+<pre>oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
   {
     "op": "add",
     "path": "/spec/services/-",
@@ -485,7 +417,7 @@ external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn
 <p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -503,12 +435,12 @@ EOF</pre>
 <p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+<pre>watch oc get pod -l app=openstackansibleee</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
 </div>
 </div>
 </li>
@@ -516,7 +448,7 @@ EOF</pre>
 <p>Wait for the deployment to reach the <code>Ready</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m</pre>
+<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m</pre>
 </div>
 </div>
 </li>
@@ -527,7 +459,7 @@ EOF</pre>
 <p>Deploy the <code>OpenStackDataPlaneDeployment</code> CR for Networker nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -571,7 +503,7 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <p>List the agents:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec openstackclient -- openstack network agent list
+<pre>oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
@@ -587,7 +519,7 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <p>If any agent in the list shows <code>XXX</code> in the <code>Alive</code> field, verify the Host and Agent Type, if the functions of this agent is no longer required, and the agent has been permanently stopped on the {rhos_prev_long} host. Then, delete the agent:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec openstackclient -- openstack network agent &lt;agent_id&gt;</pre>
+<pre>oc exec openstackclient -- openstack network agent &lt;agent_id&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -610,12 +542,12 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+<pre>watch oc get pod -l app=openstackansibleee</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
 </div>
 </div>
 </li>
@@ -623,7 +555,7 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <p>Wait for the data plane node set to reach the <code>Ready</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready osdpns/&lt;networker_CR_name&gt; --timeout=30m</pre>
+<pre>oc wait --for condition=Ready osdpns/&lt;networker_CR_name&gt; --timeout=30m</pre>
 </div>
 </div>
 <div class="ulist">
@@ -638,7 +570,7 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <p>Verify that the {networking_first_ref} agents are running. The list of agents varies depending on the services you enabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec openstackclient -- openstack network agent list
+<pre>oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+

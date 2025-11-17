@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -192,7 +130,7 @@ By default, {rhos_acro} versions {rhos_curr_ver} and later of the {bare_metal} i
 <p>The {bare_metal} is disabled in the {rhos_acro} {rhos_curr_ver}. The following command should return a string of <code>false</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get openstackcontrolplanes.core.openstack.org &lt;name&gt; -o jsonpath='{.spec.ironic.enabled}'</pre>
+<pre>oc get openstackcontrolplanes.core.openstack.org &lt;name&gt; -o jsonpath='{.spec.ironic.enabled}'</pre>
 </div>
 </div>
 <div class="ulist">
@@ -248,7 +186,7 @@ This configuration file must come from one of the Controller nodes and not a {Op
 <p>You have defined the following shell variables. Replace the following example values with values that apply to your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
 </div>
 </div>
 </li>
@@ -261,7 +199,7 @@ This configuration file must come from one of the Controller nodes and not a {Op
 <p>Patch the <code>OpenStackControlPlane</code> custom resource (CR) to deploy the {bare_metal}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -277,7 +215,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="1"></i><b>(1)</b>
               spec:
                 type: LoadBalancer
       ironicConductors:
@@ -330,7 +268,7 @@ spec:
 <p>Wait for the {bare_metal} control plane services CRs to become ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready --timeout=300s ironics.ironic.openstack.org ironic</pre>
+<pre>oc wait --for condition=Ready --timeout=300s ironics.ironic.openstack.org ironic</pre>
 </div>
 </div>
 </li>
@@ -338,10 +276,10 @@ spec:
 <p>Verify that the individual services are ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready --timeout=300s ironicapis.ironic.openstack.org ironic-api
-$ oc wait --for condition=Ready --timeout=300s ironicconductors.ironic.openstack.org ironic-conductor
-$ oc wait --for condition=Ready --timeout=300s ironicinspectors.ironic.openstack.org ironic-inspector
-$ oc wait --for condition=Ready --timeout=300s ironicneutronagents.ironic.openstack.org ironic-ironic-neutron-agent</pre>
+<pre>oc wait --for condition=Ready --timeout=300s ironicapis.ironic.openstack.org ironic-api
+oc wait --for condition=Ready --timeout=300s ironicconductors.ironic.openstack.org ironic-conductor
+oc wait --for condition=Ready --timeout=300s ironicinspectors.ironic.openstack.org ironic-inspector
+oc wait --for condition=Ready --timeout=300s ironicneutronagents.ironic.openstack.org ironic-ironic-neutron-agent</pre>
 </div>
 </div>
 </li>
@@ -361,7 +299,7 @@ For name resolution to work for {bare_metal} operations, you must set the DNS na
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack subnet set --dns-nameserver 192.168.122.80 provisioning-subnet</pre>
+<pre>openstack subnet set --dns-nameserver 192.168.122.80 provisioning-subnet</pre>
 </div>
 </div>
 </li>
@@ -369,7 +307,7 @@ For name resolution to work for {bare_metal} operations, you must set the DNS na
 <p>Verify that no {bare_metal} nodes are missing from the node list:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack baremetal node list</pre>
+<pre>openstack baremetal node list</pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -389,7 +327,7 @@ If the <code>openstack baremetal node list</code> command output reports an inco
 <p>If any {bare_metal} nodes are missing from the <code>openstack baremetal node list</code> command, temporarily disable the new RBAC policy to see the nodes again:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -412,7 +350,7 @@ spec:
 <p>View the bare-metal nodes that do not have an owner assigned:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack baremetal node list --long -c UUID -c Owner -c 'Provisioning State'</pre>
+<pre>openstack baremetal node list --long -c UUID -c Owner -c 'Provisioning State'</pre>
 </div>
 </div>
 </li>
@@ -429,7 +367,7 @@ for node in $(openstack baremetal node list -f json -c UUID -c Owner | jq -r '.[
 <p>Re-apply the default RBAC by removing the <code>customServiceConfig</code> section or by setting the following values in the <code>customServiceConfig</code> section to <code>true</code>. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -454,7 +392,7 @@ spec:
 <p>Verify the list of endpoints:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list |grep ironic</pre>
+<pre>openstack endpoint list |grep ironic</pre>
 </div>
 </div>
 </li>
@@ -462,7 +400,7 @@ spec:
 <p>Verify the list of bare-metal nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack baremetal node list</pre>
+<pre>openstack baremetal node list</pre>
 </div>
 </div>
 </li>

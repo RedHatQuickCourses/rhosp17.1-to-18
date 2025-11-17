@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -186,13 +124,13 @@ This ensures that you can visualize the status of the cluster and where daemons 
 <p>Verify that the {CephCluster} cluster is healthy and check the MDS status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph fs ls
+<pre>sudo cephadm shell -- ceph fs ls
 name: cephfs, metadata pool: manila_metadata, data pools: [manila_data ]
 
-$ sudo cephadm shell -- ceph mds stat
+sudo cephadm shell -- ceph mds stat
 cephfs:1 {0=mds.controller-2.oebubl=up:active} 2 up:standby
 
-$ sudo cephadm shell -- ceph fs status cephfs
+sudo cephadm shell -- ceph fs status cephfs
 
 cephfs - 0 clients
 ======
@@ -211,7 +149,7 @@ mds.controller-1.cwzhog</pre>
 <p>Retrieve more detailed information on the Ceph File System (CephFS) MDS status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph fs dump
+<pre>sudo cephadm shell -- ceph fs dump
 
 e8
 enable_multiple, ever_enabled_multiple: 1,1
@@ -259,7 +197,7 @@ dumped fsmap epoch 8</pre>
 <p>Check the OSD blocklist and clean up the client list:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph osd blocklist ls
+<pre>sudo cephadm shell -- ceph osd blocklist ls
 ..
 ..
 for item in $(sudo cephadm shell -- ceph osd blocklist ls | awk '{print $1}'); do
@@ -315,7 +253,7 @@ done</pre>
 <p>Verify that all the hosts have the MDS label:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host ls
+<pre>sudo cephadm shell -- ceph orch host ls
 
 HOST                    	ADDR       	   LABELS
 cephstorage-0.redhat.local  192.168.24.11  osd mds
@@ -331,9 +269,9 @@ controller-2.redhat.local   192.168.24.10  mon _admin mgr mds</pre>
 <p>Dump the current MDS spec:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ mkdir -p ${SPEC_DIR}
-$ sudo cephadm shell -- ceph orch ls --export mds &gt; ${SPEC_DIR}/mds</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+mkdir -p ${SPEC_DIR}
+sudo cephadm shell -- ceph orch ls --export mds &gt; ${SPEC_DIR}/mds</pre>
 </div>
 </div>
 </li>
@@ -354,8 +292,8 @@ placement:
 <p>Use the <code>ceph orchestrator</code> to apply the new MDS spec:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mds -- ceph orch apply -i /mnt/mds
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mds -- ceph orch apply -i /mnt/mds
 
 Scheduling new mds deployment ...</pre>
 </div>
@@ -368,7 +306,7 @@ Scheduling new mds deployment ...</pre>
 <p>Check the new standby daemons that are temporarily added to the CephFS:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph fs dump
+<pre>sudo cephadm shell -- ceph fs dump
 
 Active
 
@@ -403,7 +341,7 @@ When failing over MDS daemons, cluster monitors prefer standby daemons with <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph config set mds.mds.cephstorage-0.fqcshx mds_join_fs cephfs</pre>
+<pre>sudo cephadm shell -- ceph config set mds.mds.cephstorage-0.fqcshx mds_join_fs cephfs</pre>
 </div>
 </div>
 <div class="ulist">
@@ -420,7 +358,7 @@ When failing over MDS daemons, cluster monitors prefer standby daemons with <cod
 target node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for i in 0 1 2; do sudo cephadm shell -- ceph orch host label rm "controller-$i.redhat.local" mds; done
+<pre>for i in 0 1 2; do sudo cephadm shell -- ceph orch host label rm "controller-$i.redhat.local" mds; done
 
 Removed label mds from host controller-0.redhat.local
 Removed label mds from host controller-1.redhat.local
@@ -435,7 +373,7 @@ Removed label mds from host controller-2.redhat.local</pre>
 <p>Check the result of the failover and the new deployed daemons:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph fs dump
+<pre>sudo cephadm shell -- ceph fs dump
 …
 …
 standby_count_wanted    1
@@ -448,14 +386,14 @@ Standby daemons:
 [mds.mds.cephstorage-1.jkvomp{-1:499760} state up:standby seq 1 join_fscid=1 addr [v2:172.17.3.135:6820/452139733,v1:172.17.3.135:6821/452139733] compat {c=[1],r=[1],i=[7ff]}]
 
 
-$ sudo cephadm shell -- ceph orch ls
+sudo cephadm shell -- ceph orch ls
 
 NAME                     PORTS   RUNNING  REFRESHED  AGE  PLACEMENT
 crash                                6/6  10m ago    10d  *
 mds.mds                          3/3  10m ago    32m  label:mds
 
 
-$ sudo cephadm shell -- ceph orch ps | grep mds
+sudo cephadm shell -- ceph orch ps | grep mds
 
 
 mds.mds.cephstorage-0.fqcshx  cephstorage-0.redhat.local                     running (79m)     3m ago  79m    27.2M        -  17.2.6-100.el9cp  1af7b794f353  2a2dc5ba6d57

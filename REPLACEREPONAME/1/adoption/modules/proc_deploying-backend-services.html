@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -184,22 +122,10 @@
 not deployed.</p>
 </li>
 <li>
-<p>If you enabled TLS everywhere (TLS-e) on the {OpenStackShort} environment, you must copy the <code>tls</code> root CA from the {OpenStackShort} environment to the <code>rootca-internal</code> issuer.</p>
-</li>
-<li>
 <p>There are free PVs available for Galera and RabbitMQ.</p>
 </li>
 <li>
-<p>Set the desired admin password for the control plane deployment. This can
-be the admin password from your original deployment or a different password:</p>
-<div class="listingblock">
-<div class="content">
-<pre>ADMIN_PASSWORD=SomePassword</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To use the existing {OpenStackShort} deployment password:</p>
-</div>
+<p>We will use the existing {OpenStackShort} deployment password:</p>
 <div class="listingblock">
 <div class="content">
 <pre>declare -A TRIPLEO_PASSWORDS
@@ -246,7 +172,8 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 control plane to be deployed:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc project openstack</pre>
+<pre>cd /home/lab/labrepo/files
+oc apply -f osp-ng-ctlplane-secret.yaml</pre>
 </div>
 </div>
 </li>
@@ -255,7 +182,7 @@ control plane to be deployed:</p>
 in <code>osp-secret</code>, amend the <code>AdminPassword</code> key in the <code>osp-secret</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</pre>
+<pre>oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</pre>
 </div>
 </div>
 </li>
@@ -264,23 +191,23 @@ in <code>osp-secret</code>, amend the <code>AdminPassword</code> key in the <cod
 account passwords from the original deployment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
-$ oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"
-$ oc set data secret/osp-secret "CeilometerPassword=$CEILOMETER_PASSWORD"
-$ oc set data secret/osp-secret "CinderPassword=$CINDER_PASSWORD"
-$ oc set data secret/osp-secret "GlancePassword=$GLANCE_PASSWORD"
-$ oc set data secret/osp-secret "HeatAuthEncryptionKey=$HEAT_AUTH_ENCRYPTION_KEY"
-$ oc set data secret/osp-secret "HeatPassword=$HEAT_PASSWORD"
-$ oc set data secret/osp-secret "HeatStackDomainAdminPassword=$HEAT_STACK_DOMAIN_ADMIN_PASSWORD"
-$ oc set data secret/osp-secret "IronicPassword=$IRONIC_PASSWORD"
-$ oc set data secret/osp-secret "IronicInspectorPassword=$IRONIC_PASSWORD"
-$ oc set data secret/osp-secret "ManilaPassword=$MANILA_PASSWORD"
-$ oc set data secret/osp-secret "MetadataSecret=$METADATA_SECRET"
-$ oc set data secret/osp-secret "NeutronPassword=$NEUTRON_PASSWORD"
-$ oc set data secret/osp-secret "NovaPassword=$NOVA_PASSWORD"
-$ oc set data secret/osp-secret "OctaviaPassword=$OCTAVIA_PASSWORD"
-$ oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
-$ oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
+<pre>oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
+oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"
+oc set data secret/osp-secret "CeilometerPassword=$CEILOMETER_PASSWORD"
+oc set data secret/osp-secret "CinderPassword=$CINDER_PASSWORD"
+oc set data secret/osp-secret "GlancePassword=$GLANCE_PASSWORD"
+oc set data secret/osp-secret "HeatAuthEncryptionKey=$HEAT_AUTH_ENCRYPTION_KEY"
+oc set data secret/osp-secret "HeatPassword=$HEAT_PASSWORD"
+oc set data secret/osp-secret "HeatStackDomainAdminPassword=$HEAT_STACK_DOMAIN_ADMIN_PASSWORD"
+oc set data secret/osp-secret "IronicPassword=$IRONIC_PASSWORD"
+oc set data secret/osp-secret "IronicInspectorPassword=$IRONIC_PASSWORD"
+oc set data secret/osp-secret "ManilaPassword=$MANILA_PASSWORD"
+oc set data secret/osp-secret "MetadataSecret=$METADATA_SECRET"
+oc set data secret/osp-secret "NeutronPassword=$NEUTRON_PASSWORD"
+oc set data secret/osp-secret "NovaPassword=$NOVA_PASSWORD"
+oc set data secret/osp-secret "OctaviaPassword=$OCTAVIA_PASSWORD"
+oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
+oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
 </div>
 </div>
 </li>
@@ -289,268 +216,8 @@ $ oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
 be disabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ oc apply -f - &lt;&lt;EOF
-apiVersion: core.openstack.org/v1beta1
-kind: OpenStackControlPlane
-metadata:
-  name: openstack
-spec:
-  secret: osp-secret
-  storageClass: &lt;storage_class&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-
-  barbican:
-    enabled: false
-    template:
-      barbicanAPI: {}
-      barbicanWorker: {}
-      barbicanKeystoneListener: {}
-
-  cinder:
-    enabled: false
-    template:
-      cinderAPI: {}
-      cinderScheduler: {}
-      cinderBackup: {}
-      cinderVolumes: {}
-
-  dns:
-    template:
-      override:
-        service:
-          metadata:
-            annotations:
-              metallb.universe.tf/address-pool: ctlplane
-              metallb.universe.tf/allow-shared-ip: ctlplane
-              metallb.universe.tf/loadBalancerIPs: 192.168.122.80 <i class="conum" data-value="2"></i><b>(2)</b>
-
-          spec:
-            type: LoadBalancer
-      options:
-      - key: server
-        values:
-        - 192.168.122.1
-      replicas: 1
-
-  glance:
-    enabled: false
-    template:
-      glanceAPIs: {}
-
-  heat:
-    enabled: false
-    template: {}
-
-  horizon:
-    enabled: false
-    template: {}
-
-  ironic:
-    enabled: false
-    template:
-      ironicConductors: []
-
-  keystone:
-    enabled: false
-    template: {}
-
-  manila:
-    enabled: false
-    template:
-      manilaAPI: {}
-      manilaScheduler: {}
-      manilaShares: {}
-
-  galera:
-    enabled: true
-    templates:
-      openstack:
-        secret: osp-secret
-        replicas: 3
-        storageRequest: 5G
-      openstack-cell1: <i class="conum" data-value="3"></i><b>(3)</b>
-        secret: osp-secret
-        replicas: 3
-        storageRequest: 5G
-      openstack-cell2:
-        secret: osp-secret
-        replicas: 1
-        storageRequest: 5G
-      openstack-cell3:
-        secret: osp-secret
-        replicas: 1
-        storageRequest: 5G
-  memcached:
-    enabled: true
-    templates:
-      memcached:
-        replicas: 3
-
-  neutron:
-    enabled: false
-    template: {}
-
-  nova:
-    enabled: false
-    template: {}
-
-  ovn:
-    enabled: false
-    template:
-      ovnController:
-        networkAttachment: tenant
-        nodeSelector:
-          node: non-existing-node-name
-      ovnNorthd:
-        replicas: 0
-      ovnDBCluster:
-        ovndbcluster-nb:
-          replicas: 3
-          dbType: NB
-          networkAttachment: internalapi
-        ovndbcluster-sb:
-          replicas: 3
-          dbType: SB
-          networkAttachment: internalapi
-
-  placement:
-    enabled: false
-    template: {}
-
-  rabbitmq:
-    templates:
-      rabbitmq:
-        override:
-          service:
-            metadata:
-              annotations:
-                metallb.universe.tf/address-pool: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.85
-            spec:
-              type: LoadBalancer
-      rabbitmq-cell1:
-        persistence:
-          storage: 1G
-        override:
-          service:
-            metadata:
-              annotations:
-                metallb.universe.tf/address-pool: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.86
-
-            spec:
-              type: LoadBalancer
-      rabbitmq-cell2:
-        persistence:
-          storage: 1G
-        override:
-          service:
-            metadata:
-              annotations:
-                metallb.universe.tf/address-pool: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.87
-            spec:
-              type: LoadBalancer
-      rabbitmq-cell3:
-        persistence:
-          storage: 1G
-        override:
-          service:
-            metadata:
-              annotations:
-                metallb.universe.tf/address-pool: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.88
-            spec:
-              type: LoadBalancer
-  telemetry:
-    enabled: false
-  tls: <i class="conum" data-value="4"></i><b>(4)</b>
-    podLevel:
-      enabled: false
-    ingress:
-      enabled: false
-  swift:
-    enabled: false
-    template:
-      swiftRing:
-        ringReplicas: 1
-      swiftStorage:
-        replicas: 0
-      swiftProxy:
-        replicas: 1
-EOF</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">oc apply -f osp-ng-ctlplane-deploy-backend.yaml</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Select an existing <code>&lt;storage_class&gt;</code> in your {OpenShiftShort} cluster.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Replace <code>&lt;loadBalancer_IP&gt;</code> with the LoadBalancer IP address.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>This example provides the required infrastructure database and messaging services for 3 Compute cells named <code>cell1</code>, <code>cell2</code>, and <code>cell3</code>. Adjust the values for fields such as <code>replicas</code>, <code>storage</code>, or <code>storageRequest</code>, for each Compute cell as needed.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>If you enabled TLS-e in your {OpenStackShort} environment, in the <code>spec:tls</code> section set <code>tls</code> to the following:</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spec:
-  ...
-  tls:
-    podLevel:
-      enabled: true
-      internal:
-        ca:
-          customIssuer: rootca-internal
-      libvirt:
-        ca:
-          customIssuer: rootca-internal
-      ovn:
-        ca:
-          customIssuer: rootca-internal
-    ingress:
-      ca:
-        customIssuer: rootca-internal
-      enabled: true</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If you use IPv6, change the load balancer IPs to the IPs in your environment, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>...
-metallb.universe.tf/allow-shared-ip: ctlplane
-metallb.universe.tf/loadBalancerIPs: fd00:aaaa::80
-...
-metallb.universe.tf/address-pool: internalapi
-metallb.universe.tf/loadBalancerIPs: fd00:bbbb::85
-...
-metallb.universe.tf/address-pool: internalapi
-metallb.universe.tf/loadBalancerIPs: fd00:bbbb::86</pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</li>
-</ol>
 </div>
 <div class="ulist">
 <div class="title">Verification</div>
@@ -559,13 +226,13 @@ metallb.universe.tf/loadBalancerIPs: fd00:bbbb::86</pre>
 <p>Verify that the Galera and RabbitMQ status is <code>Running</code> for all defined cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ RENAMED_CELLS="cell1 cell2 cell3"
-$ oc get pod openstack-galera-0 -o jsonpath='{.status.phase}{"\n"}'
-$ oc get pod rabbitmq-server-0 -o jsonpath='{.status.phase}{"\n"}'
-$ for CELL in $(echo $RENAMED_CELLS); do
-&gt;     oc get pod openstack-$CELL-galera-0 -o jsonpath='{.status.phase}{"\n"}'
-&gt;     oc get pod rabbitmq-$CELL-server-0 -o jsonpath='{.status.phase}{"\n"}'
-&gt; done</pre>
+<pre>RENAMED_CELLS="cell1"
+oc get pod openstack-galera-0 -o jsonpath='{.status.phase}{"\n"}'
+oc get pod rabbitmq-server-0 -o jsonpath='{.status.phase}{"\n"}'
+for CELL in $(echo $RENAMED_CELLS); do
+  oc get pod openstack-$CELL-galera-0 -o jsonpath='{.status.phase}{"\n"}'
+  oc get pod rabbitmq-$CELL-server-0 -o jsonpath='{.status.phase}{"\n"}'
+done</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -577,7 +244,7 @@ During the database migration procedure, the Nova cells are renamed. <code>RENAM
 <p>Ensure that the statuses of all the Rabbitmq and Galera CRs are <code>Setup complete</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get Rabbitmqs,Galera
+<pre>oc get Rabbitmqs,Galera
 NAME                                                                  STATUS   MESSAGE
 rabbitmq.rabbitmq.openstack.org/rabbitmq                              True     Setup complete
 rabbitmq.rabbitmq.openstack.org/rabbitmq-cell1                        True     Setup complete
@@ -593,13 +260,16 @@ galera.mariadb.openstack.org/openstack-cell1                       True     Setu
 of the <code>openstackclient</code> pod:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get OpenStackControlPlane openstack
+<pre>oc get OpenStackControlPlane openstack
 NAME        STATUS    MESSAGE
 openstack   Unknown   OpenStackControlPlane Client not started</pre>
 </div>
 </div>
 </li>
 </ul>
+</div>
+</li>
+</ol>
 </div>
 </article>
   </div>

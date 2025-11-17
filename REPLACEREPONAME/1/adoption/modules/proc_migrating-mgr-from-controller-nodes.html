@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -209,8 +147,8 @@ ssh heat-admin@&lt;target_node&gt; sudo iptables -I INPUT \
 <p>Check that the rules are properly applied to the target node and persist them:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo iptables-save
-$ sudo systemctl restart iptables</pre>
+<pre>sudo iptables-save
+sudo systemctl restart iptables</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -230,11 +168,11 @@ The default dashboard port for <code>ceph-mgr</code> in a greenfield deployment 
 <p>Log in to <code>controller-0</code> and update the dashboard port in the <code>ceph-mgr</code> configuration to 8443:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell
-$ ceph config set mgr mgr/dashboard/server_port 8443
-$ ceph config set mgr mgr/dashboard/ssl_server_port 8443
-$ ceph mgr module disable dashboard
-$ ceph mgr module enable dashboard</pre>
+<pre>sudo cephadm shell
+ceph config set mgr mgr/dashboard/server_port 8443
+ceph config set mgr mgr/dashboard/ssl_server_port 8443
+ceph mgr module disable dashboard
+ceph mgr module enable dashboard</pre>
 </div>
 </div>
 </li>
@@ -255,7 +193,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6800-7300,8443 } ct state new cou
 <p>Restart the <code>nftables</code> service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo systemctl restart nftables</pre>
+<pre>sudo systemctl restart nftables</pre>
 </div>
 </div>
 </li>
@@ -263,7 +201,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6800-7300,8443 } ct state new cou
 <p>Verify that the rules are applied:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo nft list ruleset | grep ceph_mgr</pre>
+<pre>sudo nft list ruleset | grep ceph_mgr</pre>
 </div>
 </div>
 </li>
@@ -272,7 +210,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6800-7300,8443 } ct state new cou
 label to the target node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host label add &lt;target_node&gt; mgr</pre>
+<pre>sudo cephadm shell -- ceph orch host label add &lt;target_node&gt; mgr</pre>
 </div>
 </div>
 </li>
@@ -283,9 +221,9 @@ label to the target node:</p>
 <p>Get the Ceph Manager spec:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ mkdir -p ${SPEC_DIR}
-$ sudo cephadm shell -- ceph orch ls --export mgr &gt; ${SPEC_DIR}/mgr</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+mkdir -p ${SPEC_DIR}
+sudo cephadm shell -- ceph orch ls --export mgr &gt; ${SPEC_DIR}/mgr</code></pre>
 </div>
 </div>
 </li>
@@ -308,8 +246,8 @@ placement:
 <p>Apply the spec with <code>cephadm</code> by using the Ceph Orchestrator:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr</pre>
 </div>
 </div>
 </li>
@@ -322,8 +260,8 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr</pre>
 <p>Verify that the new Ceph Manager daemons are created in the target nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch ps | grep -i mgr
-$ sudo cephadm shell -- ceph -s</pre>
+<pre>sudo cephadm shell -- ceph orch ps | grep -i mgr
+sudo cephadm shell -- ceph -s</pre>
 </div>
 </div>
 <div class="paragraph">

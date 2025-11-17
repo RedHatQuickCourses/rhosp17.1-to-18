@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -218,7 +156,7 @@ the <code>openstack</code> namespace and that the <code>extraMounts</code> prope
 <code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF &gt; glance_patch.yaml
+<pre>cat &lt;&lt; EOF &gt; glance_patch.yaml
 spec:
   glance:
     enabled: true
@@ -227,6 +165,7 @@ spec:
       customServiceConfig: |
         [DEFAULT]
         enabled_backends=default_backend:rbd
+        debug = true
         [glance_store]
         default_backend=default_backend
         [default_backend]
@@ -236,9 +175,10 @@ spec:
         store_description=Ceph glance store backend.
       storage:
         storageRequest: 10G
+        storageClass: "nfs-storage"
       glanceAPIs:
         default:
-          replicas: 0
+          replicas: 1
           override:
             service:
               internal:
@@ -246,56 +186,20 @@ spec:
                   annotations:
                     metallb.universe.tf/address-pool: internalapi
                     metallb.universe.tf/allow-shared-ip: internalapi
-                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
           networkAttachments:
-          - storage
+            - storage
 EOF</pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
-</tr>
-</table>
-</div>
 </li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If you backed up your {rhos_prev_long} ({OpenStackShort}) services configuration file from the original environment, you can compare it with the confgiuration file that you adopted and ensure that the configuration is correct.
-For more information, see <a href="#pulling-configuration-from-tripleo-deployment_adopt-control-plane">Pulling the configuration from a {OpenStackPreviousInstaller} deployment</a>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>os-diff diff /tmp/collect_tripleo_configs/glance/etc/glance/glance-api.conf glance_patch.yaml --crd</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This command produces the difference between both ini configuration files.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<div class="title">Procedure</div>
-<ul>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with a {Ceph} back end:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</pre>
 </div>
 </div>
 </li>
@@ -313,55 +217,15 @@ For more information, see <a href="#pulling-configuration-from-tripleo-deploymen
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Test the {image_service} from the {rhos_prev_long} CLI. You can compare and ensure that the configuration is applied to the {image_service} pods:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ os-diff diff /etc/glance/glance.conf.d/02-config.conf glance_patch.yaml --frompod -p glance-api</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If no line appears, then the configuration is correct.</p>
-</div>
-</li>
-<li>
-<p>Inspect the resulting {image_service} pods:</p>
-<div class="listingblock">
-<div class="content">
-<pre>GLANCE_POD=`oc get pod |grep glance-default | cut -f 1 -d' ' | head -n 1`
-oc exec -t $GLANCE_POD -c glance-api -- cat /etc/glance/glance.conf.d/02-config.conf
-
-[DEFAULT]
-enabled_backends=default_backend:rbd
-[glance_store]
-default_backend=default_backend
-[default_backend]
-rbd_store_ceph_conf=/etc/ceph/ceph.conf
-rbd_store_user=openstack
-rbd_store_pool=images
-store_description=Ceph glance store backend.</pre>
-</div>
-</div>
-</li>
-<li>
-<p>If you use a {Ceph} back end, ensure that the {Ceph} secrets are mounted:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc exec -t $GLANCE_POD -c glance-api -- ls /etc/ceph
-ceph.client.openstack.keyring
-ceph.conf</pre>
-</div>
-</div>
-</li>
-<li>
 <p>Check that the service is active, and that the endpoints are updated in the {OpenStackShort} CLI:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh openstackclient
-$ openstack service list | grep image
+<pre>oc rsh openstackclient
+openstack service list | grep image
 
 | fc52dbffef36434d906eeb99adfc6186 | glance    | image        |
 
-$ openstack endpoint list | grep image
+openstack endpoint list | grep image
 
 | 569ed81064f84d4a91e0d2d807e4c1f1 | regionOne | glance       | image        | True    | internal  | http://glance-internal-openstack.apps-crc.testing   |
 | 5843fae70cba4e73b29d4aff3e8b616c | regionOne | glance       | image        | True    | public    | http://glance-public-openstack.apps-crc.testing     |</pre>
@@ -372,7 +236,7 @@ $ openstack endpoint list | grep image
 <p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack image list
+<pre>openstack image list
 +--------------------------------------+--------+--------+
 | ID                                   | Name   | Status |
 +--------------------------------------+--------+--------+

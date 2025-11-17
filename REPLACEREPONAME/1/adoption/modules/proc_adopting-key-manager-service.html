@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -202,7 +140,7 @@ This procedure configures the {key_manager} to use the <code>simple_crypto</code
 <p>Add the kek secret:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc set data secret/osp-secret "BarbicanSimpleCryptoKEK=$($CONTROLLER1_SSH "python3 -c \"import configparser; c = configparser.ConfigParser(); c.read('/var/lib/config-data/puppet-generated/barbican/etc/barbican/barbican.conf'); print(c['simple_crypto_plugin']['kek'])\"")"</pre>
+<pre>oc set data secret/osp-secret "BarbicanSimpleCryptoKEK=$($CONTROLLER1_SSH "python3 -c \"import configparser; c = configparser.ConfigParser(); c.read('/var/lib/config-data/puppet-generated/barbican/etc/barbican/barbican.conf'); print(c['simple_crypto_plugin']['kek'])\"")"</pre>
 </div>
 </div>
 </li>
@@ -210,7 +148,7 @@ This procedure configures the {key_manager} to use the <code>simple_crypto</code
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {key_manager}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   barbican:
     enabled: true
@@ -236,7 +174,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="1"></i><b>(1)</b>
               spec:
                 type: LoadBalancer
       barbicanWorker:
@@ -264,7 +202,7 @@ spec:
 <p>Ensure that the {identity_service_first_ref} endpoints are defined and are pointing to the control plane FQDNs:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep key-manager</pre>
+<pre>openstack endpoint list | grep key-manager</pre>
 </div>
 </div>
 </li>
@@ -272,12 +210,12 @@ spec:
 <p>Ensure that Barbican API service is registered in the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack service list | grep key-manager</pre>
+<pre>openstack service list | grep key-manager</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep key-manager</pre>
+<pre>openstack endpoint list | grep key-manager</pre>
 </div>
 </div>
 </li>
@@ -285,7 +223,7 @@ spec:
 <p>List the secrets:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack secret list</pre>
+<pre>openstack secret list</pre>
 </div>
 </div>
 </li>

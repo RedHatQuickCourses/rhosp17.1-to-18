@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -201,7 +139,7 @@
 <p>Create the secret:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f fencing-secret.yaml -n openstack</pre>
+<pre>oc apply -f fencing-secret.yaml -n openstack</pre>
 </div>
 </div>
 </li>
@@ -209,7 +147,7 @@
 <p>Optional: Create the Instance HA configuration map and set the <code>DISABLED</code> parameter to <code>false</code>. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF &gt; iha-cm.yaml
+<pre>cat &lt;&lt; EOF &gt; iha-cm.yaml
 kind: ConfigMap
 metadata:
   name: instanceha-0-config
@@ -242,7 +180,7 @@ EOF</pre>
 <p>Apply the configuration:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f iha-cm.yaml -n openstack</pre>
+<pre>oc apply -f iha-cm.yaml -n openstack</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -265,7 +203,7 @@ If you want to restrict which Compute nodes are evacuated, create host aggregate
 <p>Create an Instance HA resource and reference the fencing secret and configuration map. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF &gt; iha.yaml
+<pre>cat &lt;&lt; EOF &gt; iha.yaml
 apiVersion: instanceha.openstack.org/v1beta1
 kind: InstanceHa
 metadata:
@@ -290,7 +228,7 @@ EOF</pre>
 <p>Deploy the Instance HA resource:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f iha.yaml -n openstack</pre>
+<pre>oc apply -f iha.yaml -n openstack</pre>
 </div>
 </div>
 </li>
@@ -303,13 +241,13 @@ EOF</pre>
 <p>After you complete the {rhos_long_noacro} adoption, remove the Pacemaker components from the Compute nodes. You must run the following commands on each Compute node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo systemctl stop pacemaker_remote
-$ sudo systemctl stop pcsd
-$ sudo systemctl stop pcsd-ruby.service
-$ sudo systemctl disable pacemaker_remote
-$ sudo systemctl disable pcsd
-$ sudo systemctl disable pcsd-ruby.service
-$ sudo dnf remove pacemaker pacemaker-remote pcs pcsd -y</pre>
+<pre>sudo systemctl stop pacemaker_remote
+sudo systemctl stop pcsd
+sudo systemctl stop pcsd-ruby.service
+sudo systemctl disable pacemaker_remote
+sudo systemctl disable pcsd
+sudo systemctl disable pcsd-ruby.service
+sudo dnf remove pacemaker pacemaker-remote pcs pcsd -y</pre>
 </div>
 </div>
 </li>

@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -202,7 +140,7 @@ of Ceph orchestrator. For more information, see <a href="#creating-a-ceph-nfs-cl
 <p>The <code>CONTROLLER1_SSH</code> environment variable is defined and points to the {OpenStackShort} Controller node. Replace the following example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ CONTROLLER1_SSH="ssh -i &lt;path to SSH key&gt; root@&lt;node IP&gt;"</pre>
+<pre>CONTROLLER1_SSH="ssh -i &lt;path to SSH key&gt; root@&lt;node IP&gt;"</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -212,7 +150,7 @@ of Ceph orchestrator. For more information, see <a href="#creating-a-ceph-nfs-cl
 <p>Copy the configuration file from {OpenStackShort} {rhos_prev_ver} for reference:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/manila/etc/manila/manila.conf | awk '!/^ *#/ &amp;&amp; NF' &gt; ~/manila.conf</pre>
+<pre>CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/manila/etc/manila/manila.conf | awk '!/^ *#/ &amp;&amp; NF' &gt; ~/manila.conf</pre>
 </div>
 </div>
 </li>
@@ -223,7 +161,7 @@ of Ceph orchestrator. For more information, see <a href="#creating-a-ceph-nfs-cl
 <p>Create a patch file for the <code>OpenStackControlPlane</code> CR to deploy the {rhos_component_storage_file}. The following example <code>manila.patch</code> file uses native CephFS:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; __EOF__ &gt; ~/manila.patch
+<pre>cat &lt;&lt; __EOF__ &gt; ~/manila.patch
 spec:
   manila:
     enabled: true
@@ -245,7 +183,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <i class="conum" data-value="1"></i><b>(1)</b>
               spec:
                 type: LoadBalancer
       manilaScheduler:
@@ -311,7 +249,7 @@ __EOF__</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; __EOF__ &gt; ~/manila.patch
+<pre>cat &lt;&lt; __EOF__ &gt; ~/manila.patch
 spec:
   manila:
     enabled: true
@@ -332,7 +270,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
       manilaScheduler:
@@ -374,7 +312,7 @@ __EOF__</pre>
 <p>Patch the <code>OpenStackControlPlane</code> CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=~/&lt;manila.patch&gt;</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=~/&lt;manila.patch&gt;</pre>
 </div>
 </div>
 </li>
@@ -393,7 +331,7 @@ __EOF__</pre>
 <p>Inspect the resulting {rhos_component_storage_file} pods:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get pods -l service=manila</pre>
+<pre>oc get pods -l service=manila</pre>
 </div>
 </div>
 </li>
@@ -401,12 +339,12 @@ __EOF__</pre>
 <p>Check that the Shared File Systems API service is registered in the {identity_service_first_ref}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack service list | grep manila</pre>
+<pre>openstack service list | grep manila</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep manila
+<pre>openstack endpoint list | grep manila
 
 | 1164c70045d34b959e889846f9959c0e | regionOne | manila       | share        | True    | internal  | http://manila-internal.openstack.svc:8786/v1/%(project_id)s        |
 | 63e89296522d4b28a9af56586641590c | regionOne | manilav2     | sharev2      | True    | public    | https://manila-public-openstack.apps-crc.testing/v2                |
@@ -419,8 +357,8 @@ __EOF__</pre>
 <p>Test the health of the service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack share service list
-$ openstack share pool list --detail</pre>
+<pre>openstack share service list
+openstack share pool list --detail</pre>
 </div>
 </div>
 </li>
@@ -428,8 +366,8 @@ $ openstack share pool list --detail</pre>
 <p>Check existing workloads:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack share list
-$ openstack share snapshot list</pre>
+<pre>openstack share list
+openstack share snapshot list</pre>
 </div>
 </div>
 </li>

@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -177,7 +115,7 @@
 <p>Create an alias for the <code>openstack</code> command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
 </div>
 </div>
 </li>
@@ -186,7 +124,7 @@
 <code>CONTROLLER1_SSH</code> variable:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ CONTROLLER1_SCP=$(echo "$CONTROLLER1_SSH" | sed 's/^ssh/scp/g')</pre>
+<pre>CONTROLLER1_SCP=$(echo "$CONTROLLER1_SSH" | sed 's/^ssh/scp/g')</pre>
 </div>
 </div>
 </li>
@@ -235,7 +173,7 @@
 <p>To isolate the management network, add the network interface for the VLAN base interface:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get --no-headers nncp | cut -f 1 -d ' ' | grep -v nncp-dns | while read; do
+<pre>oc get --no-headers nncp | cut -f 1 -d ' ' | grep -v nncp-dns | while read; do
 
 interfaces=$(oc get nncp $REPLY -o jsonpath="{.spec.desiredState.interfaces[*].name}")
 
@@ -291,7 +229,7 @@ done</pre>
 <p>To connect pods that manage load balancer virtual machines (amphorae) and the OpenvSwitch pods that are managed by the OVN operator, configure the {loadbalancer_service} network attachment definition:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &gt;&gt; octavia-nad.yaml &lt;&lt; EOF_CAT
+<pre>cat &gt;&gt; octavia-nad.yaml &lt;&lt; EOF_CAT
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
@@ -319,7 +257,7 @@ spec:
       }
     }
 EOF_CAT
-$ oc apply -f octavia-nad.yaml</pre>
+oc apply -f octavia-nad.yaml</pre>
 </div>
 </div>
 </li>
@@ -327,7 +265,7 @@ $ oc apply -f octavia-nad.yaml</pre>
 <p>Enable the {loadbalancer_service} in {OpenShiftShort}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ovn:
     template:
@@ -358,7 +296,7 @@ spec:
 <p>Wait for the {loadbalancer_service} control plane services CRs to be ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready --timeout=600s octavia.octavia.openstack.org/octavia</pre>
+<pre>oc wait --for condition=Ready --timeout=600s octavia.octavia.openstack.org/octavia</pre>
 </div>
 </div>
 </li>
@@ -366,9 +304,9 @@ spec:
 <p>Ensure that the {loadbalancer_service} is registered in the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack service list | grep load-balancer
+<pre>openstack service list | grep load-balancer
 | bd078ca6f90c4b86a48801f45eb6f0d7 | octavia   | load-balancer |
-$ openstack endpoint list | grep load-balancer
+openstack endpoint list | grep load-balancer
 | f1ae7756b6164baf9cb82a1a670067a2 | regionOne | octavia      | load-balancer | True    | public    | https://octavia-public-openstack.apps-crc.testing                     |
 | ff3222b4621843669e89843395213049 | regionOne | octavia      | load-balancer | True    | internal  | http://octavia-internal.openstack.svc:9876                            |</pre>
 </div>
@@ -385,7 +323,7 @@ $ openstack endpoint list | grep load-balancer
 <p>Open the management interface configuration file in a text editor such as <code>vi</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo vi /etc/sysconfig/network-scripts/ifcfg-o-hm0</pre>
+<pre>sudo vi /etc/sysconfig/network-scripts/ifcfg-o-hm0</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -399,14 +337,14 @@ $ openstack endpoint list | grep load-balancer
 <p>Delete old flavors that are migrated to the new control plane:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack flavor list --all | grep octavia
+<pre>openstack flavor list --all | grep octavia
 | 484c351a-57ca-4a4b-8e6e-93d31596fec5 | octavia-amphora-4vcpus   | 4096 |    3 |         0 |     4 | False     |
 | 65                                   | octavia_65               | 1024 |    3 |         0 |     1 | False     |
 | amphora-mvcpu-ha                     | octavia_amphora-mvcpu-ha | 4096 |    3 |         0 |     4 | False     |
 | cf9d1d80-5680-4ed8-a051-e8ec4c5871e0 | octavia-amphora          | 1024 |    3 |         0 |     1 | False     |
-$ openstack flavor delete octavia_65
-$ openstack flavor delete octavia_amphora-mvcpu-ha
-$ openstack flavor list --all | grep octavia
+openstack flavor delete octavia_65
+openstack flavor delete octavia_amphora-mvcpu-ha
+openstack flavor list --all | grep octavia
 | 484c351a-57ca-4a4b-8e6e-93d31596fec5 | octavia-amphora-4vcpus | 4096 |    3 |         0 |     4 | False     |
 | cf9d1d80-5680-4ed8-a051-e8ec4c5871e0 | octavia-amphora        | 1024 |    3 |         0 |     1 | False     |</pre>
 </div>
@@ -416,7 +354,7 @@ $ openstack flavor list --all | grep octavia
 <p>Delete old {loadbalancer_service} flavors that are migrated to the new control plane:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack loadbalancer flavor list
+<pre>openstack loadbalancer flavor list
 +--------------------------------------+--------------------------+--------------------------------------+---------+
 | id                                   | name                     | flavor_profile_id                    | enabled |
 +--------------------------------------+--------------------------+--------------------------------------+---------+
@@ -424,8 +362,8 @@ $ openstack flavor list --all | grep octavia
 | 6d649fd5-6322-4265-b5f3-c3277fc29ec8 | amphora-4vcpus           | d9764a80-99f5-4f22-bbe0-3ddbdc5c485c | True    |
 | 93f34308-24a7-42de-9065-959a3b36e7f6 | amphora                  | e75e50c8-7786-4623-abcf-bccbea59d213 | True    |
 +--------------------------------------+--------------------------+--------------------------------------+---------+
-$ openstack loadbalancer flavor delete octavia_amphora-mvcpu-ha
-$ openstack loadbalancer flavor list
+openstack loadbalancer flavor delete octavia_amphora-mvcpu-ha
+openstack loadbalancer flavor list
 +--------------------------------------+----------------+--------------------------------------+---------+
 | id                                   | name           | flavor_profile_id                    | enabled |
 +--------------------------------------+----------------+--------------------------------------+---------+
@@ -439,7 +377,7 @@ $ openstack loadbalancer flavor list
 <p>Delete old flavor profiles that are migrated to the new control plane:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack loadbalancer flavorprofile list
+<pre>openstack loadbalancer flavorprofile list
 +--------------------------------------+----------------------------------+---------------+
 | id                                   | name                             | provider_name |
 +--------------------------------------+----------------------------------+---------------+
@@ -447,8 +385,8 @@ $ openstack loadbalancer flavor list
 | d9764a80-99f5-4f22-bbe0-3ddbdc5c485c | amphora-4vcpus                   | amphora       |
 | e75e50c8-7786-4623-abcf-bccbea59d213 | amphora                          | amphora       |
 +--------------------------------------+----------------------------------+---------------+
-$ openstack loadbalancer flavorprofile delete octavia_amphora-mvcpu-ha_profile
-$ openstack loadbalancer flavorprofile list
+openstack loadbalancer flavorprofile delete octavia_amphora-mvcpu-ha_profile
+openstack loadbalancer flavorprofile list
 +--------------------------------------+----------------+---------------+
 | id                                   | name           | provider_name |
 +--------------------------------------+----------------+---------------+
@@ -462,8 +400,8 @@ $ openstack loadbalancer flavorprofile list
 <p>Delete the old management network ports. Store the network ID of the old management network in the variable <code>WALLABY_LB_MGMT_NET_ID</code> to use later:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for net_id in $(openstack network list -f value -c ID --name lb-mgmt-net); do desc=$(openstack network show "$net_id" -f value -c description); [ -z "$desc" ] &amp;&amp; WALLABY_LB_MGMT_NET_ID="$net_id" ; done
-$ echo $WALLABY_LB_MGMT_NET_ID
+<pre>for net_id in $(openstack network list -f value -c ID --name lb-mgmt-net); do desc=$(openstack network show "$net_id" -f value -c description); [ -z "$desc" ] &amp;&amp; WALLABY_LB_MGMT_NET_ID="$net_id" ; done
+echo $WALLABY_LB_MGMT_NET_ID
 1e21f9c1-7485-4104-a2f3-eed098ab9cad</pre>
 </div>
 </div>
@@ -472,7 +410,7 @@ $ echo $WALLABY_LB_MGMT_NET_ID
 <p>Delete all ports that are used in this network:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for id in $(openstack port list --network "$WALLABY_LB_MGMT_NET_ID" -f value -c ID) ; do openstack port delete "$id" ; done</pre>
+<pre>for id in $(openstack port list --network "$WALLABY_LB_MGMT_NET_ID" -f value -c ID) ; do openstack port delete "$id" ; done</pre>
 </div>
 </div>
 </li>
@@ -480,7 +418,7 @@ $ echo $WALLABY_LB_MGMT_NET_ID
 <p>Delete the old management network:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack network delete "$WALLABY_LB_MGMT_NET_ID"</pre>
+<pre>openstack network delete "$WALLABY_LB_MGMT_NET_ID"</pre>
 </div>
 </div>
 </li>
@@ -488,9 +426,9 @@ $ echo $WALLABY_LB_MGMT_NET_ID
 <p>Verify that only one <code>lb-mgmt-net</code> and one <code>lb-mgmt-subnet</code> exists:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack network list | grep lb-mgmt-net
+<pre>openstack network list | grep lb-mgmt-net
 | fe470c29-0482-4809-9996-6d636e3feea3 | lb-mgmt-net          | 6a881091-097d-441c-937b-5a23f4f243b7 |
-$ openstack subnet list | grep lb-mgmt-subnet
+openstack subnet list | grep lb-mgmt-subnet
 | 6a881091-097d-441c-937b-5a23f4f243b7 | lb-mgmt-subnet          | fe470c29-0482-4809-9996-6d636e3feea3 | 172.24.0.0/16   |</pre>
 </div>
 </div>

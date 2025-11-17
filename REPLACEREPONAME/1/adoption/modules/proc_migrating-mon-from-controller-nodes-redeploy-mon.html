@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -178,8 +116,8 @@ Ceph Monitor on the target node.</p>
 <p>From the Ceph client node, for example <code>controller-0</code>, get the Ceph mon spec:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
 </div>
 </div>
 </li>
@@ -202,8 +140,8 @@ unmanaged: true</code></pre>
 <p>Apply the spec with <code>cephadm</code> by using the Ceph Orchestrator:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -214,7 +152,7 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Delete the existing Ceph Monitor on the target node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch daemon rm mon.&lt;target_node&gt; --force</pre>
+<pre>sudo cephadm shell -- ceph orch daemon rm mon.&lt;target_node&gt; --force</pre>
 </div>
 </div>
 <div class="ulist">
@@ -229,7 +167,7 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Redeploy the new Ceph Monitor on the target node by using the migrated IP address:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch daemon add mon &lt;target_node&gt;:&lt;ip_address&gt;</pre>
+<pre>sudo cephadm shell -- ceph orch daemon add mon &lt;target_node&gt;:&lt;ip_address&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -244,8 +182,8 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Get the Ceph Monitor spec:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
 </div>
 </div>
 </li>
@@ -268,8 +206,8 @@ unmanaged: false</code></pre>
 <p>Apply the spec with <code>cephadm</code> by using the Ceph Orchestrator:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -280,7 +218,7 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Identify the running <code>mgr</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph mgr stat</pre>
+<pre>sudo cephadm shell -- ceph mgr stat</pre>
 </div>
 </div>
 </li>
@@ -288,7 +226,7 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Refresh the Ceph Manager information by force-failing it:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph mgr fail</pre>
+<pre>sudo cephadm shell -- ceph mgr fail</pre>
 </div>
 </div>
 </li>
@@ -296,7 +234,7 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 <p>Refresh the <code>OSD</code> information:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch reconfig osd.default_drive_group</pre>
+<pre>sudo cephadm shell -- ceph orch reconfig osd.default_drive_group</pre>
 </div>
 </div>
 </li>

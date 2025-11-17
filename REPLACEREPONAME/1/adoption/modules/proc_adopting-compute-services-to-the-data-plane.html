@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -183,206 +121,81 @@
 <p>You have configured IP Address Management (IPAM):</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
-apiVersion: network.openstack.org/v1beta1
-kind: NetConfig
-metadata:
-  name: netconfig
-spec:
-  networks:
-  - name: ctlplane
-    dnsDomain: ctlplane.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 192.168.122.120
-        start: 192.168.122.100
-      - end: 192.168.122.200
-        start: 192.168.122.150
-      cidr: 192.168.122.0/24
-      gateway: 192.168.122.1
-  - name: internalapi
-    dnsDomain: internalapi.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 172.17.0.250
-        start: 172.17.0.100
-      cidr: 172.17.0.0/24
-      vlan: 20
-  - name: External
-    dnsDomain: external.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 10.0.0.250
-        start: 10.0.0.100
-      cidr: 10.0.0.0/24
-      gateway: 10.0.0.1
-  - name: storage
-    dnsDomain: storage.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 172.18.0.250
-        start: 172.18.0.100
-      cidr: 172.18.0.0/24
-      vlan: 21
-  - name: storagemgmt
-    dnsDomain: storagemgmt.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 172.20.0.250
-        start: 172.20.0.100
-      cidr: 172.20.0.0/24
-      vlan: 23
-  - name: tenant
-    dnsDomain: tenant.example.com
-    subnets:
-    - name: subnet1
-      allocationRanges:
-      - end: 172.19.0.250
-        start: 172.19.0.100
-      cidr: 172.19.0.0/24
-      vlan: 22
-EOF</pre>
+<pre>oc apply -f osp-ng-dataplane-netconfig.yaml</pre>
 </div>
 </div>
-</li>
-<li>
-<p>If <code>neutron-sriov-nic-agent</code> is running on your {compute_service} nodes, ensure that the physical device mappings match the values that are defined in the <code>OpenStackDataPlaneNodeSet</code> custom resource (CR). For more information, see <a href="#pulling-configuration-from-tripleo-deployment_adopt-control-plane">Pulling the configuration from a {OpenStackPreviousInstaller} deployment</a>.</p>
 </li>
 <li>
 <p>You have defined the shell variables to run the script that runs the upgrade:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
+<pre>CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
 
-$ alias openstack="oc exec -t openstackclient -- openstack"
+alias openstack="oc exec -t openstackclient -- openstack"
 
-$ DEFAULT_CELL_NAME="cell3" <i class="conum" data-value="1"></i><b>(1)</b>
-$ RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"
+DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"
 
-$ declare -A COMPUTES_CELL1
-$ export COMPUTES_CELL1=( <i class="conum" data-value="2"></i><b>(2)</b>
-  ["standalone.localdomain"]="192.168.122.100" <i class="conum" data-value="3"></i><b>(3)</b>
-  # &lt;compute1&gt; <i class="conum" data-value="4"></i><b>(4)</b>
-  # &lt;compute2&gt;
-  # &lt;compute3&gt;
+declare -A COMPUTES_CELL1
+export COMPUTES_CELL1=(
+  ["overcloud-novacompute-0.localdomain"]="172.25.249.19"
+  ["overcloud-novacompute-1.localdomain"]="172.25.249.22"
 )
-$ declare -A COMPUTES_CELL2
-$ export COMPUTES_CELL2=(
-  # ...
-)
-$ declare -A COMPUTES_CELL3
-$ export COMPUTES_CELL3=(
-  # ... <i class="conum" data-value="5"></i><b>(5)</b>
-)
-# ...
 
-$ declare -A COMPUTES_API_CELL1
-$ export COMPUTES_API_CELL1=( <i class="conum" data-value="6"></i><b>(6)</b>
-  ["standalone.localdomain"]="172.17.0.100"
-  # ...
+declare -A COMPUTES_API_CELL1
+export COMPUTES_API_CELL1=(
+  ["overcloud-novacompute-0.localdomain"]="192.168.122.100"
+  ["overcloud-novacompute-1.localdomain"]="172.25.249.22"
 )
-# ...
 
-$ NODESETS=""
-$ for CELL in $(echo $RENAMED_CELLS); do
+NODESETS=""
+for CELL in $(echo $RENAMED_CELLS); do
   ref="COMPUTES_$(echo ${CELL}|tr '[:lower:]' '[:upper:]')"
   eval names=\${!${ref}[@]}
   [ -z "$names" ] &amp;&amp; continue
-  NODESETS="'openstack-${CELL}', $NODESETS" <i class="conum" data-value="7"></i><b>(7)</b>
+  NODESETS="'openstack-${CELL}', $NODESETS"
 done
-$ NODESETS="[${NODESETS%,*}]"</pre>
+NODESETS="[${NODESETS%,*}]"</pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The source cloud <code>default</code> cell acquires a new <code>DEFAULT_CELL_NAME</code> on the destination cloud after adoption.
-In a multi-cell adoption scenario, you can retain the original name, <code>default</code>, or create a new cell default name by providing the incremented index of the last cell in the source cloud. For example, if the incremented index of the last cell is <code>cell5</code>, the new cell default name is <code>cell6</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>For each cell, update the <code>&lt;["standalone.localdomain"]="x.x.x.x"&gt;</code> value and the <code>COMPUTES_CELL&lt;X&gt;</code> value with the names and IP addresses of the {compute_service} nodes that are connected to the <code>ctlplane</code> and <code>internalapi</code> networks. Do not specify a real FQDN defined for each network. Always use the same hostname for each connected network of a Compute node. Provide the IP addresses and the names of the hosts on the remaining networks of the source cloud as needed. Or you can manually adjust the files that you generate in step 9 of this procedure.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>If your deployment has a custom DNS domain, specify it in the FQDN value of the nodes. This value is used in the data plane node set <code>spec.nodes.&lt;NODE NAME&gt;.hostName</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Assign all {compute_service} nodes from the source cloud <code>cell1</code> cell into <code>COMPUTES_CELL1</code>, and so on. Replace <code>&lt;compute1&gt;</code>, <code>&lt;compute2&gt;</code>, and <code>&lt;compute3&gt;</code> with the names of your {compute_service} nodes.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Assign all {compute_service} nodes from the source cloud <code>default</code> cell into <code>COMPUTES_CELL&lt;X&gt;</code> and <code>COMPUTES_API_CELL&lt;X&gt;`</code>, where <code>&lt;X&gt;</code> is the <code>DEFAULT_CELL_NAME</code> environment variable value. In this example, the <code>DEFAULT_CELL_NAME</code> environment variable value equals <code>cell3</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>For each cell, update the <code>&lt;["standalone.localdomain"]="192.168.122.100"&gt;</code> value and the <code>COMPUTES_API_CELL</code> value with the names and IP addresses of the {compute_service} nodes that are connected to the <code>ctlplane</code> and <code>internalapi</code> networks. Do not specify a real FQDN defined for each network. Use the same host name for each of its connected networks. Provide the IP addresses and the names of the hosts on the remaining networks of the source cloud as needed. Or you can manually adjust the files that you generate in step 9 of this procedure.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Cells that do not contain Compute nodes are omitted from this template because no node sets are created for the cells.</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>If you deployed the source cloud with a <code>default</code> cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ DEFAULT_CELL_NAME="cell1"
-$ RENAMED_CELLS="cell1"</pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </li>
 </ul>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Do not set a value for the <code>CEPH_FSID</code> parameter if the local storage back end is configured by the {compute_service} for libvirt. The storage back end must match the source cloud storage back end. You cannot change the storage back end during adoption.</p>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>Get the libvirt secret password:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LIBVIRT_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' LibvirtTLSPassword:' | awk -F ': ' '{ print $2; }')
+LIBVIRT_PASSWORD_BASE64=$(echo -n "$LIBVIRT_PASSWORD" | base64)</code></pre>
 </div>
-</td>
-</tr>
-</table>
 </div>
 <div class="olist arabic">
-<div class="title">Procedure</div>
 <ol class="arabic">
+<li>
+<p>Create the libvirt secret:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: libvirt-secret
+  namespace: openstack
+type: Opaque
+data:
+  LibvirtPassword: ${LIBVIRT_PASSWORD_BASE64}
+EOF</code></pre>
+</div>
+</div>
+</li>
 <li>
 <p>Create an SSH authentication secret for the data plane nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
-apiVersion: v1
-kind: Secret
-metadata:
-    name: dataplane-adoption-secret
-data:
-    ssh-privatekey: |
-EOF</pre>
+<pre>oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/home/lab/.ssh/id_rsa_tripleo.pub --from-file=ssh-privatekey=/home/lab/.ssh/id_rsa_tripleo --from-file=ssh-publickey=/home/lab/.ssh/id_rsa_tripleo.pub -n openstack -o yaml | oc apply -f-</pre>
 </div>
 </div>
 </li>
@@ -390,7 +203,7 @@ EOF</pre>
 <p>Generate an ssh key-pair <code>nova-migration-ssh-key</code> secret:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cd "$(mktemp -d)"
+<pre>cd "$(mktemp -d)"
 ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc get secret nova-migration-ssh-key || oc create secret generic nova-migration-ssh-key \
   --from-file=ssh-privatekey=id \
@@ -402,63 +215,20 @@ cd -</pre>
 </div>
 </li>
 <li>
-<p>If TLS Everywhere is enabled, set <code>LIBVIRT_PASSWORD</code> to match the existing {OpenStackShort} deployment password:</p>
-<div class="listingblock">
-<div class="content">
-<pre>declare -A TRIPLEO_PASSWORDS
-TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
-LIBVIRT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' LibvirtTLSPassword:' | awk -F ': ' '{ print $2; }')
-LIBVIRT_PASSWORD_BASE64=$(echo -n "$LIBVIRT_PASSWORD" | base64)</pre>
-</div>
-</div>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Create libvirt-secret when TLS-e is enabled:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: libvirt-secret
-type: Opaque
-data:
-  LibvirtPassword: ${LIBVIRT_PASSWORD_BASE64}
-EOF</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</li>
-<li>
 <p>Create a configuration map to use for all cells to configure a local storage back end for libvirt:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nova-cells-global-config
-data: <i class="conum" data-value="1"></i><b>(1)</b>
-  99-nova-compute-cells-workarounds.conf: | <i class="conum" data-value="2"></i><b>(2)</b>
+data:
+  99-nova-compute-cells-workarounds.conf: |
     [workarounds]
     disable_compute_service_check_for_ffu=true
 EOF</pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>data</code> resources in the <code>ConfigMap</code> provide the configuration files for all the cells.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>There is a requirement to index the <code>&lt;*.conf&gt;</code> files from '03' to '99', based on precedence. A <code>&lt;99-*.conf&gt;</code> file takes the highest precedence, while indexes below '03' are reserved for internal use.</td>
-</tr>
-</table>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -477,7 +247,7 @@ If you adopt a live cloud, you might be required to carry over additional config
 <p>Configure a {Ceph} back end for libvirt:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -517,18 +287,18 @@ For {Ceph} environments with multi-cell configurations, you must name configurat
 <div class="listingblock">
 <div class="content">
 <pre>for CELL in $(echo $RENAMED_CELLS); do
- $ oc apply -f - &lt;&lt;EOF
+ oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneService
 metadata:
   name: nova-$CELL
 spec:
-  dataSources: <i class="conum" data-value="1"></i><b>(1)</b>
+  dataSources:
     - secretRef:
-        name: nova-$CELL-compute-config <i class="conum" data-value="2"></i><b>(2)</b>
+        name: nova-$CELL-compute-config
     - secretRef:
-        name: nova-migration-ssh-key <i class="conum" data-value="3"></i><b>(3)</b>
+        name: nova-migration-ssh-key
     - configMapRef:
         name: nova-cells-global-config
   playbook: osp.edpm.nova
@@ -541,40 +311,11 @@ EOF
   done</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>If TLS Everywhere is enabled, append the following content to the <code>OpenStackDataPlaneService</code> CR:</p>
-<div class="listingblock">
-<div class="content">
-<pre>  tlsCerts:
-    contents:
-      - dnsnames
-      - ips
-    networks:
-      - ctlplane
-    issuer: osp-rootca-issuer-internal
-    edpmRoleServiceName: nova
-  caCerts: combined-ca-bundle
-  edpmServiceType: nova</pre>
+</li>
+</ol>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>To enable a local metadata service for cell&lt;X&gt;, append a <code>spec.dataSources.secretRef</code> to reference an additional auto-generated <code>nova-cell&lt;X&gt;-metadata-neutron-config</code> secret. You should also set
-<code>spec.nova.template.cellTemplates.cell&lt;X&gt;.metadataServiceTemplate.enable</code> in the <code>OpenStackControlPlane/openstack</code> CR, as described in <a href="#adopting-the-compute-service_{context}">Adopting the Compute service</a>. You can configure a single top-level metadata, or define the metadata per cell.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The secret <code>nova-cell&lt;X&gt;-compute-config</code> auto-generates for each <code>cell&lt;X&gt;</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>You must append the <code>nova-cell&lt;X&gt;-compute-config</code> and <code>nova-migration-ssh-key</code> references for each custom <code>OpenStackDataPlaneService</code> CR that is related to the {compute_service}.</td>
-</tr>
-</table>
+</li>
+</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -610,8 +351,8 @@ the safest option is to create a custom service and a dedicated configuration ma
 </tr>
 </table>
 </div>
-</li>
-</ul>
+<div class="paragraph">
+<p>+</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -626,359 +367,22 @@ The secret is already passed in with a node-specific <code>OpenStackDataPlaneNod
 </tr>
 </table>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>Create the data plane node set definitions for each cell:</p>
-<div class="listingblock">
+<p>Create the <code>OpenStackDataPlaneNodeSet</code> CRs corresponding to compute02 and compute03:</p>
+<div class="listingblock execute">
 <div class="content">
-<pre>$ declare -A names
-$ for CELL in $(echo $RENAMED_CELLS); do
-  ref="COMPUTES_$(echo ${CELL}|tr '[:lower:]' '[:upper:]')"
-  eval names=\${!${ref}[@]}
-  ref_api="COMPUTES_API_$(echo ${CELL}|tr '[:lower:]' '[:upper:]')"
-  [ -z "$names" ] &amp;&amp; continue
-  ind=0
-  rm -f computes-$CELL
-  for compute in $names; do
-    ip="${ref}['$compute']"
-    ip_api="${ref_api}['$compute']"
-    cat &gt;&gt; computes-$CELL &lt;&lt; EOF
-    ${compute}:
-      hostName: $compute <i class="conum" data-value="1"></i><b>(1)</b>
-      ansible:
-        ansibleHost: $compute
-      networks: <i class="conum" data-value="2"></i><b>(2)</b>
-      - defaultRoute: true
-        fixedIP: ${!ip}
-        name: ctlplane
-        subnetName: subnet1
-      - name: internalapi
-        subnetName: subnet1
-        fixedIP: ${!ip_api}
-      - name: storage
-        subnetName: subnet1
-      - name: tenant
-        subnetName: subnet1
-EOF
-    ind=$(( ind + 1 ))
-  done
-
-  test -f computes-$CELL || continue
-  cat &gt; nodeset-${CELL}.yaml &lt;&lt;EOF
-apiVersion: dataplane.openstack.org/v1beta1
-kind: OpenStackDataPlaneNodeSet
-metadata:
-  name: openstack-$CELL <i class="conum" data-value="3"></i><b>(3)</b>
-spec:
-  tlsEnabled: false <i class="conum" data-value="4"></i><b>(4)</b>
-  networkAttachments:
-      - ctlplane
-  preProvisioned: true
-  services:
-    - bootstrap
-    - download-cache
-    - configure-network
-    - validate-network
-    - install-os
-    - configure-os
-    - ssh-known-hosts
-    - run-os
-    - reboot-os
-    - install-certs
-    - ovn
-    - neutron-metadata
-    - libvirt
-    - nova-$CELL
-    - telemetry <i class="conum" data-value="5"></i><b>(5)</b>
-  env:
-    - name: ANSIBLE_CALLBACKS_ENABLED
-      value: "profile_tasks"
-    - name: ANSIBLE_FORCE_COLOR
-      value: "True"
-    - name: ANSIBLE_VERBOSITY
-      value: '3'
-  nodeTemplate:
-    ansibleSSHPrivateKeySecret: dataplane-adoption-secret
-    ansible:
-      ansibleUser: root
-      ansibleVars:
-        edpm_bootstrap_release_version_package: []
-        # edpm_network_config
-        # Default nic config template for a EDPM node
-        # These vars are edpm_network_config role vars
-        edpm_network_config_template: |
-           ---
-           {% set mtu_list = [ctlplane_mtu] %}
-           {% for network in nodeset_networks %}
-           {% set _ = mtu_list.append(lookup('vars', networks_lower[network] ~ '_mtu')) %}
-           {%- endfor %}
-           {% set min_viable_mtu = mtu_list | max %}
-           network_config:
-           - type: ovs_bridge
-             name: {{ neutron_physical_bridge_name }}
-             mtu: {{ min_viable_mtu }}
-             use_dhcp: false
-             dns_servers: {{ ctlplane_dns_nameservers }}
-             domain: {{ dns_search_domains }}
-             addresses:
-             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
-             routes: {{ ctlplane_host_routes }}
-             members:
-             - type: interface
-               name: nic1
-               mtu: {{ min_viable_mtu }}
-               # force the MAC address of the bridge to this interface
-               primary: true
-           {% for network in nodeset_networks %}
-             - type: vlan
-               mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
-               vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
-               addresses:
-               - ip_netmask:
-                   {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
-               routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
-           {% endfor %}
-
-        edpm_network_config_nmstate: false
-        # Control resolv.conf management by NetworkManager
-        # false = disable NetworkManager resolv.conf update (default)
-        # true = enable NetworkManager resolv.conf update
-        edpm_bootstrap_network_resolvconf_update: false
-        edpm_network_config_hide_sensitive_logs: false
-        #
-        # These vars are for the network config templates themselves and are
-        # considered EDPM network defaults.
-        neutron_physical_bridge_name: br-ctlplane <i class="conum" data-value="6"></i><b>(6)</b>
-        neutron_public_interface_name: eth0
-
-        # edpm_nodes_validation
-        edpm_nodes_validation_validate_controllers_icmp: false
-        edpm_nodes_validation_validate_gateway_icmp: false
-
-        # edpm ovn-controller configuration
-        edpm_ovn_bridge_mappings: &lt;bridge_mappings&gt; <i class="conum" data-value="7"></i><b>(7)</b>
-        edpm_ovn_bridge: br-int
-        edpm_ovn_encap_type: geneve
-        ovn_monitor_all: true
-        edpm_ovn_remote_probe_interval: 60000
-        edpm_ovn_ofctrl_wait_before_clear: 8000
-
-        timesync_ntp_servers:
-
-
-        gather_facts: false
-        # edpm firewall, change the allowed CIDR if needed
-        edpm_sshd_configure_firewall: true
-        edpm_sshd_allowed_ranges: ['192.168.122.0/24']
-
-        # Do not attempt OVS major upgrades here
-        edpm_ovs_packages:
-        - openvswitch3.3
-        edpm_default_mounts: <i class="conum" data-value="8"></i><b>(8)</b>
-          - path: /dev/hugepages&lt;size&gt;
-            opts: pagesize=&lt;size&gt;
-            fstype: hugetlbfs
-            group: hugetlbfs
-  nodes:
-EOF
-  cat computes-$CELL &gt;&gt; nodeset-${CELL}.yaml
-done</pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If your deployment has a custom DNS Domain, specify the FQDN for the node.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The network composition must match the source cloud configuration to avoid data plane connectivity downtime. The <code>ctlplane</code> network must come first. The commands only retain IP addresses for the hosts on the <code>ctlplane</code> and <code>internalapi</code> networks. Repeat this step for other isolated networks, or update the resulting files manually.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Use node sets names, such as <code>openstack-cell1</code>, <code>openstack-cell2</code>. Only create node sets for cells that contain Compute nodes.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>If TLS Everywhere is enabled, change <code>tlsEnabled</code> to <code>true</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>If you are not adopting telemetry services, omit it from the services list.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The bridge name and other OVN and {networking_service}-specific values must match the source cloud configuration to avoid data plane connectivity downtime.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Replace <code>&lt;bridge_mappings&gt;</code> with the value of the bridge mappings in your configuration, for example, <code>"datacentre:br-ctlplane"</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>To configure huge pages, replace <code>&lt;size&gt;</code> with the size of the page. To configure multi-sized huge pages, create more items in the list. Note that the mount points must match the source cloud configuration.</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Ensure that you use the same <code>ovn-controller</code> settings in the <code>OpenStackDataPlaneNodeSet</code> CR that you used in the {compute_service} nodes before adoption. This configuration is stored in the <code>external_ids</code> column in the <code>Open_vSwitch</code> table in the Open vSwitch database:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ ovs-vsctl list Open .
-...
-external_ids        : {hostname=standalone.localdomain, ovn-bridge=br-int, ovn-bridge-mappings=&lt;bridge_mappings&gt;, ovn-chassis-mac-mappings="datacentre:1e:0a:bb:e6:7c:ad", ovn-encap-ip="172.19.0.100", ovn-encap-tos="0", ovn-encap-type=geneve, ovn-match-northd-version=False, ovn-monitor-all=True, ovn-ofctrl-wait-before-clear="8000", ovn-openflow-probe-interval="60", ovn-remote="tcp:ovsdbserver-sb.openstack.svc:6642", ovn-remote-probe-interval="60000", rundir="/var/run/openvswitch", system-id="2eec68e6-aa21-4c95-a868-31aeafc11736"}
-...</pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Deploy the <code>OpenStackDataPlaneNodeSet</code> CRs for each Compute cell:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-  test -f nodeset-${CELL}.yaml || continue
-$ oc apply -f nodeset-${CELL}.yaml
-done</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-node-set-deploy-adoption-compute.yaml</code></pre>
 </div>
 </div>
 </li>
-<li>
-<p>If you use a {Ceph} back end for {block_storage_first_ref}, prepare the adopted data plane workloads:</p>
-<div class="listingblock">
+</ol>
+</div>
+<div class="exampleblock">
 <div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-  test -f nodeset-${CELL}.yaml || continue
-$ oc patch osdpns/openstack-$CELL --type=merge --patch "
-  spec:
-    services:
-      - bootstrap
-      - download-cache
-      - configure-network
-      - validate-network
-      - install-os
-      - configure-os
-      - ssh-known-hosts
-      - run-os
-      - reboot-os
-      - ceph-client
-      - install-certs
-      - ovn
-      - neutron-metadata
-      - libvirt
-      - nova-$CELL
-      - telemetry
-    nodeTemplate:
-      extraMounts:
-      - extraVolType: Ceph
-        volumes:
-        - name: ceph
-          secret:
-            secretName: ceph-conf-files
-        mounts:
-        - name: ceph
-          mountPath: "/etc/ceph"
-          readOnly: true
-  "
-done</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Ensure that you use the same list of services from the original <code>OpenStackDataPlaneNodeSet</code> CR, except for the <code>ceph-client</code> and <code>ceph-hci-pre</code> services.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Optional: Enable <code>neutron-sriov-nic-agent</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-  test -f nodeset-${CELL}.yaml || continue
-$ oc patch openstackdataplanenodeset openstack-$CELL --type='json' --patch='[
-  {
-    "op": "add",
-    "path": "/spec/services/-",
-    "value": "neutron-sriov"
-  }, {
-    "op": "add",
-    "path": "/spec/nodeTemplate/ansible/ansibleVars/edpm_neutron_sriov_agent_SRIOV_NIC_physical_device_mappings",
-    "value": "dummy_sriov_net:dummy-dev"
-  }, {
-    "op": "add",
-    "path": "/spec/nodeTemplate/ansible/ansibleVars/edpm_neutron_sriov_agent_SRIOV_NIC_resource_provider_bandwidths",
-    "value": "dummy-dev:40000000:40000000"
-  }, {
-    "op": "add",
-    "path": "/spec/nodeTemplate/ansible/ansibleVars/edpm_neutron_sriov_agent_SRIOV_NIC_resource_provider_hypervisors",
-    "value": "dummy-dev:standalone.localdomain"
-  }]'
-  done</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Optional: Enable <code>neutron-dhcp</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-  test -f nodeset-${CELL}.yaml || continue
-$ oc patch openstackdataplanenodeset openstack-$CELL --type='json' --patch='[
-  {
-    "op": "add",
-    "path": "/spec/services/-",
-    "value": "neutron-dhcp"
-  }]'
-done</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>To use <code>neutron-dhcp</code> with OVN for the {bare_metal_first_ref}, you must set the <code>disable_ovn_dhcp_for_baremetal_ports</code> configuration option for the {networking_first_ref}  to <code>true</code>.  You can set this configuration in the <code>NeutronAPI</code> spec:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>..
-spec:
-  serviceUser: neutron
-   ...
-      customServiceConfig: |
-          [DEFAULT]
-          dhcp_agent_notification = True
-          [ovn]
-          disable_ovn_dhcp_for_baremetal_ports = true</pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Run the pre-adoption validation:</p>
 <div class="olist loweralpha">
@@ -987,7 +391,7 @@ spec:
 <p>Create the validation service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneService
 metadata:
@@ -1002,41 +406,30 @@ EOF</pre>
 <p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
   name: openstack-pre-adoption
 spec:
-  nodeSets: $NODESETS
+  nodeSets:
+  - compute0-1-set
   servicesOverride:
   - pre-adoption-validation
 EOF</pre>
 </div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you created different migration SSH keys for different <code>OpenStackDataPlaneService</code> CRs, you should also define a separate <code>OpenStackDataPlaneDeployment</code> CR for each node set or node sets that represent a cell.
-</td>
-</tr>
-</table>
 </div>
 </li>
 <li>
 <p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+<pre>watch oc get pod -l app=openstackansibleee</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
 </div>
 </div>
 </li>
@@ -1044,16 +437,17 @@ If you created different migration SSH keys for different <code>OpenStackDataPla
 <p>Wait for the deployment to reach the <code>Ready</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m</pre>
+<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m</pre>
 </div>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>If any openstack-pre-adoption validations fail, you must reference the Ansible logs to determine which ones were unsuccessful, and then try the following troubleshooting options:</p>
 </div>
@@ -1073,14 +467,10 @@ to use the same profile as the one set on the {OpenStackShort} {rhos_prev_ver} n
 </li>
 </ul>
 </div>
-</td>
-</tr>
-</table>
-</div>
-</li>
-</ol>
-</div>
-</li>
+<div class="exampleblock">
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Remove the remaining {OpenStackPreviousInstaller} services:</p>
 <div class="olist loweralpha">
@@ -1089,7 +479,7 @@ to use the same profile as the one set on the {OpenStackShort} {rhos_prev_ver} n
 <p>Create an <code>OpenStackDataPlaneService</code> CR to clean up the data plane services you are adopting:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneService
 metadata:
@@ -1104,13 +494,14 @@ EOF</pre>
 <p>Create the <code>OpenStackDataPlaneDeployment</code> CR to run the clean-up:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
   name: tripleo-cleanup
 spec:
-  nodeSets: $NODESETS
+  nodeSets:
+  - compute0-1-set
   servicesOverride:
   - tripleo-cleanup
 EOF</pre>
@@ -1124,13 +515,15 @@ EOF</pre>
 <p>When the clean-up is finished, deploy the <code>OpenStackDataPlaneDeployment</code> CR:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
   name: openstack
 spec:
-  nodeSets: $NODESETS
+  nodeSets:
+  - compute0-1-set
+
 EOF</pre>
 </div>
 </div>
@@ -1157,12 +550,12 @@ add them in the <code>nodeSets</code> list in this step, or create separate <cod
 <p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ watch oc get pod -l app=openstackansibleee</pre>
+<pre>watch oc get pod -l app=openstackansibleee</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
 </div>
 </div>
 </li>
@@ -1170,9 +563,7 @@ add them in the <code>nodeSets</code> list in this step, or create separate <cod
 <p>Wait for the data plane node sets to reach the <code>Ready</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc wait --for condition=Ready osdpns/openstack-$CELL --timeout=30m
-done</pre>
+<pre>oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m</pre>
 </div>
 </div>
 </li>
@@ -1180,34 +571,32 @@ done</pre>
 <p>Verify that the {networking_first_ref} agents are running:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                   | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+------------------------+-------------------+-------+-------+----------------------------+
-| 174fc099-5cc9-4348-b8fc-59ed44fcfb0e | DHCP agent                   | standalone.localdomain | nova              | :-)   | UP    | neutron-dhcp-agent         |
-| 10482583-2130-5b0d-958f-3430da21b929 | OVN Metadata agent           | standalone.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
-| a4f1b584-16f1-4937-b2b0-28102a3f6eaa | OVN Controller agent         | standalone.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+------------------------+-------------------+-------+-------+----------------------------+</pre>
+<pre>oc exec openstackclient -- openstack network agent list
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
+| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
+| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)    | UP    | neutron-ovn-metadata-agent |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
+</div>
+</div>
 <div class="paragraph">
 <p>After you remove all the services from the {OpenStackPreviousInstaller} cell controllers, you can decomission the cell controllers.
 To create new cell Compute nodes, you re-provision the decomissioned controllers as new data plane hosts and add them to the node sets of corresponding or new cells.</p>
 </div>
-</td>
-</tr>
-</table>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="ulist">
 <div class="title">Next steps</div>
 <ul>
@@ -1215,6 +604,8 @@ To create new cell Compute nodes, you re-provision the decomissioned controllers
 <p>You must perform a fast-forward upgrade on your Compute services. For more information, see <a href="#performing-a-fast-forward-upgrade-on-compute-services_{context}">Performing a fast-forward upgrade on Compute services</a>.</p>
 </li>
 </ul>
+</div>
+</div>
 </div>
 </article>
   </div>

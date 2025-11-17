@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -207,7 +145,7 @@
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the autoscaling services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   telemetry:
     enabled: true
@@ -230,8 +168,8 @@ spec:
 <p>Inspect the aodh pods:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ AODH_POD=`oc get pods -l service=aodh | tail -n 1 | cut -f 1 -d' '`
-$ oc exec -t $AODH_POD -c aodh-api -- cat /etc/aodh/aodh.conf</pre>
+<pre>AODH_POD=`oc get pods -l service=aodh | tail -n 1 | cut -f 1 -d' '`
+oc exec -t $AODH_POD -c aodh-api -- cat /etc/aodh/aodh.conf</pre>
 </div>
 </div>
 </li>
@@ -239,7 +177,7 @@ $ oc exec -t $AODH_POD -c aodh-api -- cat /etc/aodh/aodh.conf</pre>
 <p>Check whether the aodh API service is registered in the {identity_service}:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep aodh
+<pre>openstack endpoint list | grep aodh
 | d05d120153cd4f9b8310ac396b572926 | regionOne | aodh  | alarming  | True    | internal  | http://aodh-internal.openstack.svc:8042  |
 | d6daee0183494d7a9a5faee681c79046 | regionOne | aodh  | alarming  | True    | public    | http://aodh-public.openstack.svc:8042    |</pre>
 </div>
@@ -261,7 +199,7 @@ You must use the <code>PrometheusAlarm</code> alarm type instead of <code>Gnocch
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack alarm create --name high_cpu_alarm \
+<pre>openstack alarm create --name high_cpu_alarm \
 --type prometheus \
 --query "(rate(ceilometer_cpu{resource_name=~'cirros'})) * 100" \
 --alarm-action 'log://' \
@@ -277,7 +215,7 @@ You must use the <code>PrometheusAlarm</code> alarm type instead of <code>Gnocch
 <p>Verify that the alarm is enabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack alarm list
+<pre>openstack alarm list
 +--------------------------------------+------------+------------------+-------------------+----------+
 | alarm_id                             | type       | name             | state  | severity | enabled  |
 +--------------------------------------+------------+------------------+-------------------+----------+

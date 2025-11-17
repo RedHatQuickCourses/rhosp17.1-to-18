@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -189,25 +127,16 @@ To run <code>ceph</code> commands, you must use SSH to connect to a {Ceph} node 
 <p>The <code>OpenStackControlPlane</code> CR is created.</p>
 </li>
 <li>
-<p>If your {OpenStackShort} {rhos_prev_ver} deployment uses the {rhos_component_storage_file}, the openstack keyring is updated. Modify the <code>openstack</code> user so that you can use it across all {OpenStackShort} services:</p>
-<div class="listingblock">
-<div class="content">
-<pre>ceph auth caps client.openstack \
-  mgr 'allow *' \
-  mon 'allow r, profile rbd' \
-  osd 'profile rbd pool=vms, profile rbd pool=volumes, profile rbd pool=images, allow rw pool manila_data'</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and <code>ceph.conf</code> file and propagate the secret to all the services that need it.</p>
-</div>
+<p>If your {OpenStackShort} {rhos_prev_ver} deployment uses the {rhos_component_storage_file}, the openstack keyring is updated.
+Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and <code>ceph.conf</code> file and propagate the secret to all the services that need it.</p>
 </li>
 <li>
 <p>The following shell variables are defined. Replace the following example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>CEPH_KEY=$($CEPH_SSH "cat /etc/ceph/ceph.client.openstack.keyring | base64 -w 0")
-CEPH_CONF=$($CEPH_SSH "cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
+<pre>CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
+CEPH_KEY=$($CEPH_SSH "sudo cat /etc/ceph/ceph.client.openstack.keyring | base64 -w 0")
+CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
 </div>
 </div>
 </li>
@@ -220,7 +149,7 @@ CEPH_CONF=$($CEPH_SSH "cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
 <p>Create the <code>ceph-conf-files</code> secret that includes the {Ceph} configuration:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   ceph.client.openstack.keyring: $CEPH_KEY
@@ -268,7 +197,7 @@ stringData:
 <p>In your <code>OpenStackControlPlane</code> CR, inject <code>ceph.conf</code> and <code>ceph.client.openstack.keyring</code> to the {OpenStackShort} services that are defined in the propagation list. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   extraMounts:
     - name: v1
@@ -278,7 +207,6 @@ spec:
           - CinderVolume
           - CinderBackup
           - GlanceAPI
-          - ManilaShare
           extraVolType: Ceph
           volumes:
           - name: ceph

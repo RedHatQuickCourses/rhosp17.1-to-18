@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -186,13 +124,13 @@
 <p>If the service and endpoints do not exist, create the missing swift resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh openstackclient openstack service create --name swift --description 'OpenStack Object Storage' object-store
-$ oc rsh openstackclient openstack role add --user swift --project service member
-$ oc rsh openstackclient openstack role add --user swift --project service admin
-$ for i in public internal; do
+<pre>oc rsh openstackclient openstack service create --name swift --description 'OpenStack Object Storage' object-store
+oc rsh openstackclient openstack role add --user swift --project service member
+oc rsh openstackclient openstack role add --user swift --project service admin
+for i in public internal; do
       oc rsh openstackclient endpoint create --region regionOne object-store $i http://&lt;RGW_VIP&gt;:8080/swift/v1/AUTH_%\(tenant_id\)s
   done
-$ oc rsh openstackclient openstack role add --project admin --user admin swiftoperator</pre>
+oc rsh openstackclient openstack role add --project admin --user admin swiftoperator</pre>
 </div>
 </div>
 <div class="ulist">
@@ -207,9 +145,9 @@ $ oc rsh openstackclient openstack role add --project admin --user admin swiftop
 <p>If the endpoints exist, update the endpoints to point to the right RGW ingress VIP:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh openstackclient openstack endpoint set --url http://&lt;RGW_VIP&gt;:8080/swift/v1/AUTH_%\(tenant_id\)s &lt;swift_public_endpoint_uuid&gt;
-$ oc rsh openstackclient openstack endpoint set --url http://&lt;RGW_VIP&gt;:8080/swift/v1/AUTH_%\(tenant_id\)s &lt;swift_internal_endpoint_uuid&gt;
-$ oc rsh openstackclient openstack endpoint list | grep object
+<pre>oc rsh openstackclient openstack endpoint set --url http://&lt;RGW_VIP&gt;:8080/swift/v1/AUTH_%\(tenant_id\)s &lt;swift_public_endpoint_uuid&gt;
+oc rsh openstackclient openstack endpoint set --url http://&lt;RGW_VIP&gt;:8080/swift/v1/AUTH_%\(tenant_id\)s &lt;swift_internal_endpoint_uuid&gt;
+oc rsh openstackclient openstack endpoint list | grep object
 | 0d682ad71b564cf386f974f90f80de0d | regionOne | swift        | object-store | True    | public    | http://172.18.0.100:8080/swift/v1/AUTH_%(tenant_id)s    |
 | b311349c305346f39d005feefe464fb1 | regionOne | swift        | object-store | True    | internal  | http://172.18.0.100:8080/swift/v1/AUTH_%(tenant_id)s    |</pre>
 </div>
@@ -229,7 +167,7 @@ $ oc rsh openstackclient openstack endpoint list | grep object
 <p>Test the migrated service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc rsh openstackclient openstack container list --debug
+<pre>oc rsh openstackclient openstack container list --debug
 
 ...
 ...

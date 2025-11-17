@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -225,14 +163,14 @@ To enable the metadata services of a local cell, set the <code>enabled</code> pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ rm -f celltemplates
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
- $ cat &gt;&gt; celltemplates &lt;&lt; EOF
+ cat &gt;&gt; celltemplates &lt;&lt; EOF
         ${CELL}:
-          hasAPIAccess: true <i class="conum" data-value="1"></i><b>(1)</b>
+          hasAPIAccess: true
           cellDatabaseAccount: nova-$CELL
-          cellDatabaseInstance: openstack-$CELL <i class="conum" data-value="2"></i><b>(2)</b>
-          cellMessageBusInstance: rabbitmq-$CELL <i class="conum" data-value="3"></i><b>(3)</b>
+          cellDatabaseInstance: openstack-$CELL
+          cellMessageBusInstance: rabbitmq-$CELL
           metadataServiceTemplate:
             enabled: false
             override:
@@ -241,7 +179,7 @@ for CELL in $(echo $RENAMED_CELLS); do
                     annotations:
                       metallb.universe.tf/address-pool: internalapi
                       metallb.universe.tf/allow-shared-ip: internalapi
-                      metallb.universe.tf/loadBalancerIPs: 172.17.0.$(( 79 + ${CELL##*cell} ))
+                      metallb.universe.tf/loadBalancerIPs: 192.168.52.$(( 88 + ${CELL##*cell} ))
                   spec:
                     type: LoadBalancer
             customServiceConfig: |
@@ -254,7 +192,7 @@ for CELL in $(echo $RENAMED_CELLS); do
 EOF
 done
 
-$ cat &gt; oscp-patch.yaml &lt;&lt; EOF
+cat &gt; oscp-patch.yaml &lt;&lt; EOF
 spec:
   nova:
     enabled: true
@@ -271,7 +209,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="4"></i><b>(4)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
         customServiceConfig: |
@@ -285,7 +223,7 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
         customServiceConfig: |
@@ -306,61 +244,12 @@ spec:
               [workarounds]
               disable_compute_service_check_for_ffu=true
 EOF
-$ cat celltemplates &gt;&gt; oscp-patch.yaml
-$ oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml</code></pre>
+cat celltemplates &gt;&gt; oscp-patch.yaml
+oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In the source cloud, cells are always configured with the main Nova API database upcall access. You can disable upcall access to the API by setting <code>hasAPIAccess</code> to <code>false</code>. However, do not make changes to the API during adoption.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The database instance that is used by the cell. The database instance names must match the names that are defined in the <code>OpenStackControlPlane</code> CR that you created in when you deployed the back-end services as described in <a href="#deploying-backend-services__migrating-databases">Deploying back-end services</a>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The message bus instance that is used by the cell. The message bus instance names must match the names that are defined in the <code>OpenStackControlPlane</code> CR.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
-</tr>
-</table>
 </div>
 </li>
-<li>
-<p>If you are adopting the {compute_service} with the {bare_metal_first_ref}, append the <code>novaComputeTemplates</code> field with the following content in each cell in the {compute_service} CR patch. For example:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">        cell1:
-          novaComputeTemplates:
-            standalone:
-              customServiceConfig: |
-                [DEFAULT]
-                host = &lt;hostname&gt;
-                [workarounds]
-                disable_compute_service_check_for_ffu=true
-              computeDriver: ironic.IronicDriver
-        ...</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;hostname&gt;</code> with the hostname of the node that is running the <code>ironic</code> Compute driver in the source cloud.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Wait for the CRs for the Compute control plane services to be ready:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc wait --for condition=Ready --timeout=300s Nova/nova</pre>
-</div>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -375,9 +264,6 @@ Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for al
 </tr>
 </table>
 </div>
-</li>
-</ol>
-</div>
 <div class="ulist">
 <div class="title">Verification</div>
 <ul>
@@ -386,8 +272,8 @@ Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for al
 control plane FQDNs, and that the Nova API responds:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list | grep nova
-$ openstack server list</pre>
+<pre>openstack endpoint list | grep nova
+openstack server list</pre>
 </div>
 </div>
 <div class="ulist">
@@ -402,7 +288,7 @@ $ openstack server list</pre>
 <p>Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for CELL in $(echo $CELLS); do
+<pre>for CELL in $(echo $CELLS); do
   set +u
   . ~/.source_cloud_exported_variables_$CELL
   set -u
@@ -411,7 +297,7 @@ $ openstack server list</pre>
 
   echo "comparing $CELL to $RCELL"
   echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
-$ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
 done</pre>
 </div>
 </div>

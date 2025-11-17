@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -208,22 +146,11 @@
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Create a new file, for example, <code>cinder_api.patch</code>, and apply the configuration:</p>
+<p>Create a new file, for example, <code>cinder_api.patch</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;patch_name&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;patch_name&gt;</code> with the name of your patch file.</p>
-<div class="paragraph">
-<p>The following example shows a <code>cinder_api.patch</code> file:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cat &lt;&lt; EOF &gt; cinder_api.patch
+spec:
   extraMounts:
   - extraVol:
     - extraVolType: Ceph
@@ -257,7 +184,7 @@
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <i class="conum" data-value="1"></i><b>(1)</b>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
         replicas: 1
@@ -267,40 +194,35 @@
       cinderScheduler:
         replicas: 0
       cinderBackup:
-        networkAttachments:
-        - storage
         replicas: 0
       cinderVolumes:
         ceph:
-          networkAttachments:
-          - storage
-          replicas: 0</code></pre>
+          replicas: 0
+EOF</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, <code>metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80</code>.</td>
-</tr>
-</table>
 </div>
 </li>
-</ul>
+<li>
+<p>Apply the configuration::</p>
+<div class="listingblock">
+<div class="content">
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</pre>
+</div>
 </div>
 </li>
 <li>
 <p>Retrieve the list of the previous scheduler and backup services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack volume service list
+<pre>openstack volume service list
 
 +------------------+------------------------+------+---------+-------+----------------------------+
 | Binary           | Host                   | Zone | Status  | State | Updated At                 |
 +------------------+------------------------+------+---------+-------+----------------------------+
-| cinder-scheduler | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
-| cinder-backup    | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
-| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
+| cinder-scheduler | overcloud-controller-0 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-1 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-2 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 +------------------+------------------------+------+---------+-------+----------------------------+</pre>
 </div>
 </div>
@@ -309,18 +231,11 @@
 <p>Remove services for hosts that are in the <code>down</code> state:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove &lt;service_binary&gt; &lt;service_host&gt;</pre>
+<pre>oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-2
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</pre>
 </div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;service_binary&gt;</code> with the name of the binary, for example, <code>cinder-backup</code>.</p>
-</li>
-<li>
-<p>Replace <code>&lt;service_host&gt;</code> with the host name, for example, <code>cinder-backup-0</code>.</p>
-</li>
-</ul>
 </div>
 </li>
 <li>
@@ -331,37 +246,17 @@
 <p>Create another file, for example, <code>cinder_services.patch</code>, and apply the configuration:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;patch_name&gt;</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Replace <code>&lt;patch_name&gt;</code> with the name of your patch file.</p>
-</li>
-<li>
-<p>The following example shows a <code>cinder_services.patch</code> file for a Ceph RBD deployment:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cat &lt;&lt; EOF &gt; cinder_services.patch
+spec:
   cinder:
     enabled: true
     template:
       cinderScheduler:
         replicas: 1
       cinderBackup:
-        networkAttachments:
-        - storage
-        replicas: 1
-        customServiceConfig: |
-          [DEFAULT]
-          backup_driver=cinder.backup.drivers.ceph.CephBackupDriver
-          backup_ceph_conf=/etc/ceph/ceph.conf
-          backup_ceph_user=openstack
-          backup_ceph_pool=backups
+        replicas: 0
       cinderVolumes:
         ceph:
-          networkAttachments:
-          - storage
           replicas: 1
           customServiceConfig: |
             [tripleo_ceph]
@@ -372,168 +267,8 @@
             rbd_user=openstack
             rbd_pool=volumes
             rbd_flatten_volume_from_snapshot=False
-            report_discard_supported=True</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Ensure that you use the same configuration group name for the driver that you used in the source cluster. In this example, the driver configuration group in <code>customServiceConfig</code> is called <code>tripleo_ceph</code> because it reflects the value of the configuration group name in the <code>cinder.conf</code> file of the source OpenStack cluster.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Configure the NetApp NFS Block Storage volume service:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp NFS storage. You can find the credentials in the <code>cinder.conf</code> file that was generated from the {OpenStackPreviousInstaller} deployment:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    service: cinder
-    component: cinder-volume
-  name: cinder-volume-ontap-secrets
-type: Opaque
-stringData:
-  ontap-cinder-secrets: |
-    [tripleo_netapp]
-    netapp_login= netapp_username
-    netapp_password= netapp_password
-    netapp_vserver= netapp_vserver
-    nas_host= netapp_nfsip
-    nas_share_path=/netapp_nfspath
-    netapp_pool_name_search_pattern=(netapp_poolpattern)
-EOF</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Patch the <code>OpenStackControlPlane</code> CR to deploy NetApp NFS Block Storage volume back end:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;cinder_netappNFS.patch&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;cinder_netappNFS.patch&gt;</code> with the name of the patch file for your NetApp NFS Block Storage volume back end.</p>
-<div class="paragraph">
-<p>The following example shows a <code>cinder_netappNFS.patch</code> file that configures a NetApp NFS Block Storage volume service:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
-  cinder:
-    enabled: true
-    template:
-      cinderVolumes:
-        ontap-nfs:
-          networkAttachments:
-            - storage
-          customServiceConfig: |
-            [tripleo_netapp]
-            volume_backend_name=ontap-nfs
-            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
-            nfs_snapshot_support=true
-            nas_secure_file_operations=false
-            nas_secure_file_permissions=false
-            netapp_server_hostname= netapp_backendip
-            netapp_server_port=80
-            netapp_storage_protocol=nfs
-            netapp_storage_family=ontap_cluster
-          customServiceConfigSecrets:
-          - cinder-volume-ontap-secrets</code></pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Configure the NetApp iSCSI Block Storage volume service:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp iSCSI storage. You can find the credentials in the <code>cinder.conf</code> file that was generated from the {OpenStackPreviousInstaller} deployment:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    service: cinder
-    component: cinder-volume
-  name: cinder-volume-ontap-secrets
-type: Opaque
-stringData:
-  ontap-cinder-secrets: |
-    [tripleo_netapp]
-    netapp_server_hostname = netapp_host
-    netapp_login = netapp_username
-    netapp_password = netapp_password
-    netapp_vserver = netapp_vserver
-    netapp_pool_name_search_pattern=(netapp_poolpattern)
-EOF</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Patch the <code>OpenStackControlPlane</code> custom resource (CR) to deploy the NetApp iSCSI Block Storage volume back end:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc patch openstackcontrolplane openstack --type=merge --patch-file=&lt;cinder_netappISCSI.patch&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;cinder_netappISCSI.patch&gt;</code> with the name of the patch file for your NetApp iSCSI Block Storage volume back end.</p>
-<div class="paragraph">
-<p>The following example shows a <code>cinder_netappISCSI.patch</code> file that configures a NetApp iSCSI Block Storage volume service:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spec:
-  cinder:
-    enabled: true
-    template:
-      cinderVolumes:
-        ontap-iscsi:
-          networkAttachments:
-            - storage
-          customServiceConfig: |
-            [tripleo_netapp]
-            volume_backend_name=ontap-iscsi
-            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
-            netapp_storage_protocol=iscsi
-            netapp_storage_family=ontap_cluster
-            consistencygroup_support=True
-          customServiceConfigSecrets:
-            - cinder-volume-ontap-secrets</pre>
+            report_discard_supported=True
+EOF</code></pre>
 </div>
 </div>
 </li>
@@ -541,18 +276,10 @@ EOF</pre>
 </div>
 </li>
 <li>
-<p>Check if all the services are up and running:</p>
+<p>Apply the configuration::</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack volume service list
-
-+------------------+--------------------------+------+---------+-------+----------------------------+
-| Binary           | Host                     | Zone | Status  | State | Updated At                 |
-+------------------+--------------------------+------+---------+-------+----------------------------+
-| cinder-volume    | hostgroup@tripleo_netapp | nova | enabled | up    | 2023-06-28T17:00:03.000000 |
-| cinder-scheduler | cinder-scheduler-0       | nova | enabled | up    | 2023-06-28T17:00:02.000000 |
-| cinder-backup    | cinder-backup-0          | nova | enabled | up    | 2023-06-28T17:00:01.000000 |
-+------------------+--------------------------+------+---------+-------+----------------------------+</pre>
+<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</pre>
 </div>
 </div>
 </li>
@@ -574,7 +301,7 @@ EOF</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</pre>
+<pre>oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</pre>
 </div>
 </div>
 </li>
@@ -587,7 +314,7 @@ EOF</pre>
 <p>Ensure that the <code>openstack</code> alias is defined:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
 </div>
 </div>
 </li>
@@ -595,7 +322,7 @@ EOF</pre>
 <p>Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack endpoint list --service &lt;endpoint&gt;</pre>
+<pre>openstack endpoint list --service cinderv3</pre>
 </div>
 </div>
 <div class="ulist">
@@ -610,7 +337,7 @@ EOF</pre>
 <p>Confirm that the Block Storage services are running:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack volume service list</pre>
+<pre>openstack volume service list</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -630,10 +357,9 @@ Cinder API services do not appear in the list. However, if you get a response fr
 <p>Confirm that you have your previous volume types, volumes, snapshots, and backups:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack volume type list
-$ openstack volume list
-$ openstack volume snapshot list
-$ openstack volume backup list</pre>
+<pre>openstack volume type list
+openstack volume list
+openstack volume snapshot list</pre>
 </div>
 </div>
 </li>
@@ -645,7 +371,7 @@ $ openstack volume backup list</pre>
 <p>Create a volume from an image to check that the connection to {image_service_first_ref} is working:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack volume create --image cirros --bootable --size 1 disk_new</pre>
+<pre>openstack volume create --image cirros --bootable --size 1 disk_new</pre>
 </div>
 </div>
 </li>
@@ -653,7 +379,7 @@ $ openstack volume backup list</pre>
 <p>Back up the previous attached volume:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</pre>
+<pre>openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</pre>
 </div>
 </div>
 <div class="ulist">

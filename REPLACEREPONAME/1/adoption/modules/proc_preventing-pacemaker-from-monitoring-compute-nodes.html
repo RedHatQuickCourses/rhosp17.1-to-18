@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -177,7 +115,7 @@
 <p>Retrieve the names of the Compute remote resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo pcs stonith |grep -B1 stonith-fence_compute-fence-nova |grep Target |awk -F ': ' '{print $2}'</pre>
+<pre>sudo pcs stonith |grep -B1 stonith-fence_compute-fence-nova |grep Target |awk -F ': ' '{print $2}'</pre>
 </div>
 </div>
 </li>
@@ -185,8 +123,8 @@
 <p>Disable the stonith and <code>pacemaker_remote</code> resources on each Compute remote resource:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo pcs property set stonith-enabled=false
-$ sudo pcs resource disable &lt;compute_remote_resource&gt;</pre>
+<pre>sudo pcs property set stonith-enabled=false
+sudo pcs resource disable &lt;compute_remote_resource&gt;</pre>
 </div>
 </div>
 <div class="ulist">
@@ -201,7 +139,7 @@ $ sudo pcs resource disable &lt;compute_remote_resource&gt;</pre>
 <p>Retrieve the name of the Compute stonith resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo pcs stonith |grep Level |grep fence_compute |awk '{print $4}' |awk -F ',' '{print $1}' |sort |uniq</pre>
+<pre>sudo pcs stonith |grep Level |grep fence_compute |awk '{print $4}' |awk -F ',' '{print $1}' |sort |uniq</pre>
 </div>
 </div>
 </li>
@@ -209,9 +147,9 @@ $ sudo pcs resource disable &lt;compute_remote_resource&gt;</pre>
 <p>Remove the Compute node <code>pacemaker_remote</code> and fencing resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo pcs stonith disable &lt;compute_stonith_resource&gt;
-$ sudo pcs stonith delete &lt;compute_stonith_resource&gt;
-$ sudo pcs resource delete &lt;compute_remote_resource&gt;</pre>
+<pre>sudo pcs stonith disable &lt;compute_stonith_resource&gt;
+sudo pcs stonith delete &lt;compute_stonith_resource&gt;
+sudo pcs resource delete &lt;compute_remote_resource&gt;</pre>
 </div>
 </div>
 <div class="ulist">

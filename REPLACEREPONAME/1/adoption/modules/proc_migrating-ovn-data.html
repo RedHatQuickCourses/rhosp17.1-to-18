@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -192,8 +130,9 @@
 <p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>SOURCE_OVSDB_IP=172.17.0.100 # For IPv4
-SOURCE_OVSDB_IP=[fd00:bbbb::100] # For IPv6</pre>
+<pre>STORAGE_CLASS=nfs-storage
+OVSDB_IMAGE=registry.redhat.io/rhoso/openstack-ovn-base-rhel9:18.0
+SOURCE_OVSDB_IP=192.168.52.16</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -201,7 +140,7 @@ SOURCE_OVSDB_IP=[fd00:bbbb::100] # For IPv6</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ grep -rI 'ovn_[ns]b_conn' /var/lib/config-data/puppet-generated/</pre>
+<pre>grep -rI 'ovn_[ns]b_conn' /var/lib/config-data/puppet-generated/</pre>
 </div>
 </div>
 </li>
@@ -214,7 +153,7 @@ SOURCE_OVSDB_IP=[fd00:bbbb::100] # For IPv6</pre>
 <p>Prepare a temporary <code>PersistentVolume</code> claim and the helper pod for the OVN backup. Adjust the storage requests for a large database, if needed:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -280,16 +219,7 @@ EOF</code></pre>
 <p>Wait for the pod to be ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for=condition=Ready pod/ovn-copy-data --timeout=30s</pre>
-</div>
-</div>
-</li>
-<li>
-<p>If the podified internalapi cidr is different than the source internalapi cidr, add an iptables accept rule on the Controller nodes:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ $CONTROLLER1_SSH sudo iptables -I INPUT -s {PODIFIED_INTERNALAPI_NETWORK} -p tcp -m tcp --dport 6641 -m conntrack --ctstate NEW -j ACCEPT
-$ $CONTROLLER1_SSH sudo iptables -I INPUT -s {PODIFIED_INTERNALAPI_NETWORK} -p tcp -m tcp --dport 6642 -m conntrack --ctstate NEW -j ACCEPT</pre>
+<pre>oc wait --for=condition=Ready pod/ovn-copy-data --timeout=30s</pre>
 </div>
 </div>
 </li>
@@ -301,17 +231,8 @@ $ $CONTROLLER1_SSH sudo iptables -I INPUT -s {PODIFIED_INTERNALAPI_NETWORK} -p t
 <p>If you did not enable TLS everywhere, run the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</pre>
-</div>
-</div>
-</li>
-<li>
-<p>If you enabled TLS everywhere, run the following command:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client backup --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client backup --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</pre>
+<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
+oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</pre>
 </div>
 </div>
 </li>
@@ -322,7 +243,7 @@ $ oc exec ovn-copy-data -- bash -c "ovsdb-client backup --ca-cert=/etc/pki/tls/m
 <p>Start the control plane OVN database services prior to import, with <code>northd</code> disabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ovn:
     enabled: true
@@ -348,8 +269,8 @@ spec:
 <p>Wait for the OVN database services to reach the <code>Running</code> phase:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-nb
-$ oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-sb</pre>
+<pre>oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-nb
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-sb</pre>
 </div>
 </div>
 </li>
@@ -363,15 +284,6 @@ PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name
 </div>
 </li>
 <li>
-<p>If you are  using IPv6, adjust the address to the format expected by <code>ovsdb-*</code> tools:</p>
-<div class="listingblock">
-<div class="content">
-<pre>PODIFIED_OVSDB_NB_IP=[$PODIFIED_OVSDB_NB_IP]
-PODIFIED_OVSDB_SB_IP=[$PODIFIED_OVSDB_SB_IP]</pre>
-</div>
-</div>
-</li>
-<li>
 <p>Upgrade the database schema for the backup files:</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -379,17 +291,8 @@ PODIFIED_OVSDB_SB_IP=[$PODIFIED_OVSDB_SB_IP]</pre>
 <p>If you did not enable TLS everywhere, use the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</pre>
-</div>
-</div>
-</li>
-<li>
-<p>If you enabled TLS everywhere, use the following command:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</pre>
+<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
+oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</pre>
 </div>
 </div>
 </li>
@@ -404,17 +307,8 @@ $ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema --ca-cert=/etc/pki/t
 <p>If you did not enable TLS everywhere, use the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</pre>
-</div>
-</div>
-</li>
-<li>
-<p>If you enabled TLS everywhere, use the following command:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ oc exec ovn-copy-data -- bash -c "ovsdb-client restore --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
-$ oc exec ovn-copy-data -- bash -c "ovsdb-client restore --ca-cert=/etc/pki/tls/misc/ca.crt --private-key=/etc/pki/tls/misc/tls.key --certificate=/etc/pki/tls/misc/tls.crt ssl:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</pre>
+<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
+oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</pre>
 </div>
 </div>
 </li>
@@ -425,8 +319,8 @@ $ oc exec ovn-copy-data -- bash -c "ovsdb-client restore --ca-cert=/etc/pki/tls/
 <p>Check that the data was successfully migrated by running the following commands against the new database servers, for example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc exec -it ovsdbserver-nb-0 -- ovn-nbctl show
-$ oc exec -it ovsdbserver-sb-0 -- ovn-sbctl list Chassis</pre>
+<pre>oc exec -it ovsdbserver-nb-0 -- ovn-nbctl show
+oc exec -it ovsdbserver-sb-0 -- ovn-sbctl list Chassis</pre>
 </div>
 </div>
 </li>
@@ -434,7 +328,7 @@ $ oc exec -it ovsdbserver-sb-0 -- ovn-sbctl list Chassis</pre>
 <p>Start the control plane <code>ovn-northd</code> service to keep both OVN databases in sync:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ovn:
     enabled: true
@@ -446,46 +340,11 @@ spec:
 </div>
 </li>
 <li>
-<p>If you are running OVN gateway services on {OpenShiftShort} nodes, enable the control plane <code>ovn-controller</code> service:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$ oc patch openstackcontrolplane openstack --type=merge --patch '
-spec:
-  ovn:
-    enabled: true
-    template:
-      ovnController:
-        nicMappings:
-          physNet: NIC <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>physNet</code> is the name of your physical network. <code>NIC</code> is the name of the physical interface that is connected to your physical network.</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Running OVN gateways on {OpenShiftShort} nodes might be prone to data plane downtime during Open vSwitch upgrades. Consider running OVN gateways on dedicated <code>Networker</code> data plane nodes for production deployments instead.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
 <p>Delete the <code>ovn-data</code> helper pod and the temporary <code>PersistentVolumeClaim</code> that is used to store OVN database backup files:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete --ignore-not-found=true pod ovn-copy-data
-$ oc delete --ignore-not-found=true pvc ovn-data</pre>
+<pre>oc delete --ignore-not-found=true pod ovn-copy-data
+oc delete --ignore-not-found=true pvc ovn-data</pre>
 </div>
 </div>
 <div class="admonitionblock note">

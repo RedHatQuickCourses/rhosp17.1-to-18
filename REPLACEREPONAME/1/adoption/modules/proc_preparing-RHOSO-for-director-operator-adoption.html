@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -193,7 +131,7 @@
 <p>Save the hostnames of the remaining two nodes to the <code>RHOSO_NODES</code> variable:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ RHOSO_NODES=$(oc get nodes -o name | grep -v $CONTROLLER_NODE | sed 's#node/##g' | tr '\n' ' ')</pre>
+<pre>RHOSO_NODES=$(oc get nodes -o name | grep -v $CONTROLLER_NODE | sed 's#node/##g' | tr '\n' ' ')</pre>
 </div>
 </div>
 </li>
@@ -201,10 +139,10 @@
 <p>Extract nodes to be used for {rhos_acro} installation and label nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ export RHOSO18_NODE1=$(echo "${RHOSO_NODES}" | cut -d ' ' -f 1)
-$ export RHOSO18_NODE2=$(echo "${RHOSO_NODES}" | cut -d ' ' -f 2)
-$ oc label nodes "${RHOSO18_NODE1}" type=openstack
-$ oc label nodes "${RHOSO18_NODE2}" type=openstack</pre>
+<pre>export RHOSO18_NODE1=$(echo "${RHOSO_NODES}" | cut -d ' ' -f 1)
+export RHOSO18_NODE2=$(echo "${RHOSO_NODES}" | cut -d ' ' -f 2)
+oc label nodes "${RHOSO18_NODE1}" type=openstack
+oc label nodes "${RHOSO18_NODE2}" type=openstack</pre>
 </div>
 </div>
 </li>
@@ -212,7 +150,7 @@ $ oc label nodes "${RHOSO18_NODE2}" type=openstack</pre>
 <p>Create a new namespace to use to install {rhos_acro}. You must install {rhos_acro} in a different namespace from director Operator (OSPdO):</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get namespace ${RHOSO18_NAMESPACE} 2&gt;/dev/null || {
+<pre>oc get namespace ${RHOSO18_NAMESPACE} 2&gt;/dev/null || {
     oc create namespace ${RHOSO18_NAMESPACE} || {
         echo "Failed to create namespace ${RHOSO18_NAMESPACE}"
         exit 1
@@ -238,7 +176,7 @@ The node network configuration policies use the <code>nodeSelector</code> attrib
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
@@ -369,7 +307,7 @@ EOF</pre>
 <p>Apply a <code>NetworkAttachmentDefinition</code> custom resource for {rhos_acro} for each isolated network to attach the service pods to the networks:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
@@ -498,7 +436,7 @@ EOF</pre>
 <p>Ensure that the <code>OVNKubernetes IPForwarding</code> field is set to to <code>enabled</code>:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge</pre>
+<pre>oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge</pre>
 </div>
 </div>
 </li>
@@ -506,7 +444,7 @@ EOF</pre>
 <p>Extract and save passwords from OSPdO:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc get secret tripleo-passwords -n $OSPDO_NAMESPACE -o json | jq -r '.data["tripleo-overcloud-passwords.yaml"]' | base64 -d &gt;"${PASSWORD_FILE}" || {
+<pre>oc get secret tripleo-passwords -n $OSPDO_NAMESPACE -o json | jq -r '.data["tripleo-overcloud-passwords.yaml"]' | base64 -d &gt;"${PASSWORD_FILE}" || {
     echo "ERROR: Failed to extract passwords from OSPdO"
     exit 1
 }</pre>
@@ -520,7 +458,7 @@ EOF</pre>
 <p>Apply the <code>IPAddressPool</code> resource that matches the new OpenStack 18 deployment to configure which IPs can be used as virtual IPs (VIPs):</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc apply -f - &lt;&lt;EOF
+<pre>oc apply -f - &lt;&lt;EOF
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 ...</pre>
@@ -531,7 +469,7 @@ kind: IPAddressPool
 <p>Apply the <code>L2Advertisement</code> resource to define how the VIPs are announced:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF | oc apply -f -
+<pre>cat &lt;&lt; EOF | oc apply -f -
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement</pre>
 </div>

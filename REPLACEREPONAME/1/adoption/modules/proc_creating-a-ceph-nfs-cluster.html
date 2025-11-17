@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -255,7 +193,7 @@ to include an interface that connects to the <code>StorageNFS</code> network:</p
 <p>Update the {CephCluster} nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack overcloud node provision \
+<pre>openstack overcloud node provision \
     --stack overcloud   \
     --network-config -y  \
     -o overcloud-baremetal-deployed-storage_nfs.yaml \
@@ -275,7 +213,7 @@ to include an interface that connects to the <code>StorageNFS</code> network:</p
 address (VIP) for the Ceph NFS service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ openstack port list -c "Fixed IP Addresses" --network storage_nfs</pre>
+<pre>openstack port list -c "Fixed IP Addresses" --network storage_nfs</pre>
 </div>
 </div>
 </li>
@@ -283,7 +221,7 @@ address (VIP) for the Ceph NFS service:</p>
 <p>In a running <code>cephadm</code> shell, identify the hosts for the NFS service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ceph orch host ls</pre>
+<pre>ceph orch host ls</pre>
 </div>
 </div>
 </li>
@@ -291,7 +229,7 @@ address (VIP) for the Ceph NFS service:</p>
 <p>Label each host that you identified. Repeat this command for each host that you want to label:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ceph orch host label add &lt;hostname&gt; nfs</pre>
+<pre>ceph orch host label add &lt;hostname&gt; nfs</pre>
 </div>
 </div>
 <div class="ulist">
@@ -306,7 +244,7 @@ address (VIP) for the Ceph NFS service:</p>
 <p>Create the NFS cluster:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ceph nfs cluster create cephfs \
+<pre>ceph nfs cluster create cephfs \
     "label:nfs" \
     --ingress \
     --virtual-ip=&lt;VIP&gt; \
@@ -341,8 +279,8 @@ For more information on deploying the clustered Ceph NFS service, see the
 <p>Check the status of the NFS cluster:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ceph nfs cluster ls
-$ ceph nfs cluster info cephfs</pre>
+<pre>ceph nfs cluster ls
+ceph nfs cluster info cephfs</pre>
 </div>
 </div>
 </li>

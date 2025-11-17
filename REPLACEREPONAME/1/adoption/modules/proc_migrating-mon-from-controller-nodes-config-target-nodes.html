@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -191,7 +129,7 @@
 reach a Ceph Monitor service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for port in 3300 6789; {
+<pre>for port in 3300 6789; {
     ssh heat-admin@&lt;target_node&gt; sudo iptables -I INPUT \
     -p tcp -m tcp --dport $port -m conntrack --ctstate NEW \
     -j ACCEPT;
@@ -210,8 +148,8 @@ reach a Ceph Monitor service:</p>
 <p>Check that the rules are properly applied to the target node and persist them:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo iptables-save
-$ sudo systemctl restart iptables</pre>
+<pre>sudo iptables-save
+sudo systemctl restart iptables</pre>
 </div>
 </div>
 </li>
@@ -232,7 +170,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6789,3300,9100 } ct state new cou
 <p>Restart the <code>nftables</code> service:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo systemctl restart nftables</pre>
+<pre>sudo systemctl restart nftables</pre>
 </div>
 </div>
 </li>
@@ -240,7 +178,7 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6789,3300,9100 } ct state new cou
 <p>Verify that the rules are applied:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo nft list ruleset | grep ceph_mon</pre>
+<pre>sudo nft list ruleset | grep ceph_mon</pre>
 </div>
 </div>
 </li>
@@ -248,9 +186,9 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6789,3300,9100 } ct state new cou
 <p>To migrate the existing Ceph Monitors to the target {Ceph} nodes, retrieve the {Ceph} mon spec from the first Ceph Monitor, or the first Controller node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ mkdir -p ${SPEC_DIR}
-$ sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+mkdir -p ${SPEC_DIR}
+sudo cephadm shell -- ceph orch ls --export mon &gt; ${SPEC_DIR}/mon</pre>
 </div>
 </div>
 </li>
@@ -272,8 +210,8 @@ placement:
 <p>Apply the spec with <code>cephadm</code> by using the Ceph Orchestrator:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
+<pre>SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mon -- ceph orch apply -i /mnt/mon</pre>
 </div>
 </div>
 </li>
@@ -308,7 +246,7 @@ Perform this step only once to avoid multiple iterations when multiple Ceph Moni
 Ensure that Ceph Monitors are in a quorum and listed by the <code>ceph orch</code> command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph -s
+<pre>sudo cephadm shell -- ceph -s
   cluster:
     id:     f6ec3ebe-26f7-56c8-985d-eb974e8e08e3
     health: HEALTH_OK
@@ -327,7 +265,7 @@ Ensure that Ceph Monitors are in a quorum and listed by the <code>ceph orch</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -- ceph orch host ls
+<pre>sudo cephadm shell -- ceph orch host ls
 HOST              ADDR           LABELS          STATUS
 ceph-0        192.168.24.14  osd mon mgr _admin
 ceph-1        192.168.24.7   osd mon mgr _admin
@@ -349,8 +287,8 @@ node is decommissioned:</p>
 <p>Back up the content of <code>/etc/ceph</code> in the <code>ceph_client_backup</code> directory.</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ mkdir -p $HOME/ceph_client_backup
-$ sudo cp -R /etc/ceph/* $HOME/ceph_client_backup</pre>
+<pre>mkdir -p $HOME/ceph_client_backup
+sudo cp -R /etc/ceph/* $HOME/ceph_client_backup</pre>
 </div>
 </div>
 </li>
@@ -364,7 +302,7 @@ that can be statically assigned to <code>controller-0</code>.</p>
 <p>Save the file and refresh the <code>controller-0</code> network configuration:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo os-net-config -c /etc/os-net-config/config.yaml</pre>
+<pre>sudo os-net-config -c /etc/os-net-config/config.yaml</pre>
 </div>
 </div>
 </li>
@@ -372,7 +310,7 @@ that can be statically assigned to <code>controller-0</code>.</p>
 <p>Verify that the IP address is present in the Controller node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ip -o a | grep 172.17.3.200</pre>
+<pre>ip -o a | grep 172.17.3.200</pre>
 </div>
 </div>
 </li>
@@ -380,7 +318,7 @@ that can be statically assigned to <code>controller-0</code>.</p>
 <p>Ping the IP address and confirm that it is reachable:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ping -c 3 172.17.3.200</pre>
+<pre>ping -c 3 172.17.3.200</pre>
 </div>
 </div>
 </li>
@@ -388,7 +326,7 @@ that can be statically assigned to <code>controller-0</code>.</p>
 <p>Verify that you can interact with the {Ceph} cluster:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ sudo cephadm shell -c $HOME/ceph_client_backup/ceph.conf -k $HOME/ceph_client_backup/ceph.client.admin.keyring -- ceph -s</pre>
+<pre>sudo cephadm shell -c $HOME/ceph_client_backup/ceph.conf -k $HOME/ceph_client_backup/ceph.client.admin.keyring -- ceph -s</pre>
 </div>
 </div>
 </li>

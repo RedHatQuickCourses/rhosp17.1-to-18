@@ -66,68 +66,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../LABENV/index.html">Lab Environment</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter1/index.html">Chapter 1</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section2.html">Section 2</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter1/section3.html">Section 3</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter2/index.html">Chapter 2</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter2/section1.html">Section 1</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../../chapter3/index.html">Chapter 3</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section1.html">Section 1</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../../chapter3/section2.html">Section 2</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../../appendix/appendix.html">Appendix</a>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -278,8 +216,8 @@
 <p>Scale down the {rhos_acro} OpenStack Operator <code>controller-manager</code> to 0 replicas and temporarily delete the <code>OpenStackControlPlane</code> <code>OpenStackClient</code> pod, so that you can use the OSPdO <code>controller-manager</code> to clean up some of its resources. The cleanup is needed to avoid a pod name collision between the OSPdO OpenStackClient and the {rhos_acro} OpenStackClient.</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch csv -n openstack-operators openstack-operator.v1.0.5 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
-$ oc delete openstackclients.client.openstack.org --all</pre>
+<pre>oc patch csv -n openstack-operators openstack-operator.v1.0.5 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
+oc delete openstackclients.client.openstack.org --all</pre>
 </div>
 </div>
 <div class="ulist">
@@ -294,7 +232,7 @@ $ oc delete openstackclients.client.openstack.org --all</pre>
 <p>Delete the OSPdO <code>OpenStackControlPlane</code> custom resource (CR):</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete openstackcontrolplanes.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all</pre>
+<pre>oc delete openstackcontrolplanes.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all</pre>
 </div>
 </div>
 </li>
@@ -302,7 +240,7 @@ $ oc delete openstackclients.client.openstack.org --all</pre>
 <p>Delete the OSPdO <code>OpenStackNetConfig</code> CR to remove the associated node network configuration policies:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete osnetconfig -n "${OSPDO_NAMESPACE}" --all</pre>
+<pre>oc delete osnetconfig -n "${OSPDO_NAMESPACE}" --all</pre>
 </div>
 </div>
 </li>
@@ -310,7 +248,7 @@ $ oc delete openstackclients.client.openstack.org --all</pre>
 <p>Label the {OpenShiftShort} node that contains the OSPdO virtual machine (VM):</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc label nodes &lt;ospdo_vm_master_node&gt; type=openstack</pre>
+<pre>oc label nodes &lt;ospdo_vm_master_node&gt; type=openstack</pre>
 </div>
 </div>
 <div class="ulist">
@@ -325,7 +263,7 @@ $ oc delete openstackclients.client.openstack.org --all</pre>
 <p>Create a node network configuration policy for the third {OpenShiftShort} node. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cat &lt;&lt; EOF &gt; /tmp/node3_nncp.yaml
+<pre>cat &lt;&lt; EOF &gt; /tmp/node3_nncp.yaml
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
@@ -444,7 +382,7 @@ spec:
     node-role.kubernetes.io/worker: ""
 EOF
 
-$ oc apply -f /tmp/node3_nncp.yaml</pre>
+oc apply -f /tmp/node3_nncp.yaml</pre>
 </div>
 </div>
 </li>
@@ -452,7 +390,7 @@ $ oc apply -f /tmp/node3_nncp.yaml</pre>
 <p>Delete the remaining OSPdO resources. Do not delete the <code>OpenStackBaremetalSets</code> and <code>OpenStackProvisionServer</code> resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ for i in $(oc get crd | grep osp-director | grep -v baremetalset | grep -v provisionserver | awk {'print $1'}); do echo Deleting $i...; oc delete $i -n "${OSPDO_NAMESPACE}" --all; done</pre>
+<pre>for i in $(oc get crd | grep osp-director | grep -v baremetalset | grep -v provisionserver | awk {'print $1'}); do echo Deleting $i...; oc delete $i -n "${OSPDO_NAMESPACE}" --all; done</pre>
 </div>
 </div>
 </li>
@@ -460,8 +398,8 @@ $ oc apply -f /tmp/node3_nncp.yaml</pre>
 <p>Scale down OSPdO to 0 replicas:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ ospdo_csv_ver=$(oc get csv -n "${OSPDO_NAMESPACE}" -l operators.coreos.com/osp-director-operator.openstack -o json | jq -r '.items[0].metadata.name')
-$ oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"</pre>
+<pre>ospdo_csv_ver=$(oc get csv -n "${OSPDO_NAMESPACE}" -l operators.coreos.com/osp-director-operator.openstack -o json | jq -r '.items[0].metadata.name')
+oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"</pre>
 </div>
 </div>
 </li>
@@ -469,7 +407,7 @@ $ oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": 
 <p>Remove the webhooks from OSPdO:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}" --type json -p="[{"op": "remove", "path": "/spec/webhookdefinitions"}]"</pre>
+<pre>oc patch csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}" --type json -p="[{"op": "remove", "path": "/spec/webhookdefinitions"}]"</pre>
 </div>
 </div>
 </li>
@@ -477,7 +415,7 @@ $ oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": 
 <p>Remove the finalizer from the OSPdO <code>OpenStackBaremetalSet</code> resource:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" compute --type json -p="[{"op": "remove", "path": "/metadata/finalizers"}]"</pre>
+<pre>oc patch openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" compute --type json -p="[{"op": "remove", "path": "/metadata/finalizers"}]"</pre>
 </div>
 </div>
 </li>
@@ -485,8 +423,8 @@ $ oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": 
 <p>Delete the <code>OpenStackBaremetalSet</code> and <code>OpenStackProvisionServer</code> resources:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
-$ oc delete openstackprovisionservers.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all</pre>
+<pre>oc delete openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
+oc delete openstackprovisionservers.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all</pre>
 </div>
 </div>
 </li>
@@ -494,8 +432,8 @@ $ oc delete openstackprovisionservers.osp-director.openstack.org -n "${OSPDO_NAM
 <p>Annotate each {OpenStackShort} Compute <code>BareMetalHost</code> resource so that Metal3 does not start the node:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ compute_bmh_list=$(oc get bmh -n openshift-machine-api |grep compute|awk '{printf $1 " "}')
-$ for bmh_compute in $compute_bmh_list;do oc annotate bmh -n openshift-machine-api $bmh_compute baremetalhost.metal3.io/detached="";\
+<pre>compute_bmh_list=$(oc get bmh -n openshift-machine-api |grep compute|awk '{printf $1 " "}')
+for bmh_compute in $compute_bmh_list;do oc annotate bmh -n openshift-machine-api $bmh_compute baremetalhost.metal3.io/detached="";\
      oc -n openshift-machine-api wait bmh/$bmh_compute --for=jsonpath='{.status.operationalStatus}'=detached --timeout=30s || {
          echo "ERROR: BMH did not enter detatched state"
          exit 1
@@ -518,10 +456,10 @@ done</pre>
 <p>Delete the OSPdO Operator Lifecycle Manager resources to remove OSPdO:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc delete subscription osp-director-operator -n "${OSPDO_NAMESPACE}"
-$ oc delete operatorgroup osp-director-operator -n "${OSPDO_NAMESPACE}"
-$ oc delete catalogsource osp-director-operator-index -n "${OSPDO_NAMESPACE}"
-$ oc delete csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}"</pre>
+<pre>oc delete subscription osp-director-operator -n "${OSPDO_NAMESPACE}"
+oc delete operatorgroup osp-director-operator -n "${OSPDO_NAMESPACE}"
+oc delete catalogsource osp-director-operator-index -n "${OSPDO_NAMESPACE}"
+oc delete csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}"</pre>
 </div>
 </div>
 </li>
@@ -529,7 +467,7 @@ $ oc delete csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}"</pre>
 <p>Scale up the {rhos_acro} OpenStack Operator <code>controller-manager</code> to 1 replica so that the associated <code>OpenStackControlPlane</code> CR is reconciled and its <code>OpenStackClient</code> pod is recreated:</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ oc patch csv -n "${OSPDO_NAMESPACE}"-operators openstack-operator.v0.0.1 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "1"}]"</pre>
+<pre>oc patch csv -n "${OSPDO_NAMESPACE}"-operators openstack-operator.v0.0.1 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "1"}]"</pre>
 </div>
 </div>
 </li>
