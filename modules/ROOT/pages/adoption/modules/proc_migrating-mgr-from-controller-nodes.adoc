@@ -26,8 +26,8 @@ Repeat this step for each target node.
 . Check that the rules are properly applied to the target node and persist them:
 +
 ----
-$ sudo iptables-save
-$ sudo systemctl restart iptables
+sudo iptables-save
+sudo systemctl restart iptables
 ----
 +
 [NOTE]
@@ -36,11 +36,11 @@ The default dashboard port for `ceph-mgr` in a greenfield deployment is 8443. Wi
 . Log in to `controller-0` and update the dashboard port in the `ceph-mgr` configuration to 8443:
 +
 ----
-$ sudo cephadm shell
-$ ceph config set mgr mgr/dashboard/server_port 8443
-$ ceph config set mgr mgr/dashboard/ssl_server_port 8443
-$ ceph mgr module disable dashboard
-$ ceph mgr module enable dashboard
+sudo cephadm shell
+ceph config set mgr mgr/dashboard/server_port 8443
+ceph config set mgr mgr/dashboard/ssl_server_port 8443
+ceph mgr module disable dashboard
+ceph mgr module enable dashboard
 ----
 . If `nftables` is used in the existing deployment, edit `/etc/nftables/tripleo-rules.nft`
 and add the following content:
@@ -56,19 +56,19 @@ add rule inet filter TRIPLEO_INPUT tcp dport { 6800-7300,8443 } ct state new cou
 . Restart the `nftables` service:
 +
 ----
-$ sudo systemctl restart nftables
+sudo systemctl restart nftables
 ----
 
 . Verify that the rules are applied:
 +
 ----
-$ sudo nft list ruleset | grep ceph_mgr
+sudo nft list ruleset | grep ceph_mgr
 ----
 . Prepare the target node to host the new Ceph Manager daemon, and add the `mgr`
 label to the target node:
 +
 ----
-$ sudo cephadm shell -- ceph orch host label add <target_node> mgr
+sudo cephadm shell -- ceph orch host label add <target_node> mgr
 ----
 
 . Repeat steps 1-7 for each target node that hosts a Ceph Manager daemon.
@@ -78,9 +78,9 @@ $ sudo cephadm shell -- ceph orch host label add <target_node> mgr
 [source,yaml]
 ----
 
-$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ mkdir -p ${SPEC_DIR}
-$ sudo cephadm shell -- ceph orch ls --export mgr > ${SPEC_DIR}/mgr
+SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+mkdir -p ${SPEC_DIR}
+sudo cephadm shell -- ceph orch ls --export mgr > ${SPEC_DIR}/mgr
 ----
 
 . Edit the retrieved spec and add the `label: mgr` section to the `placement`
@@ -98,8 +98,8 @@ placement:
 . Apply the spec with `cephadm` by using the Ceph Orchestrator:
 +
 ----
-$ SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
-$ sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr
+SPEC_DIR=${SPEC_DIR:-"$PWD/ceph_specs"}
+sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr
 ----
 
 .Verification
@@ -107,8 +107,8 @@ $ sudo cephadm shell -m ${SPEC_DIR}/mgr -- ceph orch apply -i /mnt/mgr
 . Verify that the new Ceph Manager daemons are created in the target nodes:
 +
 ----
-$ sudo cephadm shell -- ceph orch ps | grep -i mgr
-$ sudo cephadm shell -- ceph -s
+sudo cephadm shell -- ceph orch ps | grep -i mgr
+sudo cephadm shell -- ceph -s
 ----
 +
 The Ceph Manager daemon count should match the number of hosts where the `mgr` label is added.

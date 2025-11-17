@@ -15,7 +15,7 @@ By default, {rhos_acro} versions {rhos_curr_ver} and later of the {bare_metal} i
 * The {bare_metal} is disabled in the {rhos_acro} {rhos_curr_ver}. The following command should return a string of `false`:
 +
 ----
-$ oc get openstackcontrolplanes.core.openstack.org <name> -o jsonpath='{.spec.ironic.enabled}'
+oc get openstackcontrolplanes.core.openstack.org <name> -o jsonpath='{.spec.ironic.enabled}'
 ----
 +
 ** Replace `<name>` with the name of your existing `OpenStackControlPlane` CR, for example, `openstack-control-plane`.
@@ -36,7 +36,7 @@ This configuration file must come from one of the Controller nodes and not a {Op
 * You have defined the following shell variables. Replace the following example values with values that apply to your environment:
 +
 ----
-$ alias openstack="oc exec -t openstackclient -- openstack"
+alias openstack="oc exec -t openstackclient -- openstack"
 ----
 
 .Procedure
@@ -44,7 +44,7 @@ $ alias openstack="oc exec -t openstackclient -- openstack"
 . Patch the `OpenStackControlPlane` custom resource (CR) to deploy the {bare_metal}:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -60,7 +60,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <1>
               spec:
                 type: LoadBalancer
       ironicConductors:
@@ -105,16 +105,16 @@ spec:
 . Wait for the {bare_metal} control plane services CRs to become ready:
 +
 ----
-$ oc wait --for condition=Ready --timeout=300s ironics.ironic.openstack.org ironic
+oc wait --for condition=Ready --timeout=300s ironics.ironic.openstack.org ironic
 ----
 
 . Verify that the individual services are ready:
 +
 ----
-$ oc wait --for condition=Ready --timeout=300s ironicapis.ironic.openstack.org ironic-api
-$ oc wait --for condition=Ready --timeout=300s ironicconductors.ironic.openstack.org ironic-conductor
-$ oc wait --for condition=Ready --timeout=300s ironicinspectors.ironic.openstack.org ironic-inspector
-$ oc wait --for condition=Ready --timeout=300s ironicneutronagents.ironic.openstack.org ironic-ironic-neutron-agent
+oc wait --for condition=Ready --timeout=300s ironicapis.ironic.openstack.org ironic-api
+oc wait --for condition=Ready --timeout=300s ironicconductors.ironic.openstack.org ironic-conductor
+oc wait --for condition=Ready --timeout=300s ironicinspectors.ironic.openstack.org ironic-inspector
+oc wait --for condition=Ready --timeout=300s ironicneutronagents.ironic.openstack.org ironic-ironic-neutron-agent
 ----
 
 . Update the DNS Nameservers on the provisioning, cleaning, and rescue networks:
@@ -123,13 +123,13 @@ $ oc wait --for condition=Ready --timeout=300s ironicneutronagents.ironic.openst
 For name resolution to work for {bare_metal} operations, you must set the DNS nameserver to use the internal DNS servers in the {rhos_acro} control plane:
 +
 ----
-$ openstack subnet set --dns-nameserver 192.168.122.80 provisioning-subnet
+openstack subnet set --dns-nameserver 192.168.122.80 provisioning-subnet
 ----
 
 . Verify that no {bare_metal} nodes are missing from the node list:
 +
 ----
-$ openstack baremetal node list
+openstack baremetal node list
 ----
 +
 [IMPORTANT]
@@ -138,7 +138,7 @@ If the `openstack baremetal node list` command output reports an incorrect power
 . If any {bare_metal} nodes are missing from the `openstack baremetal node list` command, temporarily disable the new RBAC policy to see the nodes again:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -158,7 +158,7 @@ After this configuration is applied, the operator restarts the Ironic API servic
 . View the bare-metal nodes that do not have an owner assigned:
 +
 ----
-$ openstack baremetal node list --long -c UUID -c Owner -c 'Provisioning State'
+openstack baremetal node list --long -c UUID -c Owner -c 'Provisioning State'
 ----
 
 . Assign all bare-metal nodes with no owner to a new project, for example, the admin project:
@@ -171,7 +171,7 @@ for node in $(openstack baremetal node list -f json -c UUID -c Owner | jq -r '.[
 . Re-apply the default RBAC by removing the `customServiceConfig` section or by setting the following values in the `customServiceConfig` section to `true`. For example:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ironic:
     enabled: true
@@ -191,11 +191,11 @@ spec:
 . Verify the list of endpoints:
 +
 ----
-$ openstack endpoint list |grep ironic
+openstack endpoint list |grep ironic
 ----
 
 . Verify the list of bare-metal nodes:
 +
 ----
-$ openstack baremetal node list
+openstack baremetal node list
 ----

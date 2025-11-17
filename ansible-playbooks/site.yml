@@ -1,0 +1,21 @@
+---
+# Main playbook for Red Hat OpenStack Services on OpenShift (RHOSO) prerequisites and setup
+# This playbook automates the step-by-step instructions from:
+# - prereqs.adoc: Prerequisites for Installation
+# - install-operators.adoc: Install the OpenStack Operator
+# - network-isolation.adoc: Preparing RHOCP for RHOSP Network Isolation
+
+- name: Deploy RHOSO - Prerequisites and Operators Installation
+  hosts: bastion
+  become: false
+  gather_facts: true
+  vars_files:
+    - vars/main.yml
+  roles:
+    - prerequisites
+    - install-operators
+    - network-isolation
+  tags:
+    - prerequisites
+    - install-operators
+    - network-isolation

@@ -1,0 +1,193 @@
+---
+# Prerequisites using kubernetes modules (preferred approach)
+# Based on prereqs.adoc - verifies existing operators and installs Cert-Manager
+
+- name: Verify NMState operator is running
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    namespace: openshift-nmstate
+  register: nmstate_csv
+  until: >
+    nmstate_csv.resources | length > 0 and
+    nmstate_csv.resources[0].status is defined and
+    nmstate_csv.resources[0].status.phase is defined and
+    nmstate_csv.resources[0].status.phase == "Succeeded"
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display NMState operator status
+  debug:
+    msg: "NMState operator CSV phase: {{ nmstate_csv.resources[0].status.phase }}"
+
+- name: Create NMState instance
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: nmstate.io/v1
+      kind: NMState
+      metadata:
+        name: nmstate
+  retries: 5
+  delay: 10
+
+- name: Verify NMState pods are running
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: openshift-nmstate
+  register: nmstate_pods
+  until: nmstate_pods.resources | length > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Verify MetalLB operator is installed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    namespace: metallb-system
+  register: metallb_csv
+  until: >
+    metallb_csv.resources | length > 0 and
+    metallb_csv.resources[0].status is defined and
+    metallb_csv.resources[0].status.phase is defined and
+    metallb_csv.resources[0].status.phase == "Succeeded"
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display MetalLB operator status
+  debug:
+    msg: "MetalLB operator CSV phase: {{ metallb_csv.resources[0].status.phase }}"
+
+- name: Verify MetalLB controller deployment is running
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: Deployment
+    name: controller
+    namespace: metallb-system
+  register: metallb_controller
+  until: >
+    metallb_controller.resources | length > 0 and
+    metallb_controller.resources[0].status.readyReplicas is defined and
+    metallb_controller.resources[0].status.readyReplicas >= 1
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Verify MetalLB speaker daemonset is running
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: DaemonSet
+    name: speaker
+    namespace: metallb-system
+  register: metallb_speaker
+  until: >
+    metallb_speaker.resources | length > 0 and
+    metallb_speaker.resources[0].status.numberReady is defined and
+    metallb_speaker.resources[0].status.numberReady > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Create cert-manager-operator namespace
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: cert-manager-operator
+        labels:
+          pod-security.kubernetes.io/enforce: privileged
+          security.openshift.io/scc.podSecurityLabelSync: "false"
+
+- name: Create cert-manager-operator OperatorGroup
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: cert-manager-operator
+        namespace: cert-manager-operator
+      spec:
+        targetNamespaces:
+        - cert-manager-operator
+        upgradeStrategy: Default
+
+- name: Verify cert-manager-operator OperatorGroup is created
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1
+    kind: OperatorGroup
+    namespace: cert-manager-operator
+  register: cert_manager_og
+  until: cert_manager_og.resources | length > 0
+  retries: 10
+  delay: 5
+  changed_when: false
+
+- name: Subscribe to cert-manager operator
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: openshift-cert-manager-operator
+        namespace: cert-manager-operator
+      spec:
+        channel: stable-v1
+        installPlanApproval: Automatic
+        name: openshift-cert-manager-operator
+        source: cs-redhat-operator-index
+        sourceNamespace: openshift-marketplace
+
+- name: Wait for cert-manager installplan to be created
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: InstallPlan
+    namespace: cert-manager-operator
+  register: cert_manager_installplan
+  until: cert_manager_installplan.resources | length > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Wait for cert-manager operator to be installed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    namespace: cert-manager-operator
+  register: cert_manager_csv
+  until: >
+    cert_manager_csv.resources | length > 0 and
+    cert_manager_csv.resources[0].status is defined and
+    cert_manager_csv.resources[0].status.phase is defined and
+    cert_manager_csv.resources[0].status.phase == "Succeeded"
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Wait for cert-manager pods to be running
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: cert-manager
+  register: cert_manager_pods
+  until: >
+    cert_manager_pods.resources | length > 0 and
+    cert_manager_pods.resources | json_query('[?status.phase==`Running`]') | length == cert_manager_pods.resources | length
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Count running cert-manager pods
+  set_fact:
+    running_cert_manager_pods: "{{ cert_manager_pods.resources | json_query('[?status.phase==`Running`]') | length }}"
+
+- name: Display cert-manager status
+  debug:
+    msg: "cert-manager pods: {{ running_cert_manager_pods }} running out of {{ cert_manager_pods.resources | length }} total"

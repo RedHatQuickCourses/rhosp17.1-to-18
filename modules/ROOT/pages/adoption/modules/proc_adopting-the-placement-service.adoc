@@ -16,7 +16,7 @@ To adopt the Placement service, you patch an existing `OpenStackControlPlane` cu
 * Patch the `OpenStackControlPlane` CR to deploy the Placement service:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   placement:
     enabled: true
@@ -33,13 +33,12 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
 '
 ----
 +
-<1> If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, `metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80`.
 
 .Verification
 
@@ -47,9 +46,9 @@ spec:
 control plane FQDNs, and that the Placement API responds:
 +
 ----
-$ alias openstack="oc exec -t openstackclient -- openstack"
+alias openstack="oc exec -t openstackclient -- openstack"
 
-$ openstack endpoint list | grep placement
+openstack endpoint list | grep placement
 
 
 # Without OpenStack CLI placement plugin installed:

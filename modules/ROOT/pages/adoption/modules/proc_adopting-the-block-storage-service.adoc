@@ -23,18 +23,11 @@ $CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/cinder/etc/cinder/cin
 
 .Procedure
 
-. Create a new file, for example, `cinder_api.patch`, and apply the configuration:
-+
-----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=<patch_name>
-----
-+
-* Replace `<patch_name>` with the name of your patch file.
-+
-The following example shows a `cinder_api.patch` file:
+. Create a new file, for example, `cinder_api.patch`:
 +
 [source,yaml]
 ----
+cat << EOF > cinder_api.patch
 spec:
   extraMounts:
   - extraVol:
@@ -69,7 +62,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
         replicas: 1
@@ -79,56 +72,50 @@ spec:
       cinderScheduler:
         replicas: 0
       cinderBackup:
-        networkAttachments:
-        - storage
         replicas: 0
       cinderVolumes:
         ceph:
-          networkAttachments:
-          - storage
           replicas: 0
+EOF
 ----
+
+. Apply the configuration::
 +
-<1> If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, `metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80`.
+----
+oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch
+----
 
 . Retrieve the list of the previous scheduler and backup services:
 +
 ----
-$ openstack volume service list
+openstack volume service list
 
 +------------------+------------------------+------+---------+-------+----------------------------+
 | Binary           | Host                   | Zone | Status  | State | Updated At                 |
 +------------------+------------------------+------+---------+-------+----------------------------+
-| cinder-scheduler | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
-| cinder-backup    | standalone.localdomain | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
-| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2024-11-04T17:47:14.000000 |
+| cinder-scheduler | overcloud-controller-0 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-1 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-2 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 +------------------+------------------------+------+---------+-------+----------------------------+
 ----
 
 . Remove services for hosts that are in the `down` state:
 +
 ----
-$ oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove <service_binary> <service_host>
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-2
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph
 ----
-+
-* Replace `<service_binary>` with the name of the binary, for example, `cinder-backup`.
-* Replace `<service_host>` with the host name, for example, `cinder-backup-0`.
-+
 
 . Deploy the scheduler, backup, and volume services:
 +
 * Create another file, for example, `cinder_services.patch`, and apply the configuration:
 +
-----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=<patch_name>
-----
-+
-* Replace `<patch_name>` with the name of your patch file.
-+
-* The following example shows a `cinder_services.patch` file for a Ceph RBD deployment:
-+
 [source,yaml]
 ----
+cat << EOF > cinder_services.patch
 spec:
   cinder:
     enabled: true
@@ -136,19 +123,9 @@ spec:
       cinderScheduler:
         replicas: 1
       cinderBackup:
-        networkAttachments:
-        - storage
-        replicas: 1
-        customServiceConfig: |
-          [DEFAULT]
-          backup_driver=cinder.backup.drivers.ceph.CephBackupDriver
-          backup_ceph_conf=/etc/ceph/ceph.conf
-          backup_ceph_user=openstack
-          backup_ceph_pool=backups
+        replicas: 0
       cinderVolumes:
         ceph:
-          networkAttachments:
-          - storage
           replicas: 1
           customServiceConfig: |
             [tripleo_ceph]
@@ -160,138 +137,14 @@ spec:
             rbd_pool=volumes
             rbd_flatten_volume_from_snapshot=False
             report_discard_supported=True
-----
-+
-[NOTE]
-====
-Ensure that you use the same configuration group name for the driver that you used in the source cluster. In this example, the driver configuration group in `customServiceConfig` is called `tripleo_ceph` because it reflects the value of the configuration group name in the `cinder.conf` file of the source OpenStack cluster.
-====
-+
-. Configure the NetApp NFS Block Storage volume service:
-.. Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp NFS storage. You can find the credentials in the `cinder.conf` file that was generated from the {OpenStackPreviousInstaller} deployment:
-+
-----
-$ oc apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    service: cinder
-    component: cinder-volume
-  name: cinder-volume-ontap-secrets
-type: Opaque
-stringData:
-  ontap-cinder-secrets: |
-    [tripleo_netapp]
-    netapp_login= netapp_username
-    netapp_password= netapp_password
-    netapp_vserver= netapp_vserver
-    nas_host= netapp_nfsip
-    nas_share_path=/netapp_nfspath
-    netapp_pool_name_search_pattern=(netapp_poolpattern)
 EOF
 ----
-.. Patch the `OpenStackControlPlane` CR to deploy NetApp NFS Block Storage volume back end:
+. Apply the configuration::
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=<cinder_netappNFS.patch>
+oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch
 ----
 +
-* Replace `<cinder_netappNFS.patch>` with the name of the patch file for your NetApp NFS Block Storage volume back end.
-+
-The following example shows a `cinder_netappNFS.patch` file that configures a NetApp NFS Block Storage volume service:
-+
-[source,yaml]
-----
-spec:
-  cinder:
-    enabled: true
-    template:
-      cinderVolumes:
-        ontap-nfs:
-          networkAttachments:
-            - storage
-          customServiceConfig: |
-            [tripleo_netapp]
-            volume_backend_name=ontap-nfs
-            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
-            nfs_snapshot_support=true
-            nas_secure_file_operations=false
-            nas_secure_file_permissions=false
-            netapp_server_hostname= netapp_backendip
-            netapp_server_port=80
-            netapp_storage_protocol=nfs
-            netapp_storage_family=ontap_cluster
-          customServiceConfigSecrets:
-          - cinder-volume-ontap-secrets
-----
-+
-. Configure the NetApp iSCSI Block Storage volume service:
-.. Create a secret that includes sensitive information such as hostnames, passwords, and usernames to access the third-party NetApp iSCSI storage. You can find the credentials in the `cinder.conf` file that was generated from the {OpenStackPreviousInstaller} deployment:
-+
-----
-$ oc apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  labels:
-    service: cinder
-    component: cinder-volume
-  name: cinder-volume-ontap-secrets
-type: Opaque
-stringData:
-  ontap-cinder-secrets: |
-    [tripleo_netapp]
-    netapp_server_hostname = netapp_host
-    netapp_login = netapp_username
-    netapp_password = netapp_password
-    netapp_vserver = netapp_vserver
-    netapp_pool_name_search_pattern=(netapp_poolpattern)
-EOF
-----
-. Patch the `OpenStackControlPlane` custom resource (CR) to deploy the NetApp iSCSI Block Storage volume back end:
-+
-----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=<cinder_netappISCSI.patch>
-----
-+
-* Replace `<cinder_netappISCSI.patch>` with the name of the patch file for your NetApp iSCSI Block Storage volume back end.
-+
-The following example shows a `cinder_netappISCSI.patch` file that configures a NetApp iSCSI Block Storage volume service:
-+
-----
-spec:
-  cinder:
-    enabled: true
-    template:
-      cinderVolumes:
-        ontap-iscsi:
-          networkAttachments:
-            - storage
-          customServiceConfig: |
-            [tripleo_netapp]
-            volume_backend_name=ontap-iscsi
-            volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
-            netapp_storage_protocol=iscsi
-            netapp_storage_family=ontap_cluster
-            consistencygroup_support=True
-          customServiceConfigSecrets:
-            - cinder-volume-ontap-secrets
-----
-. Check if all the services are up and running:
-+
-----
-$ openstack volume service list
-
-+------------------+--------------------------+------+---------+-------+----------------------------+
-| Binary           | Host                     | Zone | Status  | State | Updated At                 |
-+------------------+--------------------------+------+---------+-------+----------------------------+
-| cinder-volume    | hostgroup@tripleo_netapp | nova | enabled | up    | 2023-06-28T17:00:03.000000 |
-| cinder-scheduler | cinder-scheduler-0       | nova | enabled | up    | 2023-06-28T17:00:02.000000 |
-| cinder-backup    | cinder-backup-0          | nova | enabled | up    | 2023-06-28T17:00:01.000000 |
-+------------------+--------------------------+------+---------+-------+----------------------------+
-----
-
 . Apply the DB data migrations:
 +
 [NOTE]
@@ -300,7 +153,7 @@ You are not required to run the data migrations at this step, but you must run t
 ====
 +
 ----
-$ oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations
+oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations
 ----
 
 .Verification
@@ -308,13 +161,13 @@ $ oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations
 . Ensure that the `openstack` alias is defined:
 +
 ----
-$ alias openstack="oc exec -t openstackclient -- openstack"
+alias openstack="oc exec -t openstackclient -- openstack"
 ----
 
 . Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:
 +
 ----
-$ openstack endpoint list --service <endpoint>
+openstack endpoint list --service cinderv3
 ----
 +
 * Replace `<endpoint>` with the name of the endpoint that you want to confirm.
@@ -322,7 +175,7 @@ $ openstack endpoint list --service <endpoint>
 . Confirm that the Block Storage services are running:
 +
 ----
-$ openstack volume service list
+openstack volume service list
 ----
 +
 [NOTE]
@@ -331,10 +184,9 @@ Cinder API services do not appear in the list. However, if you get a response fr
 . Confirm that you have your previous volume types, volumes, snapshots, and backups:
 +
 ----
-$ openstack volume type list
-$ openstack volume list
-$ openstack volume snapshot list
-$ openstack volume backup list
+openstack volume type list
+openstack volume list
+openstack volume snapshot list
 ----
 
 . To confirm that the configuration is working, perform the following steps:
@@ -342,13 +194,13 @@ $ openstack volume backup list
 .. Create a volume from an image to check that the connection to {image_service_first_ref} is working:
 +
 ----
-$ openstack volume create --image cirros --bootable --size 1 disk_new
+openstack volume create --image cirros --bootable --size 1 disk_new
 ----
 
 .. Back up the previous attached volume:
 +
 ----
-$ openstack --os-volume-api-version 3.47 volume create --backup <backup_name>
+openstack --os-volume-api-version 3.47 volume create --backup <backup_name>
 ----
 +
 * Replace `<backup_name>` with the name of your new backup location.

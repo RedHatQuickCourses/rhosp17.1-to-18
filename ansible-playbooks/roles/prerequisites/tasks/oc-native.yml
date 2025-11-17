@@ -1,0 +1,147 @@
+---
+# Prerequisites using native oc commands instead of kubernetes modules
+# This is a fallback approach when kubernetes Python libraries are not available
+# Based on prereqs.adoc - verifies existing operators and installs Cert-Manager
+
+- name: Verify NMState operator is running
+  shell: oc get clusterserviceversion -n openshift-nmstate -o custom-columns=Name:.metadata.name,Phase:.status.phase --no-headers | grep Succeeded
+  register: nmstate_csv_check
+  until: nmstate_csv_check.rc == 0
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display NMState operator status
+  debug:
+    msg: "NMState operator is running (Succeeded phase)"
+
+- name: Create NMState instance using oc
+  shell: |
+    oc apply -f - <<EOF
+    apiVersion: nmstate.io/v1
+    kind: NMState
+    metadata:
+      name: nmstate
+    EOF
+  register: nmstate_instance_result
+  changed_when: "'created' in nmstate_instance_result.stdout or 'configured' in nmstate_instance_result.stdout"
+
+- name: Verify NMState pods are running
+  shell: oc get pods -n openshift-nmstate --no-headers | grep Running | wc -l
+  register: nmstate_pods_check
+  until: nmstate_pods_check.stdout | int > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Verify MetalLB operator is installed
+  shell: oc get clusterserviceversion -n metallb-system -o custom-columns=Name:.metadata.name,Phase:.status.phase --no-headers | grep Succeeded
+  register: metallb_csv_check
+  until: metallb_csv_check.rc == 0
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display MetalLB operator status
+  debug:
+    msg: "MetalLB operator is installed (Succeeded phase)"
+
+- name: Verify MetalLB controller deployment is running
+  shell: oc get deployment -n metallb-system controller -o jsonpath='{.status.readyReplicas}'
+  register: metallb_controller_check
+  until: metallb_controller_check.stdout | int >= 1
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Verify MetalLB speaker daemonset is running
+  shell: oc get daemonset -n metallb-system speaker -o jsonpath='{.status.numberReady}'
+  register: metallb_speaker_check
+  until: metallb_speaker_check.stdout | int > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Create cert-manager-operator namespace using oc
+  shell: |
+    oc apply -f - <<EOF
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+        name: cert-manager-operator
+        labels:
+          pod-security.kubernetes.io/enforce: privileged
+          security.openshift.io/scc.podSecurityLabelSync: "false"
+    EOF
+  register: cert_manager_ns_result
+  changed_when: "'created' in cert_manager_ns_result.stdout or 'configured' in cert_manager_ns_result.stdout"
+
+- name: Create cert-manager-operator OperatorGroup using oc
+  shell: |
+    oc apply -f - <<EOF
+    apiVersion: operators.coreos.com/v1
+    kind: OperatorGroup
+    metadata:
+      name: cert-manager-operator
+      namespace: cert-manager-operator
+    spec:
+      targetNamespaces:
+      - cert-manager-operator
+      upgradeStrategy: Default
+    EOF
+  register: cert_manager_og_result
+  changed_when: "'created' in cert_manager_og_result.stdout or 'configured' in cert_manager_og_result.stdout"
+
+- name: Verify cert-manager-operator OperatorGroup is created
+  shell: oc get operatorgroup -n cert-manager-operator
+  register: cert_manager_og_check
+  until: cert_manager_og_check.rc == 0
+  retries: 10
+  delay: 5
+  changed_when: false
+
+- name: Subscribe to cert-manager operator using oc
+  shell: |
+    oc apply -f - <<EOF
+    apiVersion: operators.coreos.com/v1alpha1
+    kind: Subscription
+    metadata:
+      name: openshift-cert-manager-operator
+      namespace: cert-manager-operator
+    spec:
+      channel: stable-v1
+      installPlanApproval: Automatic
+      name: openshift-cert-manager-operator
+      source: cs-redhat-operator-index
+      sourceNamespace: openshift-marketplace
+    EOF
+  register: cert_manager_sub_result
+  changed_when: "'created' in cert_manager_sub_result.stdout or 'configured' in cert_manager_sub_result.stdout"
+
+- name: Wait for cert-manager installplan to be created
+  shell: oc get installplan -n cert-manager-operator --no-headers
+  register: cert_manager_installplan_check
+  until: cert_manager_installplan_check.rc == 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Wait for cert-manager operator to be installed
+  shell: oc get clusterserviceversion -n cert-manager-operator -o custom-columns=Name:.metadata.name,Phase:.status.phase --no-headers | grep Succeeded
+  register: cert_manager_csv_check
+  until: cert_manager_csv_check.rc == 0
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Wait for cert-manager pods to be running
+  shell: oc get pods -n cert-manager --no-headers | grep Running | wc -l
+  register: cert_manager_pods_check
+  until: cert_manager_pods_check.stdout | int > 0
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display cert-manager status
+  debug:
+    msg: "cert-manager pods running: {{ cert_manager_pods_check.stdout }}"

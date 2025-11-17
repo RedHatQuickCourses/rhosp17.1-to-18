@@ -142,8 +142,8 @@ done
 +
 ----
 
-$ sudo pcs constraint order start ceph-nfs then openstack-manila-share kind=Optional id=order-ceph-nfs-openstack-manila-share-Optional
-$ sudo pcs constraint colocation add openstack-manila-share with ceph-nfs score=INFINITY id=colocation-openstack-manila-share-ceph-nfs-INFINITY
+sudo pcs constraint order start ceph-nfs then openstack-manila-share kind=Optional id=order-ceph-nfs-openstack-manila-share-Optional
+sudo pcs constraint colocation add openstack-manila-share with ceph-nfs score=INFINITY id=colocation-openstack-manila-share-ceph-nfs-INFINITY
 
 ----
 
@@ -153,8 +153,8 @@ can run `openstack` CLI commands such as `openstack server list`, or check that 
 . Remove the partially or fully deployed control plane so that you can attempt the adoption again later:
 +
 ----
-$ oc delete --ignore-not-found=true --wait=false openstackcontrolplane/openstack
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc delete --ignore-not-found=true --wait=false openstackcontrolplane/openstack
+oc patch openstackcontrolplane openstack --type=merge --patch '
 metadata:
   finalizers: []
 ' || true
@@ -166,10 +166,10 @@ while oc get pod | grep openstack-galera-0; do
     sleep 2
 done
 
-$ oc delete --ignore-not-found=true --wait=false pod mariadb-copy-data
-$ oc delete --ignore-not-found=true --wait=false pvc mariadb-data
-$ oc delete --ignore-not-found=true --wait=false pod ovn-copy-data
-$ oc delete --ignore-not-found=true secret osp-secret
+oc delete --ignore-not-found=true --wait=false pod mariadb-copy-data
+oc delete --ignore-not-found=true --wait=false pvc mariadb-data
+oc delete --ignore-not-found=true --wait=false pod ovn-copy-data
+oc delete --ignore-not-found=true secret osp-secret
 ----
 
 .Next steps

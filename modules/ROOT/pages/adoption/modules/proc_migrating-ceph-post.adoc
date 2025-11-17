@@ -19,13 +19,13 @@ mgr    advanced  mgr/dashboard/controller-2.xpdgfl/server_addr  172.17.3.138
 ----
 +
 ----
-$ sudo cephadm shell
-$ ceph orch ps | awk '/mgr./ {print $1}'
+sudo cephadm shell
+ceph orch ps | awk '/mgr./ {print $1}'
 ----
 
 . For each retrieved `mgr` daemon, update the corresponding entry in the {Ceph}
   configuration:
 +
 ----
-$ ceph config set mgr mgr/dashboard/<>/server_addr/<ip addr>
+ceph config set mgr mgr/dashboard/<>/server_addr/<ip addr>
 ----

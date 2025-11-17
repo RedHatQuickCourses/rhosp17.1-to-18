@@ -39,7 +39,7 @@ mon_host = [v2:172.17.3.60:3300/0,v1:172.17.3.60:6789/0] [v2:172.17.3.29:3300/0,
 . Save the file and refresh the node network configuration:
 +
 ----
-$ sudo os-net-config -c /etc/os-net-config/config.yaml
+sudo os-net-config -c /etc/os-net-config/config.yaml
 ----
 
 . Verify that the IP address is not present in the source node anymore, for example:
@@ -57,13 +57,13 @@ add the `- ip_netmask: 172.17.3.60` line that you removed in the source node.
 . Save the file and refresh the node network configuration:
 +
 ----
-$ sudo os-net-config -c /etc/os-net-config/config.yaml
+sudo os-net-config -c /etc/os-net-config/config.yaml
 ----
 
 . Verify that the IP address is present in the target node.
 +
 ----
-$ ip -o a | grep 172.17.3.60
+ip -o a | grep 172.17.3.60
 ----
 
 . From the Ceph client node, `controller-0`, ping the IP address that is

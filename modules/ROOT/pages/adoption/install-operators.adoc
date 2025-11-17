@@ -7,7 +7,7 @@ In the workstation terminal, clone the repo and change directory to the files th
 [source,bash,role=execute]
 ----
 git clone https://github.com/RedHatQuickCourses/rhosp17.1-to-18 labrepo
-cd labrepo/content/files
+cd labrepo/files
 ----
 
 . Install the OpenStack Operators

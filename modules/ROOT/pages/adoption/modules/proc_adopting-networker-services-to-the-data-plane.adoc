@@ -4,21 +4,17 @@
 = Adopting Networker services to the {rhos_acro} data plane
 
 [role="_abstract"]
-Adopt the Networker services in your existing {rhos_prev_long} deployment to the {rhos_long} data plane. The `Networker` services could be running on `Conroller` nodes or dedicated `Networker` nodes. You decide which services you want to run on the Networker nodes, and create a separate `OpenStackDataPlaneNodeSet` custom resource (CR) for the Networker nodes. You might also decide to implement the following options if they apply to your environment:
-
-* Depending on your topology, you might need to run the `neutron-metadata` service on the nodes, specifically when you want to serve metadata to SR-IOV ports that are hosted on Compute nodes.
+Adopt the Networker services in your existing {rhos_prev_long} deployment to the {rhos_long} data plane. In this environment, the `Networker` services run on dedicated `Networker` nodes. You decide which services you want to run on the Networker nodes, and create a separate `OpenStackDataPlaneNodeSet` custom resource (CR) for the Networker nodes. You might also decide to implement the following options if they apply to your environment:
 
 * If you want to continue running OVN gateway services on Networker nodes, keep `ovn` service in the list to deploy.
 
-* Optional: You can run the `neutron-dhcp` service on your Networker nodes instead of your Compute nodes. You might not need to use `neutron-dhcp` with OVN, unless your deployment uses DHCP relays, or advanced DHCP options that are supported by dnsmasq but not by the OVN DHCP implementation.
-
-Adopt each Controller or Networker node in your existing {rhos_prev_long} deployment to the {rhos_long} when your node is set as an OVN chassis gateway. Any node with
+Adopt each Networker node in your existing {rhos_prev_long} deployment to the {rhos_long} when your node is set as an OVN chassis gateway. Any node with
 parameter set to `enable-chassis-as-gw` is considered OVN gateway chassis. In this case, such nodes will become edpm networker nodes after adoption.
 
 . Check for the nodes where `OVN Controller Gateway agent` agents are running. The list of agents varies depending on the services you enabled:
 +
 ----
-$ oc exec openstackclient -- openstack network agent list
+oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
@@ -58,7 +54,7 @@ networkers+=(
 You can reuse most of the `nodeTemplate` section from the `OpenStackDataPlaneNodeSet` CR that is designated for your Compute nodes. You can omit some of the variables because of the limited set of services that are running on the Networker nodes.
 +
 ----
-$ oc apply -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneNodeSet
 metadata:
@@ -254,7 +250,7 @@ external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn
 . Optional: Enable `neutron-metadata` in the `OpenStackDataPlaneNodeSet` CR:
 +
 ----
-$ oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='[
+oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='[
   {
     "op": "add",
     "path": "/spec/services/-",
@@ -267,7 +263,7 @@ $ oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='
 . Optional: Enable `neutron-dhcp` in the `OpenStackDataPlaneNodeSet` CR:
 +
 ----
-$ oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='[
+oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='[
   {
     "op": "add",
     "path": "/spec/services/-",
@@ -280,7 +276,7 @@ $ oc patch openstackdataplanenodeset <networker_CR_name> --type='json' --patch='
 .. Create a `OpenStackDataPlaneDeployment` CR that runs only the validation:
 +
 ----
-$ oc apply -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -296,23 +292,23 @@ EOF
 .. When the validation is finished, confirm that the status of the Ansible EE pods is `Completed`:
 +
 ----
-$ watch oc get pod -l app=openstackansibleee
+watch oc get pod -l app=openstackansibleee
 ----
 +
 ----
-$ oc logs -l app=openstackansibleee -f --max-log-requests 20
+oc logs -l app=openstackansibleee -f --max-log-requests 20
 ----
 
 .. Wait for the deployment to reach the `Ready` status:
 +
 ----
-$ oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m
+oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m
 ----
 
 . Deploy the `OpenStackDataPlaneDeployment` CR for Networker nodes:
 +
 ----
-$ oc apply -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -334,7 +330,7 @@ In some cases, agents from the old data plane that are replaced or retired remai
 .. List the agents:
 +
 ----
-$ oc exec openstackclient -- openstack network agent list
+oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
@@ -348,7 +344,7 @@ $ oc exec openstackclient -- openstack network agent list
 .. If any agent in the list shows `XXX` in the `Alive` field, verify the Host and Agent Type, if the functions of this agent is no longer required, and the agent has been permanently stopped on the {rhos_prev_long} host. Then, delete the agent:
 +
 ----
-$ oc exec openstackclient -- openstack network agent <agent_id>
+oc exec openstackclient -- openstack network agent <agent_id>
 ----
 * Replace `<agent_id>` with the ID of the agent to delete, for example, `856960f0-5530-46c7-a331-6eadcba362da`.
 
@@ -358,17 +354,17 @@ $ oc exec openstackclient -- openstack network agent <agent_id>
 . Confirm that all the Ansible EE pods reach a `Completed` status:
 +
 ----
-$ watch oc get pod -l app=openstackansibleee
+watch oc get pod -l app=openstackansibleee
 ----
 +
 ----
-$ oc logs -l app=openstackansibleee -f --max-log-requests 20
+oc logs -l app=openstackansibleee -f --max-log-requests 20
 ----
 
 . Wait for the data plane node set to reach the `Ready` status:
 +
 ----
-$ oc wait --for condition=Ready osdpns/<networker_CR_name> --timeout=30m
+oc wait --for condition=Ready osdpns/<networker_CR_name> --timeout=30m
 ----
 +
 * Replace `<networker_CR_name>` with the name of the CR that you deployed for your Networker nodes, for example, `openstack-networker`.
@@ -376,7 +372,7 @@ $ oc wait --for condition=Ready osdpns/<networker_CR_name> --timeout=30m
 . Verify that the {networking_first_ref} agents are running. The list of agents varies depending on the services you enabled:
 +
 ----
-$ oc exec openstackclient -- openstack network agent list
+oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+

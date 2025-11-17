@@ -20,7 +20,7 @@ Change to the `files` directory:
 
 [source,bash,role=execute]
 ----
-cd ~/labrepo/content/files
+cd ~/labrepo/files
 ----
 
 Apply preconfigured yamls indivdually:

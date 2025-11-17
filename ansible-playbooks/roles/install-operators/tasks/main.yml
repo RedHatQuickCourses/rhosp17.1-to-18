@@ -1,0 +1,117 @@
+---
+# Install OpenStack Operators role - Based on install-operators.adoc documentation
+
+- name: Check if OpenStack operator files exist in files directory
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/../../files/{{ item }}"
+  register: files_check
+  loop:
+    - osp-ng-openstack-operator.yaml
+    - osp-ng-openstack-operator-init.yaml
+  changed_when: false
+
+- name: Fail if required files are missing
+  ansible.builtin.fail:
+    msg: "Required OpenStack operator files not found. Please ensure files/osp-ng-openstack-operator.yaml and files/osp-ng-openstack-operator-init.yaml exist."
+  when: files_check.results | selectattr('stat.exists', 'equalto', false) | list | length > 0
+
+- name: Create openstack-operators project
+  kubernetes.core.k8s:
+    name: "{{ openstack_operators_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create openstack project
+  kubernetes.core.k8s:
+    name: "{{ openstack_namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Apply OpenStack operator OperatorGroup and Subscription
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-openstack-operator.yaml"
+
+- name: Wait for OpenStack operator install plan to be created
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: InstallPlan
+    namespace: "{{ openstack_operators_namespace }}"
+  register: install_plans
+  until: install_plans.resources | length > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Get the install plan name
+  set_fact:
+    install_plan_name: "{{ install_plans.resources[0].metadata.name }}"
+
+- name: Approve the OpenStack operator installation
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: InstallPlan
+      metadata:
+        name: "{{ install_plan_name }}"
+        namespace: "{{ openstack_operators_namespace }}"
+      spec:
+        approved: true
+
+- name: Wait for OpenStack operator CSV to be succeeded
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    namespace: "{{ openstack_operators_namespace }}"
+    label_selectors:
+      - "operators.coreos.com/openstack-operator.openstack-operators"
+  register: openstack_csv
+  until: >
+    openstack_csv.resources | length > 0 and
+    openstack_csv.resources[0].status.phase == 'Succeeded'
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display OpenStack operator installation status
+  debug:
+    msg: |
+      === OpenStack Operator Installation Status ===
+      CSV Phase: {{ openstack_csv.resources[0].status.phase if openstack_csv.resources | length > 0 else 'No CSV found' }}
+      Ready to initialize OpenStack operator
+
+- name: Initialize the OpenStack operator
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-openstack-operator-init.yaml"
+
+- name: Verify OpenStack operator is installed
+  kubernetes.core.k8s_info:
+    api_version: operators.coreos.com/v1
+    kind: Operator
+    name: "openstack-operator.{{ openstack_operators_namespace }}"
+  register: openstack_operator
+  until: >
+    openstack_operator.resources | length > 0 and
+    openstack_operator.resources[0].status.components is defined
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Verify OpenStack operator pods are running
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ openstack_operators_namespace }}"
+  register: operator_pods
+  until: operator_pods.resources | length > 0
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display OpenStack operator pods status
+  debug:
+    msg: "OpenStack operator pods: {{ operator_pods.resources | length }} pods found in {{ openstack_operators_namespace }} namespace"

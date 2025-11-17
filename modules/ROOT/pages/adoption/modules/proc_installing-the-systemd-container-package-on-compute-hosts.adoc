@@ -13,7 +13,7 @@ Before you adopt the {rhos_long} data plane, you must verify that the `systemd-c
 . List the instances that are running on the host:
 +
 ----
-$ sudo machinectl list
+sudo machinectl list
 ----
 +
 Sample output::
@@ -29,7 +29,7 @@ qemu-2-instance-000000c2 vm    libvirt-qemu -  -       -
 . Verify that the `systemd-machined` service is running:
 +
 ----
-$ sudo systemctl status systemd-machined.service
+sudo systemctl status systemd-machined.service
 ----
 +
 Sample output::
@@ -64,7 +64,7 @@ If the `systemd-machined` service is running, skip the rest of this procedure. E
 ** If you deployed a new RHOSO environment, install the `systemd-container` manually by using the following command. Rebooting the Compute host is not required:
 +
 ----
-$ sudo dnf -y install systemd-container
+sudo dnf -y install systemd-container
 ----
 [NOTE]
 If your Compute host is not running a virtual machine, you can install the `systemd-container` automatically or manually.

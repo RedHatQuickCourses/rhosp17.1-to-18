@@ -34,18 +34,18 @@ endif::[]
 In a deployed {OpenStackShort} control plane, you can verify that the network mapping matches with what has been deployed in the {OpenStackPreviousInstaller}-based environment by checking both the `NodeNetworkConfigPolicy` (`nncp`) and the `NetworkAttachmentDefinition` (`net-attach-def`). The following is an example of the output that you should check in the {rhocp_long} environment to make sure that there are no issues with the propagated networks:
 
 ----
-$ oc get nncp
+oc get nncp
 NAME                        STATUS      REASON
 enp6s0-crc-8cf2w-master-0   Available   SuccessfullyConfigured
 
-$ oc get net-attach-def
+oc get net-attach-def
 NAME
 ctlplane
 internalapi
 storage
 tenant
 
-$ oc get ipaddresspool -n metallb-system
+oc get ipaddresspool -n metallb-system
 NAME          AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
 ctlplane      true          false             ["192.168.122.80-192.168.122.90"]
 internalapi   true          false             ["172.17.0.80-172.17.0.90"]
@@ -59,7 +59,7 @@ tenant        true          false             ["172.19.0.80-172.19.0.90"]
 . Adopt the {image_service} and create a new `default` `GlanceAPI` instance that is connected with the existing NFS share:
 +
 ----
-$ cat << EOF > glance_nfs_patch.yaml
+cat << EOF > glance_nfs_patch.yaml
 
 spec:
   extraMounts:
@@ -102,7 +102,7 @@ spec:
                   annotations:
                     metallb.universe.tf/address-pool: internalapi
                     metallb.universe.tf/allow-shared-ip: internalapi
-                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <3>
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <3>
                 spec:
                   type: LoadBalancer
           networkAttachments:
@@ -117,13 +117,13 @@ EOF
 . Patch the `OpenStackControlPlane` CR to deploy the {image_service} with an NFS back end:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file glance_nfs_patch.yaml
+oc patch openstackcontrolplane openstack --type=merge --patch-file glance_nfs_patch.yaml
 ----
 
 . Patch the `OpenStackControlPlane` CR to remove the default {image_service}:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'path': '/spec/glance/template/glanceAPIs/default'}]"
+oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'path': '/spec/glance/template/glanceAPIs/default'}]"
 ----
 
 .Verification
@@ -131,7 +131,7 @@ $ oc patch openstackcontrolplane openstack --type=json -p="[{'op': 'remove', 'pa
 * When `GlanceAPI` is active, confirm that you can see a single API instance:
 +
 ----
-$ oc get pods -l service=glance
+oc get pods -l service=glance
 NAME                      READY   STATUS    RESTARTS
 glance-nfs-single-0   2/2     Running   0
 glance-nfs-single-1   2/2     Running   0
@@ -154,7 +154,7 @@ Mounts:
 * Check that the mountpoint that points to `/var/lib/glance/images` is mapped to the expected `nfs server ip` and `nfs path` that you defined in the new default `GlanceAPI` instance:
 +
 ----
-$ oc rsh -c glance-api glance-default-single-0
+oc rsh -c glance-api glance-default-single-0
 
 sh-5.1# mount
 ...
@@ -167,8 +167,8 @@ sh-5.1# mount
 * Confirm that the UUID is created in the exported directory on the NFS node. For example:
 +
 ----
-$ oc rsh openstackclient
-$ openstack image list
+oc rsh openstackclient
+openstack image list
 
 sh-5.1$  curl -L -o /tmp/cirros-0.6.3-x86_64-disk.img http://download.cirros-cloud.net/0.6.3/cirros-0.6.3-x86_64-disk.img
 ...
@@ -189,6 +189,6 @@ sh-5.1$ openstack image list
 * On the `nfs-server` node, the same `uuid` is in the exported `/var/nfs`:
 +
 ----
-$ ls /var/nfs/
+ls /var/nfs/
 634482ca-4002-4a6d-b1d5-64502ad02630
 ----

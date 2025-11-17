@@ -19,20 +19,10 @@ The following procedure applies to a standalone {OpenStackPreviousInstaller} dep
 +
 [subs=+quotes]
 ----
-ifeval::["{build}" == "downstream"]
-CONTROLLER1_SSH="ssh -i <path_to_SSH_key> root@<controller-1 IP>"
-# ...
-endif::[]
-# ... <1>
-ifeval::["{build}" == "downstream"]
-EDPM_PRIVATEKEY_PATH="<path_to_SSH_key>" <2>
-endif::[]
+CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
+EDPM_PRIVATEKEY_PATH="/home/lab/.ssh/id_rsa_tripleo"
 ----
 +
-<1> In the `CONTROLLER<X>_SSH` settings, provide SSH connection details for all Controller nodes, including cell Controller nodes, of the source {OpenStackPreviousInstaller} cloud.
-ifeval::["{build}" == "downstream"]
-<2> Replace `<path_to_SSH_key>` with the path to your SSH key.
-endif::[]
 
 .Procedure
 

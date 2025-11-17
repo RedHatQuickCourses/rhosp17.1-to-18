@@ -44,7 +44,7 @@ Tools::
 [source, shell]
 ----
 ifeval::["{build_variant}" != "ospdo"]
-$ oc project openstack
+oc project openstack
 endif::[]
 ----
 

@@ -49,7 +49,7 @@ group_members_are_ids = true
 . Create the secret from this file:
 +
 ----
-$ oc create secret generic keystone-domains --from-file=<keystone.DOMAIN_NAME.conf>
+oc create secret generic keystone-domains --from-file=<keystone.DOMAIN_NAME.conf>
 ----
 +
 * Replace `<keystone.DOMAIN_NAME.conf>` with the name of your local configuration file. If applicable, include additional configuration files by using the `--from-file` option. After creating the secret, you can remove the local configuration file if it is no longer needed, or store it securely.
@@ -60,7 +60,7 @@ The name of the file that you provide to `--from-file`, for example `keystone.DO
 . Patch the `OpenStackControlPlane` CR:
 +
 ----
-$ oc patch openstackcontrolplane <cr_name> --type=merge -p '
+oc patch openstackcontrolplane <cr_name> --type=merge -p '
 spec:
   keystone:
     template:
@@ -97,7 +97,7 @@ You might need to wait a few minutes for the changes to propagate and for the {i
 . Verify that users from the LDAP domain are accessible:
 +
 ----
-$ oc exec -t openstackclient -- openstack user list --domain <domain_name>
+oc exec -t openstackclient -- openstack user list --domain <domain_name>
 ----
 +
 * Replace `<domain_name>` with your LDAP domain name.
@@ -107,7 +107,7 @@ This command returns a list of users from your LDAP server.
 . Verify that groups from the LDAP domain are accessible:
 +
 ----
-$ oc exec -t openstackclient -- openstack group list --domain <domain_name>
+oc exec -t openstackclient -- openstack group list --domain <domain_name>
 ----
 +
 This command returns a list of groups from your LDAP server.
@@ -115,7 +115,7 @@ This command returns a list of groups from your LDAP server.
 . Test authentication with an LDAP user:
 +
 ----
-$ oc exec -t openstackclient -- openstack --os-auth-url <keystone_auth_url> --os-identity-api-version 3 --os-user-domain-name <domain_name> --os-username <ldap_username> --os-password <ldap_password> token issue
+oc exec -t openstackclient -- openstack --os-auth-url <keystone_auth_url> --os-identity-api-version 3 --os-user-domain-name <domain_name> --os-username <ldap_username> --os-password <ldap_password> token issue
 ----
 +
 * Replace `<keystone_auth_url>` with the {identity_service} authentication URL.
@@ -126,7 +126,7 @@ If successful, this command returns a token, confirming that LDAP authentication
 . Verify group membership for an LDAP user:
 +
 ----
-$ oc exec -t openstackclient -- openstack group contains user --group-domain <domain_name> --user-domain <domain_name> <group_name> <username>
+oc exec -t openstackclient -- openstack group contains user --group-domain <domain_name> --user-domain <domain_name> <group_name> <username>
 ----
 +
 * Replace `<domain_name>`, `<group_name>`, and `<username>` with the appropriate values from your LDAP server.

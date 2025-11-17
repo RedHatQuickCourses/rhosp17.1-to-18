@@ -26,7 +26,7 @@ Example of an invocation setting input and output explicitly to the defaults for
 a Ceph backend:
 
 ----
-$ python cinder-cfg.py --config cinder.conf --out-dir ./
+python cinder-cfg.py --config cinder.conf --out-dir ./
 WARNING:root:The {block_storage} is configured to use ['/etc/cinder/policy.yaml'] as policy file, please ensure this file is available for the control plane {block_storage} services using "extraMounts" or remove the option.
 
 WARNING:root:Deployment uses Ceph, so make sure the Ceph credentials and configuration are present in OpenShift as a secret and then use the extra volumes to make them available in all the services that would need them.
@@ -46,7 +46,7 @@ A different example when using multiple backends, one of them being a 3PAR FC
 could be:
 
 ----
-$ python cinder-cfg.py --config cinder.conf --out-dir ./
+python cinder-cfg.py --config cinder.conf --out-dir ./
 WARNING:root:The {block_storage} is configured to use ['/etc/cinder/policy.yaml'] as policy file, please ensure this file is available for the control plane Block Storage services using "extraMounts" or remove the option.
 
 ERROR:root:Backend hpe_fc requires a vendor container image, but there is no certified image available yet. Patch will use the last known image for reference, but IT WILL NOT WORK

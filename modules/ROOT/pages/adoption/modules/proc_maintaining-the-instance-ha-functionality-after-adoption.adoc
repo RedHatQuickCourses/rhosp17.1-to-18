@@ -13,7 +13,7 @@ To maintain the high availability for Compute instances (Instance HA) functional
 . Retrieve the {OpenStackShort} {rhos_prev_ver} stonith configuration from any of your overcloud Controller nodes:
 +
 ----
-$ sudo pcs config
+sudo pcs config
 ----
 +
 .Sample output

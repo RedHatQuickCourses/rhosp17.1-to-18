@@ -32,8 +32,8 @@ done
 . Wait for the {compute_service} data plane services version to update for all the cells:
 +
 ----
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
+for CELL in $(echo $RENAMED_CELLS); do
+oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
     -e "select a.version from nova_${CELL}.services a join nova_${CELL}.services b where a.version!=b.version and a.binary='nova-compute' and a.deleted=0;"
 done
 ----
@@ -48,9 +48,9 @@ Review any errors in the nova Compute agent logs on the data plane, and the `nov
 . Patch the `OpenStackControlPlane` CR to remove the pre-fast-forward upgrade workarounds from the Compute control plane services:
 +
 ----
-$ rm -f celltemplates
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ cat >> celltemplates << EOF
+rm -f celltemplates
+for CELL in $(echo $RENAMED_CELLS); do
+cat >> celltemplates << EOF
         ${CELL}:
           metadataServiceTemplate:
             customServiceConfig: |
@@ -63,7 +63,7 @@ $ cat >> celltemplates << EOF
 EOF
 done
 
-$ cat > oscp-patch.yaml << EOF
+cat > oscp-patch.yaml << EOF
 spec:
   nova:
     template:
@@ -86,46 +86,29 @@ spec:
               [workarounds]
               disable_compute_service_check_for_ffu=false
 EOF
-$ cat celltemplates >> oscp-patch.yaml
+cat celltemplates >> oscp-patch.yaml
 ----
 +
-* If you are adopting the {compute_service} with the {bare_metal_first_ref}, append the following `novaComputeTemplates` in the `cell<X>` section of the {compute_service} CR patch:
-+
-[source,yaml]
-----
-        cell<X>:
-          novaComputeTemplates:
-            <hostname>: <1>
-              customServiceConfig: |
-                [DEFAULT]
-                host = <hostname>
-                [workarounds]
-                disable_compute_service_check_for_ffu=true
-              computeDriver: ironic.IronicDriver
-        ...
-----
-+
-<1> Replace `<hostname>` with the hostname of the node that is running the `ironic` Compute driver in the source cloud of `cell<X>`.
 
 . Apply the patch file:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml
+oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml
 ----
 
 . Wait until the Compute control plane services CRs are ready:
 +
 ----
-$ oc wait --for condition=Ready --timeout=300s Nova/nova
+oc wait --for condition=Ready --timeout=300s Nova/nova
 ----
 
 . Remove the pre-fast-forward upgrade workarounds from the Compute data plane services:
 +
 ----
-$ oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc get Openstackdataplanenodeset openstack-${CELL} || continue
-$ oc apply -f - <<EOF
+oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
+for CELL in $(echo $RENAMED_CELLS); do
+oc get Openstackdataplanenodeset openstack-${CELL} || continue
+oc apply -f - <<EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
@@ -144,22 +127,22 @@ done
 . Wait for the Compute data plane services to be ready for all the cells:
 +
 ----
-$ oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m
+oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m
 ----
 
 . Run Compute database online migrations to complete the upgrade:
 +
 ----
-$ oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
-$ for CELL in $(echo $RENAMED_CELLS); do
-$ oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
+oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
+for CELL in $(echo $RENAMED_CELLS); do
+oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
 done
 ----
 
 . Discover the Compute hosts in the cells:
 +
 ----
-$ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ----
 
 . Verify if the existing test VM instance is running:

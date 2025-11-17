@@ -19,13 +19,13 @@ This procedure configures the {key_manager} to use the `simple_crypto` back end.
 . Add the kek secret:
 +
 ----
-$ oc set data secret/osp-secret "BarbicanSimpleCryptoKEK=$($CONTROLLER1_SSH "python3 -c \"import configparser; c = configparser.ConfigParser(); c.read('/var/lib/config-data/puppet-generated/barbican/etc/barbican/barbican.conf'); print(c['simple_crypto_plugin']['kek'])\"")"
+oc set data secret/osp-secret "BarbicanSimpleCryptoKEK=$($CONTROLLER1_SSH "python3 -c \"import configparser; c = configparser.ConfigParser(); c.read('/var/lib/config-data/puppet-generated/barbican/etc/barbican/barbican.conf'); print(c['simple_crypto_plugin']['kek'])\"")"
 ----
 
 . Patch the `OpenStackControlPlane` CR to deploy the {key_manager}:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   barbican:
     enabled: true
@@ -51,7 +51,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <1>
               spec:
                 type: LoadBalancer
       barbicanWorker:
@@ -68,23 +68,23 @@ spec:
 * Ensure that the {identity_service_first_ref} endpoints are defined and are pointing to the control plane FQDNs:
 +
 ----
-$ openstack endpoint list | grep key-manager
+openstack endpoint list | grep key-manager
 ----
 
 * Ensure that Barbican API service is registered in the {identity_service}:
 +
 ----
-$ openstack service list | grep key-manager
+openstack service list | grep key-manager
 ----
 +
 ----
-$ openstack endpoint list | grep key-manager
+openstack endpoint list | grep key-manager
 ----
 
 * List the secrets:
 +
 ----
-$ openstack secret list
+openstack secret list
 ----
 
 //**TODO: Once different crypto plugins are supported, additional lines test those should be added.

@@ -21,13 +21,13 @@ To enable the high availability for Compute instances (Instance HA) service, you
 . Create the secret:
 +
 ----
-$ oc apply -f fencing-secret.yaml -n openstack
+oc apply -f fencing-secret.yaml -n openstack
 ----
 
 . Optional: Create the Instance HA configuration map and set the `DISABLED` parameter to `false`. For example:
 +
 ----
-$ cat << EOF > iha-cm.yaml
+cat << EOF > iha-cm.yaml
 kind: ConfigMap
 metadata:
   name: instanceha-0-config
@@ -57,7 +57,7 @@ EOF
 .. Apply the configuration:
 +
 ----
-$ oc apply -f iha-cm.yaml -n openstack
+oc apply -f iha-cm.yaml -n openstack
 ----
 +
 [NOTE]
@@ -66,7 +66,7 @@ If you want to restrict which Compute nodes are evacuated, create host aggregate
 . Create an Instance HA resource and reference the fencing secret and configuration map. For example:
 +
 ----
-$ cat << EOF > iha.yaml
+cat << EOF > iha.yaml
 apiVersion: instanceha.openstack.org/v1beta1
 kind: InstanceHa
 metadata:
@@ -84,7 +84,7 @@ EOF
 . Deploy the Instance HA resource:
 +
 ----
-$ oc apply -f iha.yaml -n openstack
+oc apply -f iha.yaml -n openstack
 ----
 
 .Next steps
@@ -92,11 +92,11 @@ $ oc apply -f iha.yaml -n openstack
 * After you complete the {rhos_long_noacro} adoption, remove the Pacemaker components from the Compute nodes. You must run the following commands on each Compute node:
 +
 ----
-$ sudo systemctl stop pacemaker_remote
-$ sudo systemctl stop pcsd
-$ sudo systemctl stop pcsd-ruby.service
-$ sudo systemctl disable pacemaker_remote
-$ sudo systemctl disable pcsd
-$ sudo systemctl disable pcsd-ruby.service
-$ sudo dnf remove pacemaker pacemaker-remote pcs pcsd -y
+sudo systemctl stop pacemaker_remote
+sudo systemctl stop pcsd
+sudo systemctl stop pcsd-ruby.service
+sudo systemctl disable pacemaker_remote
+sudo systemctl disable pcsd
+sudo systemctl disable pcsd-ruby.service
+sudo dnf remove pacemaker pacemaker-remote pcs pcsd -y
 ----

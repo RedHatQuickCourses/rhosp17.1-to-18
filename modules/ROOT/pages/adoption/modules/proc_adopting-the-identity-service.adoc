@@ -11,7 +11,7 @@ To adopt the {identity_service_first_ref}, you patch an existing `OpenStackContr
 * Create the keystone secret that includes the Fernet keys that were copied from the {OpenStackShort} environment:
 +
 ----
-$ oc apply -f - <<EOF
+oc apply -f - <<EOF
 apiVersion: v1
 data:
   CredentialKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/0 | base64 -w 0)
@@ -30,7 +30,7 @@ EOF
 . Patch the `OpenStackControlPlane` CR to deploy the {identity_service}:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch '
+oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   keystone:
     enabled: true
@@ -44,27 +44,34 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
       databaseInstance: openstack
       secret: osp-secret
 '
 ----
+
+. Wait for the openstackclient reaching the running phase:
 +
-<1> If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, `metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80`.
+[source,bash,role=execute,subs=attributes]
+----
+while ! oc get pods -n openstack | grep openstackclient ; do echo "waiting for osc pod"; sleep 5; done
+oc wait --for=condition=Ready pod/openstackclient --timeout=30s
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstackclient
+----
 
 . Create an alias to use the `openstack` command in the {rhos_long} deployment:
 +
 ----
-$ alias openstack="oc exec -t openstackclient -- openstack"
+alias openstack="oc exec -t openstackclient -- openstack"
 ----
 
 . Remove services and endpoints that still point to the {OpenStackShort}
 control plane, excluding the {identity_service} and its endpoints:
 +
 ----
-$ openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
+openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
 
 for service in aodh heat heat-cfn barbican cinderv3 glance gnocchi manila manilav2 neutron nova placement swift ironic-inspector ironic octavia; do
   openstack service list | awk "/ $service /{ print \$2; }" | xargs -r ${BASH_ALIASES[openstack]} service delete || true
@@ -78,11 +85,11 @@ done
 . Confirm that the {identity_service} endpoints are defined and are pointing to the control plane FQDNs:
 +
 ----
-$ openstack endpoint list | grep keystone
+openstack endpoint list | grep keystone
 ----
 
 . Wait for the `OpenStackControlPlane` resource to become `Ready`:
 +
 ----
-$ oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack
+oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack
 ----

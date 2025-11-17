@@ -43,7 +43,7 @@ template: templates/single_nic_vlans/single_nic_vlans_storage.j2
 .. Add the missing network:
 +
 ----
-$ openstack overcloud node provision \
+openstack overcloud node provision \
 -o overcloud-baremetal-deployed-0.yaml --stack overcloud-0 \
 /--network-config -y --concurrency 2 /home/stack/metalsmith-0.yaml
 ----

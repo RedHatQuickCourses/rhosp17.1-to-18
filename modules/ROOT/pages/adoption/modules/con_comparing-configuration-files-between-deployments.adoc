@@ -83,7 +83,7 @@ Host crc
 . If you use an inventory file to connect to your cloud, generate the `ssh.config` file from your Ansible inventory, for example, `tripleo-ansible-inventory.yaml` file:
 +
 ----
-$ os-diff configure -i tripleo-ansible-inventory.yaml -o ssh.config --yaml
+os-diff configure -i tripleo-ansible-inventory.yaml -o ssh.config --yaml
 ----
 
 .Verification
@@ -91,5 +91,5 @@ $ os-diff configure -i tripleo-ansible-inventory.yaml -o ssh.config --yaml
 * Test your connection:
 +
 ----
-$ ssh -F ssh.config standalone
+ssh -F ssh.config standalone
 ----

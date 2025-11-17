@@ -12,7 +12,7 @@ You might need to restrict the {OpenShiftShort} nodes where the {block_storage} 
 An example of when you need to restrict nodes for a specific {block_storage} is when you deploy the {block_storage} with the LVM driver. In that scenario, the LVM data where the volumes are stored only exists in a specific host, so you need to pin the Block Storage-volume service to that specific {OpenShiftShort} node. Running the service on any other {OpenShiftShort} node does not work. You cannot use the {OpenShiftShort} host node name to restrict the LVM back end. You need to identify the LVM back end by using a unique label, an existing label, or a new label:
 +
 ----
-$ oc label nodes worker0 lvm=cinder-volumes
+oc label nodes worker0 lvm=cinder-volumes
 ----
 +
 [source,yaml]
@@ -23,7 +23,7 @@ metadata:
   name: openstack
 spec:
   secret: osp-secret
-  storageClass: local-storage
+  storageClass: lnfs-storage
   cinder:
     enabled: true
     template:
@@ -130,7 +130,7 @@ endif::[]
 ** After the {OpenShiftShort} nodes reboot and load the `nvme-fabrics` module, you can confirm that the operating system is configured and that it supports ANA by checking the host:
 +
 ----
-$ cat /sys/module/nvme_core/parameters/multipath
+cat /sys/module/nvme_core/parameters/multipath
 ----
 +
 [IMPORTANT]

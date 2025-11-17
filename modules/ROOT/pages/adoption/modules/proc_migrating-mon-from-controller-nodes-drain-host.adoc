@@ -11,20 +11,20 @@ Drain the source node and remove the source node host from the {CephCluster} clu
 . On the source node, back up the `/etc/ceph/` directory to run `cephadm` and get a shell for the {Ceph} cluster from the source node:
 +
 ----
-$ mkdir -p $HOME/ceph_client_backup
-$ sudo cp -R /etc/ceph $HOME/ceph_client_backup
+mkdir -p $HOME/ceph_client_backup
+sudo cp -R /etc/ceph $HOME/ceph_client_backup
 ----
 
 . Identify the active `ceph-mgr` instance:
 +
 ----
-$ sudo cephadm shell -- ceph mgr stat
+sudo cephadm shell -- ceph mgr stat
 ----
 
 . Fail the `ceph-mgr` if it is active on the source node:
 +
 ----
-$ sudo cephadm shell -- ceph mgr fail <mgr_instance>
+sudo cephadm shell -- ceph mgr fail <mgr_instance>
 ----
 +
 * Replace `<mgr_instance>` with the Ceph Manager daemon to fail.
@@ -32,7 +32,7 @@ $ sudo cephadm shell -- ceph mgr fail <mgr_instance>
 . From the `cephadm` shell, remove the labels on the source node:
 +
 ----
-$ for label in mon mgr _admin; do
+for label in mon mgr _admin; do
     sudo cephadm shell -- ceph orch host label rm <source_node> $label;
 done
 ----
@@ -42,19 +42,19 @@ done
 . Optional: Ensure that you remove the Ceph Monitor daemon from the source node if it is still running:
 +
 ----
-$ sudo cephadm shell -- ceph orch daemon rm mon.<source_node> --force
+sudo cephadm shell -- ceph orch daemon rm mon.<source_node> --force
 ----
 
 . Drain the source node to remove any leftover daemons:
 +
 ----
-$ sudo cephadm shell -- ceph orch host drain <source_node>
+sudo cephadm shell -- ceph orch host drain <source_node>
 ----
 
 . Remove the source node host from the {CephCluster} cluster:
 +
 ----
-$ sudo cephadm shell -- ceph orch host rm <source_node> --force
+sudo cephadm shell -- ceph orch host rm <source_node> --force
 ----
 +
 [NOTE]
@@ -80,8 +80,8 @@ endif::[]
 . Confirm that mons are still in quorum:
 +
 ----
-$ sudo cephadm shell -- ceph -s
-$ sudo cephadm shell -- ceph orch ps | grep -i mon
+sudo cephadm shell -- ceph -s
+sudo cephadm shell -- ceph orch ps | grep -i mon
 ----
 
 .Next steps

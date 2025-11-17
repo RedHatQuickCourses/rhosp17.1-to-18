@@ -90,25 +90,25 @@ PacemakerResourcesToStop_dataplane=(
 . Scale down the {rhos_acro} OpenStack Operator `controller-manager` to 0 replicas and temporarily delete the `OpenStackControlPlane` `OpenStackClient` pod, so that you can use the OSPdO `controller-manager` to clean up some of its resources. The cleanup is needed to avoid a pod name collision between the OSPdO OpenStackClient and the {rhos_acro} OpenStackClient.
 +
 ----
-$ oc patch csv -n openstack-operators openstack-operator.v1.0.5 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
-$ oc delete openstackclients.client.openstack.org --all
+oc patch csv -n openstack-operators openstack-operator.v1.0.5 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
+oc delete openstackclients.client.openstack.org --all
 ----
 +
 * Replace the CSV version with the CSV version that is deployed in the cluster.
 . Delete the OSPdO `OpenStackControlPlane` custom resource (CR):
 +
 ----
-$ oc delete openstackcontrolplanes.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
+oc delete openstackcontrolplanes.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
 ----
 . Delete the OSPdO `OpenStackNetConfig` CR to remove the associated node network configuration policies:
 +
 ----
-$ oc delete osnetconfig -n "${OSPDO_NAMESPACE}" --all
+oc delete osnetconfig -n "${OSPDO_NAMESPACE}" --all
 ----
 . Label the {OpenShiftShort} node that contains the OSPdO virtual machine (VM):
 +
 ----
-$ oc label nodes <ospdo_vm_master_node> type=openstack
+oc label nodes <ospdo_vm_master_node> type=openstack
 ----
 +
 * Replace `<ospdo_vm_master_node>` with the remaining master node that contains the OSPdO VM.
@@ -116,7 +116,7 @@ $ oc label nodes <ospdo_vm_master_node> type=openstack
 . Create a node network configuration policy for the third {OpenShiftShort} node. For example:
 +
 ----
-$ cat << EOF > /tmp/node3_nncp.yaml
+cat << EOF > /tmp/node3_nncp.yaml
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
@@ -235,46 +235,46 @@ spec:
     node-role.kubernetes.io/worker: ""
 EOF
 
-$ oc apply -f /tmp/node3_nncp.yaml
+oc apply -f /tmp/node3_nncp.yaml
 ----
 
 . Delete the remaining OSPdO resources. Do not delete the `OpenStackBaremetalSets` and `OpenStackProvisionServer` resources:
 +
 ----
-$ for i in $(oc get crd | grep osp-director | grep -v baremetalset | grep -v provisionserver | awk {'print $1'}); do echo Deleting $i...; oc delete $i -n "${OSPDO_NAMESPACE}" --all; done
+for i in $(oc get crd | grep osp-director | grep -v baremetalset | grep -v provisionserver | awk {'print $1'}); do echo Deleting $i...; oc delete $i -n "${OSPDO_NAMESPACE}" --all; done
 ----
 
 . Scale down OSPdO to 0 replicas:
 +
 ----
-$ ospdo_csv_ver=$(oc get csv -n "${OSPDO_NAMESPACE}" -l operators.coreos.com/osp-director-operator.openstack -o json | jq -r '.items[0].metadata.name')
-$ oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
+ospdo_csv_ver=$(oc get csv -n "${OSPDO_NAMESPACE}" -l operators.coreos.com/osp-director-operator.openstack -o json | jq -r '.items[0].metadata.name')
+oc patch csv -n "${OSPDO_NAMESPACE}" $ospdo_csv_ver --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "0"}]"
 ----
 
 . Remove the webhooks from OSPdO:
 +
 ----
-$ oc patch csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}" --type json -p="[{"op": "remove", "path": "/spec/webhookdefinitions"}]"
+oc patch csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}" --type json -p="[{"op": "remove", "path": "/spec/webhookdefinitions"}]"
 ----
 
 . Remove the finalizer from the OSPdO `OpenStackBaremetalSet` resource:
 +
 ----
-$ oc patch openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" compute --type json -p="[{"op": "remove", "path": "/metadata/finalizers"}]"
+oc patch openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" compute --type json -p="[{"op": "remove", "path": "/metadata/finalizers"}]"
 ----
 
 . Delete the `OpenStackBaremetalSet` and `OpenStackProvisionServer` resources:
 +
 ----
-$ oc delete openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
-$ oc delete openstackprovisionservers.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
+oc delete openstackbaremetalsets.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
+oc delete openstackprovisionservers.osp-director.openstack.org -n "${OSPDO_NAMESPACE}" --all
 ----
 
 . Annotate each {OpenStackShort} Compute `BareMetalHost` resource so that Metal3 does not start the node:
 +
 ----
-$ compute_bmh_list=$(oc get bmh -n openshift-machine-api |grep compute|awk '{printf $1 " "}')
-$ for bmh_compute in $compute_bmh_list;do oc annotate bmh -n openshift-machine-api $bmh_compute baremetalhost.metal3.io/detached="";\
+compute_bmh_list=$(oc get bmh -n openshift-machine-api |grep compute|awk '{printf $1 " "}')
+for bmh_compute in $compute_bmh_list;do oc annotate bmh -n openshift-machine-api $bmh_compute baremetalhost.metal3.io/detached="";\
      oc -n openshift-machine-api wait bmh/$bmh_compute --for=jsonpath='{.status.operationalStatus}'=detached --timeout=30s || {
          echo "ERROR: BMH did not enter detatched state"
          exit 1
@@ -292,14 +292,14 @@ done
 . Delete the OSPdO Operator Lifecycle Manager resources to remove OSPdO:
 +
 ----
-$ oc delete subscription osp-director-operator -n "${OSPDO_NAMESPACE}"
-$ oc delete operatorgroup osp-director-operator -n "${OSPDO_NAMESPACE}"
-$ oc delete catalogsource osp-director-operator-index -n "${OSPDO_NAMESPACE}"
-$ oc delete csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}"
+oc delete subscription osp-director-operator -n "${OSPDO_NAMESPACE}"
+oc delete operatorgroup osp-director-operator -n "${OSPDO_NAMESPACE}"
+oc delete catalogsource osp-director-operator-index -n "${OSPDO_NAMESPACE}"
+oc delete csv $ospdo_csv_ver -n "${OSPDO_NAMESPACE}"
 ----
 
 . Scale up the {rhos_acro} OpenStack Operator `controller-manager` to 1 replica so that the associated `OpenStackControlPlane` CR is reconciled and its `OpenStackClient` pod is recreated:
 +
 ----
-$ oc patch csv -n "${OSPDO_NAMESPACE}"-operators openstack-operator.v0.0.1 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "1"}]"
+oc patch csv -n "${OSPDO_NAMESPACE}"-operators openstack-operator.v0.0.1 --type json   -p="[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/replicas", "value": "1"}]"
 ----

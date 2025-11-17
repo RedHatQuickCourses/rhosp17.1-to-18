@@ -1,0 +1,112 @@
+---
+# Network Isolation role - Based on network-isolation.adoc documentation
+
+- name: Check if network isolation files exist in files directory
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/../../files/{{ item }}"
+  register: files_check
+  loop:
+    - osp-ng-nncp-w1.yaml
+    - osp-ng-nncp-w2.yaml
+    - osp-ng-nncp-w3.yaml
+    - osp-ng-netattach.yaml
+    - osp-ng-metal-lb-ip-address-pools.yaml
+    - osp-ng-metal-lb-l2-advertisements.yaml
+  changed_when: false
+
+- name: Fail if required files are missing
+  ansible.builtin.fail:
+    msg: "Required network isolation files not found. Please ensure all required YAML files exist in the files directory."
+  when: files_check.results | selectattr('stat.exists', 'equalto', false) | list | length > 0
+
+- name: Apply NodeNetworkConfigurationPolicy for worker node 1
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-nncp-w1.yaml"
+
+- name: Apply NodeNetworkConfigurationPolicy for worker node 2
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-nncp-w2.yaml"
+
+- name: Apply NodeNetworkConfigurationPolicy for worker node 3
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-nncp-w3.yaml"
+
+- name: Wait for all NNCP to be successfully configured
+  kubernetes.core.k8s_info:
+    api_version: nmstate.io/v1
+    kind: NodeNetworkConfigurationPolicy
+  register: nncp_status
+  until: >
+    nncp_status.resources | length >= 3 and
+    nncp_status.resources | json_query('[?status.reason==`SuccessfullyConfigured`]') | length == 3
+  retries: 60
+  delay: 10
+  changed_when: false
+
+- name: Display NNCP status
+  debug:
+    msg: "NNCP {{ item.metadata.name }}: {{ item.status.reason | default('Unknown') }}"
+  loop: "{{ nncp_status.resources }}"
+  when: 
+    - item.status is defined
+    - item.metadata is defined
+
+- name: Apply NetworkAttachmentDefinition for isolated networks
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-netattach.yaml"
+
+- name: Wait for MetalLB additional CRDs to be available
+  kubernetes.core.k8s_info:
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+  register: metallb_additional_crd
+  until: metallb_additional_crd.resources | length > 0
+  retries: 30
+  delay: 10
+  changed_when: false
+  loop:
+    - ipaddresspools.metallb.io
+    - l2advertisements.metallb.io
+
+- name: Apply MetalLB IP address pools
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-metal-lb-ip-address-pools.yaml"
+
+- name: Apply MetalLB L2 advertisements
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../files/osp-ng-metal-lb-l2-advertisements.yaml"
+
+- name: Enable global IP forwarding for OVN
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: operator.openshift.io/v1
+      kind: Network
+      metadata:
+        name: cluster
+      spec:
+        defaultNetwork:
+          ovnKubernetesConfig:
+            gatewayConfig:
+              ipForwarding: "Global"
+    merge_type: merge
+
+- name: Verify NetworkAttachmentDefinitions are created
+  kubernetes.core.k8s_info:
+    api_version: k8s.cni.cncf.io/v1
+    kind: NetworkAttachmentDefinition
+    namespace: "{{ openstack_namespace }}"
+  register: net_attach_defs
+  changed_when: false
+
+- name: Display created NetworkAttachmentDefinitions
+  debug:
+    msg: "Created NetworkAttachmentDefinition: {{ item.metadata.name }}"
+  loop: "{{ net_attach_defs.resources }}"

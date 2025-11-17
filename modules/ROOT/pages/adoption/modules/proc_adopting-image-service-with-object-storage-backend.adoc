@@ -66,7 +66,7 @@ spec:
                   annotations:
                     metallb.universe.tf/address-pool: internalapi
                     metallb.universe.tf/allow-shared-ip: internalapi
-                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <1>
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89 <1>
                 spec:
                   type: LoadBalancer
           networkAttachments:
@@ -82,12 +82,12 @@ After the {object_storage}, and in particular `SwiftProxy`, is adopted, you can 
 . Verify that `SwiftProxy` is available:
 +
 ----
-$ oc get pod -l component=swift-proxy | grep Running
+oc get pod -l component=swift-proxy | grep Running
 swift-proxy-75cb47f65-92rxq   3/3     Running   0
 ----
 
 . Patch the `GlanceAPI` service that is deployed in the control plane:
 +
 ----
-$ oc patch openstackcontrolplane openstack --type=merge --patch-file=glance_swift.patch
+oc patch openstackcontrolplane openstack --type=merge --patch-file=glance_swift.patch
 ----

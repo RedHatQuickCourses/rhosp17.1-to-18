@@ -40,14 +40,14 @@ To enable the metadata services of a local cell, set the `enabled` property in t
 +
 [source, shell]
 ----
-$ rm -f celltemplates
+rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
- $ cat >> celltemplates << EOF
+ cat >> celltemplates << EOF
         ${CELL}:
-          hasAPIAccess: true <1>
+          hasAPIAccess: true
           cellDatabaseAccount: nova-$CELL
-          cellDatabaseInstance: openstack-$CELL <2>
-          cellMessageBusInstance: rabbitmq-$CELL <3>
+          cellDatabaseInstance: openstack-$CELL
+          cellMessageBusInstance: rabbitmq-$CELL
           metadataServiceTemplate:
             enabled: false
             override:
@@ -56,7 +56,7 @@ for CELL in $(echo $RENAMED_CELLS); do
                     annotations:
                       metallb.universe.tf/address-pool: internalapi
                       metallb.universe.tf/allow-shared-ip: internalapi
-                      metallb.universe.tf/loadBalancerIPs: 172.17.0.$(( 79 + ${CELL##*cell} ))
+                      metallb.universe.tf/loadBalancerIPs: 192.168.52.$(( 88 + ${CELL##*cell} ))
                   spec:
                     type: LoadBalancer
             customServiceConfig: |
@@ -69,7 +69,7 @@ for CELL in $(echo $RENAMED_CELLS); do
 EOF
 done
 
-$ cat > oscp-patch.yaml << EOF
+cat > oscp-patch.yaml << EOF
 spec:
   nova:
     enabled: true
@@ -86,7 +86,7 @@ spec:
                 annotations:
                   metallb.universe.tf/address-pool: internalapi
                   metallb.universe.tf/allow-shared-ip: internalapi
-                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80 <4>
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
         customServiceConfig: |
@@ -100,7 +100,7 @@ spec:
               annotations:
                 metallb.universe.tf/address-pool: internalapi
                 metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
             spec:
               type: LoadBalancer
         customServiceConfig: |
@@ -121,39 +121,10 @@ spec:
               [workarounds]
               disable_compute_service_check_for_ffu=true
 EOF
-$ cat celltemplates >> oscp-patch.yaml
-$ oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml
+cat celltemplates >> oscp-patch.yaml
+oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml
 ----
-+
-<1> In the source cloud, cells are always configured with the main Nova API database upcall access. You can disable upcall access to the API by setting `hasAPIAccess` to `false`. However, do not make changes to the API during adoption.
-<2> The database instance that is used by the cell. The database instance names must match the names that are defined in the `OpenStackControlPlane` CR that you created in when you deployed the back-end services as described in xref:deploying-backend-services__migrating-databases[Deploying back-end services].
-<3> The message bus instance that is used by the cell. The message bus instance names must match the names that are defined in the `OpenStackControlPlane` CR.
-<4> If you use IPv6, change the load balancer IP to the load balancer IP in your environment, for example, `metallb.universe.tf/loadBalancerIPs: fd00:bbbb::80`.
 
-. If you are adopting the {compute_service} with the {bare_metal_first_ref}, append the `novaComputeTemplates` field with the following content in each cell in the {compute_service} CR patch. For example:
-+
-[source,yaml]
-----
-        cell1:
-          novaComputeTemplates:
-            standalone:
-              customServiceConfig: |
-                [DEFAULT]
-                host = <hostname>
-                [workarounds]
-                disable_compute_service_check_for_ffu=true
-              computeDriver: ironic.IronicDriver
-        ...
-----
-+
-* Replace `<hostname>` with the hostname of the node that is running the `ironic` Compute driver in the source cloud.
-
-. Wait for the CRs for the Compute control plane services to be ready:
-+
-----
-$ oc wait --for condition=Ready --timeout=300s Nova/nova
-----
-+
 [NOTE]
 The local Conductor services are started for each cell, while the superconductor runs in `cell0`.
 Note that `disable_compute_service_check_for_ffu` is mandatory for all imported Compute services until the external data plane is imported, and until the Compute services are fast-forward upgraded. For more information, see xref:adopting-compute-services-to-the-data-plane_data-plane[Adopting Compute services to the {rhos_acro} data plane] and xref:performing-a-fast-forward-upgrade-on-compute-services_data-plane[Upgrading Compute services].
@@ -164,8 +135,8 @@ Note that `disable_compute_service_check_for_ffu` is mandatory for all imported 
 control plane FQDNs, and that the Nova API responds:
 +
 ----
-$ openstack endpoint list | grep nova
-$ openstack server list
+openstack endpoint list | grep nova
+openstack server list
 ----
 +
 ** Compare the outputs with the topology-specific configuration in xref:proc_retrieving-topology-specific-service-configuration_migrating-databases[Retrieving topology-specific service configuration].
@@ -173,7 +144,7 @@ $ openstack server list
 * Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:
 +
 ----
-$ for CELL in $(echo $CELLS); do
+for CELL in $(echo $CELLS); do
   set +u
   . ~/.source_cloud_exported_variables_$CELL
   set -u
@@ -182,7 +153,7 @@ $ for CELL in $(echo $CELLS); do
 
   echo "comparing $CELL to $RCELL"
   echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
-$ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
 done
 ----
 +

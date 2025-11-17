@@ -1,3 +1,0 @@
-= Lab Environment
-
-FIXME: Instructions for accessing the lab environment for this hands-on based training.

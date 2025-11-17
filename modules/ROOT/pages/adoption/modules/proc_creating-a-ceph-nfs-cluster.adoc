@@ -64,7 +64,7 @@ to include an interface that connects to the `StorageNFS` network:
 .. Update the {CephCluster} nodes:
 +
 ----
-$ openstack overcloud node provision \
+openstack overcloud node provision \
     --stack overcloud   \
     --network-config -y  \
     -o overcloud-baremetal-deployed-storage_nfs.yaml \
@@ -78,19 +78,19 @@ When the update is complete, ensure that a new interface is created in the{CephC
 address (VIP) for the Ceph NFS service:
 +
 ----
-$ openstack port list -c "Fixed IP Addresses" --network storage_nfs
+openstack port list -c "Fixed IP Addresses" --network storage_nfs
 ----
 
 . In a running `cephadm` shell, identify the hosts for the NFS service:
 +
 ----
-$ ceph orch host ls
+ceph orch host ls
 ----
 
 . Label each host that you identified. Repeat this command for each host that you want to label:
 +
 ----
-$ ceph orch host label add <hostname> nfs
+ceph orch host label add <hostname> nfs
 ----
 +
 * Replace `<hostname>` with the name of the host that you identified.
@@ -98,7 +98,7 @@ $ ceph orch host label add <hostname> nfs
 . Create the NFS cluster:
 +
 ----
-$ ceph nfs cluster create cephfs \
+ceph nfs cluster create cephfs \
     "label:nfs" \
     --ingress \
     --virtual-ip=<VIP> \
@@ -119,6 +119,6 @@ endif::[]
 . Check the status of the NFS cluster:
 +
 ----
-$ ceph nfs cluster ls
-$ ceph nfs cluster info cephfs
+ceph nfs cluster ls
+ceph nfs cluster info cephfs
 ----

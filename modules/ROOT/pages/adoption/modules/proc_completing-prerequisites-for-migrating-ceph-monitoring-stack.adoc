@@ -42,7 +42,7 @@ Confirm that the cluster is healthy and that both `ceph orch ls` and
 If you run the {Ceph} externalization procedure after you migrate the {rhos_prev_long} control plane, update the container images in the {CephCluster} cluster configuration. The current container images point to the undercloud registry, which might not be available anymore. Because the undercloud is not available after adoption is complete, replace the undercloud-provided images with an alternative registry.
 +
 ----
-$ ceph config dump
+ceph config dump
 ...
 ...
 ifeval::["{build}" == "downstream"]
@@ -57,7 +57,7 @@ endif::[]
 . Remove the undercloud container images:
 +
 ----
-$ cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_base \
+cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_base \
 for i in prometheus grafana alertmanager node_exporter; do \
     cephadm shell -- ceph config rm mgr mgr/cephadm/container_image_$i \
 done
