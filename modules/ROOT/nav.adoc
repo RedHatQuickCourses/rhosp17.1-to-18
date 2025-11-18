@@ -5,4 +5,4 @@
 ** xref:adoption/adoption-overview.adoc[RHOSP 17.1 to RHOSO 18 adoption overview]
 ** xref:adoption/migrating-databases.adoc[Migrating RHOSP 17.1 Database to RHOSO 18]
 ** xref:adoption/adoption-cp.adoc[Control plane Adoption]
-** xref:adoption/adoption-dp.adoc[Option - Data plane Adoption]
+** xref:adoption/adoption-dp.adoc[Data plane Adoption]

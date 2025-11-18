@@ -85,6 +85,13 @@ EOF
 oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch
 ----
 
+. Wait for Cinder control plane services' CRs to become ready:
++
+[source,bash,role=execute,subs=attributes]
+----
+oc wait --for condition=Ready --timeout=300s Cinder/cinder
+----
+
 . Retrieve the list of the previous scheduler and backup services:
 +
 ----

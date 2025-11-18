@@ -24,6 +24,7 @@ Adoption process:
 * Migrating DBs
 * Control plane Adoption
 * Data plane Adoption
+* Networker adoption
 
 Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
 For some steps you may also need to edit some of the commands from the  instructions.

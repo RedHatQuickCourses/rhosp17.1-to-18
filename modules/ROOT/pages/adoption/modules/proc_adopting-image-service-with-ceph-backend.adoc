@@ -47,8 +47,6 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-          networkAttachments:
-            - storage
 EOF
 ----
 +

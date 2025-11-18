@@ -51,22 +51,12 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 
 .Procedure
 
-. Ensure that you are using the {rhocp_long} namespace where you want the
-control plane to be deployed:
+. Create the {OpenStackShort} secret.
 +
 ----
 cd /home/lab/labrepo/files
 oc apply -f osp-ng-ctlplane-secret.yaml
 ----
-
-
-ifeval::["{build}" == "downstream"]
-. Create the {OpenStackShort} secret.
-+
-----
-oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"
-----
-endif::[]
 
 . If the `$ADMIN_PASSWORD` is different than the password you set
 in `osp-secret`, amend the `AdminPassword` key in the `osp-secret`:

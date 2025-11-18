@@ -106,22 +106,19 @@ oc wait --for condition=Ready --timeout=300s Nova/nova
 +
 ----
 oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
-for CELL in $(echo $RENAMED_CELLS); do
-oc get Openstackdataplanenodeset openstack-${CELL} || continue
 oc apply -f - <<EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
-  name: openstack-nova-compute-ffu-$CELL
+  name: openstack-nova-compute-ffu-cell1
 spec:
   nodeSets:
-    - openstack-${CELL}
+    - compute0-1-set
   servicesOverride:
-    - nova-${CELL}
+    - nova-cell1
 backoffLimit: 3
 EOF
-done
 ----
 
 . Wait for the Compute data plane services to be ready for all the cells:

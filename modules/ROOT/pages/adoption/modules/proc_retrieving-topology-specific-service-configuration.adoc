@@ -16,8 +16,26 @@ From the workstation, access to the director host and change to the stack user:
 [source,bash,role=execute,subs=attributes]
 ----
 ssh 172.25.250.15
+----
+
+Escalate to root:
++
+[source,bash,role=execute,subs=attributes]
+----
 sudo -i
+----
+
+Change to the stack user:
++
+[source,bash,role=execute,subs=attributes]
+----
 su - stack
+----
+
+Load the stackrc file:
++
+[source,bash,role=execute,subs=attributes]
+----
 . stackrc
 ----
 
@@ -89,7 +107,6 @@ In the *workstation host*, copy the overcloud-passwords from the director node t
 ----
 scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
 scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/
-scp ~/.ssh/lab_rsa* lab@utility:~/.ssh/
 ----
 +
 In the *utility host* log in to the Red Hat registry and create the secret:
@@ -97,10 +114,22 @@ In the *utility host* log in to the Red Hat registry and create the secret:
 [source,bash,role=execute,subs=attributes]
 ----
 oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile
-podman login registry.redhat.io --authfile authfile
-oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile
-
 ----
+
+Authenticate to the Red Hat registry:
++
+[source,bash,role=execute,subs=attributes]
+----
+podman login registry.redhat.io --authfile authfile
+----
+
+Set the pull secret:
++
+[source,bash,role=execute,subs=attributes]
+----
+oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile
+----
+
 +
 .Prerequisites
 
@@ -208,7 +237,7 @@ export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH 
 +
 ----
 unset SRIOV_AGENTS
-declare -xA SRIOV_AGENTS <1>
+declare -xA SRIOV_AGENTS
 for CELL in $(echo $CELLS); do
   RCELL=$CELL
   [ "$CELL" = "$DEFAULT_CELL_NAME" ] && RCELL=default
@@ -237,7 +266,6 @@ done
 chmod 0600 ~/.source_cloud_exported_variables*
 ----
 +
-<1> If `neutron-sriov-nic-agent` agents are running in your {OpenStackShort} deployment, get the configuration to use for the data plane adoption.
 
 .Next steps
 
