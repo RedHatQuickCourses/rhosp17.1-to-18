@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -140,10 +140,40 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh 172.25.250.15
-sudo -i
-su - stack
-. stackrc</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh 172.25.250.15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Escalate to root:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Change to the stack user:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">su - stack</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Load the stackrc file:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">. stackrc</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -216,8 +246,7 @@ sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</code></pre>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
-scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/
-scp ~/.ssh/lab_rsa* lab@utility:~/.ssh/</code></pre>
+scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -225,13 +254,39 @@ scp ~/.ssh/lab_rsa* lab@utility:~/.ssh/</code></pre>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile
-podman login registry.redhat.io --authfile authfile
-oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile</code></pre>
 </div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Authenticate to the Red Hat registry:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">podman login registry.redhat.io --authfile authfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set the pull secret:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+.Prerequisites</p>
 </div>
 <div class="olist arabic">
-<div class="title">Prerequisites</div>
 <ol class="arabic">
 <li>
 <p>In the <strong>utility host</strong>, define the following shell variables. Replace the example values with values that are correct for your environment:</p>
@@ -265,9 +320,6 @@ SOURCE_MARIADB_IP[default]=192.168.52.55</pre>
 </div>
 </li>
 </ol>
-</div>
-</li>
-</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -374,7 +426,7 @@ done</pre>
 <div class="listingblock">
 <div class="content">
 <pre>unset SRIOV_AGENTS
-declare -xA SRIOV_AGENTS <i class="conum" data-value="1"></i><b>(1)</b>
+declare -xA SRIOV_AGENTS
 for CELL in $(echo $CELLS); do
   RCELL=$CELL
   [ "$CELL" = "$DEFAULT_CELL_NAME" ] &amp;&amp; RCELL=default
@@ -403,20 +455,12 @@ done
 chmod 0600 ~/.source_cloud_exported_variables*</pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If <code>neutron-sriov-nic-agent</code> agents are running in your {OpenStackShort} deployment, get the configuration to use for the data plane adoption.</td>
-</tr>
-</table>
-</div>
-</li>
-</ol>
-</div>
 <div class="paragraph">
 <div class="title">Next steps</div>
 <p>This configuration and the exported values are required later, during the data plane adoption post-checks. After the {OpenStackShort} control plane services are shut down, if any of the exported values are lost, re-running the <code>export</code> command fails because the control plane services are no longer running on the source cloud, and the data cannot be retrieved. To avoid data loss, preserve the exported values in an environment file before shutting down the control plane services.</p>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -486,8 +530,7 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Ensure that you are using the {rhocp_long} namespace where you want the
-control plane to be deployed:</p>
+<p>Create the {OpenStackShort} secret.</p>
 <div class="listingblock">
 <div class="content">
 <pre>cd /home/lab/labrepo/files

@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -168,8 +168,7 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Ensure that you are using the {rhocp_long} namespace where you want the
-control plane to be deployed:</p>
+<p>Create the {OpenStackShort} secret.</p>
 <div class="listingblock">
 <div class="content">
 <pre>cd /home/lab/labrepo/files

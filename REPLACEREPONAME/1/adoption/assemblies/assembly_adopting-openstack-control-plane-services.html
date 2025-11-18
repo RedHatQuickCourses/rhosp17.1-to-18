@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -423,8 +423,6 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-          networkAttachments:
-            - storage
 EOF</pre>
 </div>
 </div>
@@ -909,6 +907,14 @@ EOF</code></pre>
 </div>
 </li>
 <li>
+<p>Wait for Cinder control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Cinder/cinder</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Retrieve the list of the previous scheduler and backup services:</p>
 <div class="listingblock">
 <div class="content">
@@ -1357,191 +1363,6 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
   Stack Name: test-networks
   Stack Status: CREATE_COMPLETE
   Updated Time: null</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="adopting-telemetry-services_adopt-control-plane"><a class="anchor" href="#adopting-telemetry-services_adopt-control-plane"></a>Adopting Telemetry services</h2>
-<div class="sectionbody">
-<div class="paragraph _abstract">
-<p>To adopt Telemetry services, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has Telemetry services disabled to start the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} environment.</p>
-</div>
-<div class="paragraph">
-<p>If you adopt Telemetry services, the observability solution that is used in the {OpenStackShort} {rhos_prev_ver} environment, Service Telemetry Framework, is removed from the cluster. The new solution is deployed in the {rhos_long} environment, allowing for metrics, and optionally logs, to be retrieved and stored in the new back ends.</p>
-</div>
-<div class="paragraph">
-<p>You cannot automatically migrate old data because different back ends are used. Metrics and logs are considered short-lived data and are not intended to be migrated to the {rhos_acro} environment. For information about adopting legacy autoscaling stack templates to the {rhos_acro} environment, see <a href="#adopting-autoscaling_adopt-control-plane">Adopting Autoscaling services</a>.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>The {OpenStackPreviousInstaller} environment is running (the source cloud).</p>
-</li>
-<li>
-<p>The Single Node OpenShift or OpenShift Local is running in the {rhocp_long} cluster.</p>
-</li>
-<li>
-<p>Previous adoption steps are completed.</p>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Patch the <code>OpenStackControlPlane</code> CR to deploy <code>cluster-observability-operator</code>:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc create -f - &lt;&lt;EOF
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: cluster-observability-operator
-  namespace: openshift-operators
-spec:
-  channel: stable
-  installPlanApproval: Automatic
-  name: cluster-observability-operator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-EOF</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Wait for the installation to succeed:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc wait --for jsonpath="{.status.phase}"=Succeeded csv --namespace=openshift-operators -l operators.coreos.com/cluster-observability-operator.openshift-operators</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Patch the <code>OpenStackControlPlane</code> CR to deploy Ceilometer services:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
-spec:
-  telemetry:
-    enabled: true
-    template:
-      ceilometer:
-        passwordSelector:
-          ceilometerService: CeilometerPassword
-        enabled: true
-        secret: osp-secret
-        serviceUser: ceilometer
-'</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Enable the metrics storage back end:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
-spec:
-  telemetry:
-    template:
-      metricStorage:
-        enabled: true
-        monitoringStack:
-          alertingEnabled: true
-          scrapeInterval: 30s
-          storage:
-            strategy: persistent
-            retention: 24h
-            persistent:
-              pvcStorageRequest: 20G
-'</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<div class="title">Verification</div>
-<ol class="arabic">
-<li>
-<p>Verify that the <code>alertmanager</code> and <code>prometheus</code> pods are available:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc get pods -l alertmanager=metric-storage
-NAME                            READY   STATUS    RESTARTS   AGE
-alertmanager-metric-storage-0   2/2     Running   0          46s
-alertmanager-metric-storage-1   2/2     Running   0          46s
-
-oc get pods -l prometheus=metric-storage
-NAME                          READY   STATUS    RESTARTS   AGE
-prometheus-metric-storage-0   3/3     Running   0          46s</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Inspect the resulting Ceilometer pods:</p>
-<div class="listingblock">
-<div class="content">
-<pre>CEILOMETETR_POD=`oc get pods -l service=ceilometer | tail -n 1 | cut -f 1 -d' '`
-oc exec -t $CEILOMETETR_POD -c ceilometer-central-agent -- cat /etc/ceilometer/ceilometer.conf</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Inspect enabled pollsters:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc get secret ceilometer-config-data -o jsonpath="{.data['polling\.yaml\.j2']}"  | base64 -d</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Optional: Override default pollsters according to the requirements of your environment:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackcontrolplane controlplane --type=merge --patch '
-spec:
-  telemetry:
-    template:
-      ceilometer:
-          defaultConfigOverwrite:
-            polling.yaml.j2: |
-              ---
-              sources:
-                - name: pollsters
-                  interval: 100
-                  meters:
-                    - volume.*
-                    - image.size
-          enabled: true
-          secret: osp-secret
-'</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<div class="title">Next steps</div>
-<ol class="arabic">
-<li>
-<p>Optional: Patch the <code>OpenStackControlPlane</code> CR to include <code>logging</code>:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
-spec:
-  telemetry:
-    template:
-      logging:
-      enabled: false
-      ipaddr: 192.168.52.89
-      port: 10514
-      cloNamespace: openshift-logging
-'</pre>
 </div>
 </div>
 </li>

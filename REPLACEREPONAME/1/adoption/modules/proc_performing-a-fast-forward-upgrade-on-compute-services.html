@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -241,22 +241,19 @@ cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
 <div class="listingblock">
 <div class="content">
 <pre>oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
-for CELL in $(echo $RENAMED_CELLS); do
-oc get Openstackdataplanenodeset openstack-${CELL} || continue
 oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
-  name: openstack-nova-compute-ffu-$CELL
+  name: openstack-nova-compute-ffu-cell1
 spec:
   nodeSets:
-    - openstack-${CELL}
+    - compute0-1-set
   servicesOverride:
-    - nova-${CELL}
+    - nova-cell1
 backoffLimit: 3
-EOF
-done</pre>
+EOF</pre>
 </div>
 </div>
 </li>

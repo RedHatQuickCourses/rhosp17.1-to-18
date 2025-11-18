@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -126,15 +126,18 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <div class="listingblock">
 <div class="content">
 <pre>oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | XXX   | UP    | ovn-controller             |
-| f3112349-054c-403a-b00a-e219238192b8 | OVN Controller agent         | compute-0.localdomain    |                   | XXX   | UP    | ovn-controller             |
-| af9dae2d-1c1c-55a8-a743-f84719f6406d | OVN Metadata agent           | compute-0.localdomain    |                   | XXX   | UP    | neutron-ovn-metadata-agent |
-| 51a11df8-a66e-47a2-aec0-52eb8589626c | OVN Controller Gateway agent | controller-1.localdomain |                   | XXX   | UP    | ovn-controller             |
-| bb817e5e-7832-410a-9e67-934dac8c602f | OVN Controller Gateway agent | controller-2.localdomain |                   | XXX   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | XXX   | UP    | ovn-controller             |
+| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
 </div>
 </div>
 </li>
@@ -145,26 +148,15 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <ul>
 <li>
 <p>Define the shell variable. Based on above agent list output,
-controller-0, controller-1, controller-2 are our target
-hosts. If you have both <code>Controller</code> and <code>Networker</code> nodes running
-networker services then add all those hosts below.</p>
+overcloud-networker.localdomain is our target
+host.</p>
 <div class="listingblock">
 <div class="content">
 <pre>declare -A networkers
 networkers+=(
-  ["controller-0.localdomain"]="192.168.122.100"
-  ["controller-1.localdomain"]="192.168.122.101"
-  ["controller-2.localdomain"]="192.168.122.102"
-  # ...
+  ["overcloud-networker"]="172.25.249.250"
 )</pre>
 </div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>["&lt;node-name&gt;"]="192.168.122.100"</code> with the name and IP address of the corresponding Networker or Controller node as per your environment.</p>
-</li>
-</ul>
 </div>
 </li>
 </ul>
@@ -188,224 +180,7 @@ You can reuse most of the <code>nodeTemplate</code> section from the <code>OpenS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
-apiVersion: dataplane.openstack.org/v1beta1
-kind: OpenStackDataPlaneNodeSet
-metadata:
-  name: openstack-networker
-spec:
-  tlsEnabled: false <i class="conum" data-value="1"></i><b>(1)</b>
-  networkAttachments:
-      - ctlplane
-  preProvisioned: true
-  services:
-    - bootstrap
-    - download-cache
-    - configure-network
-    - validate-network
-    - install-os
-    - configure-os
-    - ssh-known-hosts
-    - run-os
-    - install-certs
-    - ovn
-  env:
-    - name: ANSIBLE_CALLBACKS_ENABLED
-      value: "profile_tasks"
-    - name: ANSIBLE_FORCE_COLOR
-      value: "True"
-  nodes:
-    controller-0:
-      hostName: controller-0
-      ansible:
-        ansibleHost: ${networkers[controller-0.localdomain]}
-      networks:
-      - defaultRoute: true
-        fixedIP: ${networkers[controller-0.localdomain]}
-        name: ctlplane
-        subnetName: subnet1
-      - name: internalapi
-        subnetName: subnet1
-      - name: storage
-        subnetName: subnet1
-      - name: tenant
-        subnetName: subnet1
-    controller-1:
-      hostName: controller-1
-      ansible:
-        ansibleHost: ${networkers[controller-1.localdomain]}
-      networks:
-      - defaultRoute: true
-        fixedIP: ${networkers[controller-1.localdomain]}
-        name: ctlplane
-        subnetName: subnet1
-      - name: internalapi
-        subnetName: subnet1
-      - name: storage
-        subnetName: subnet1
-      - name: tenant
-        subnetName: subnet1
-    controller-2:
-      hostName: controller-2
-      ansible:
-        ansibleHost: ${networkers[controller-2.localdomain]}
-      networks:
-      - defaultRoute: true
-        fixedIP: ${networkers[controller-2.localdomain]}
-        name: ctlplane
-        subnetName: subnet1
-      - name: internalapi
-        subnetName: subnet1
-      - name: storage
-        subnetName: subnet1
-      - name: tenant
-        subnetName: subnet1
-  nodeTemplate:
-    ansibleSSHPrivateKeySecret: dataplane-adoption-secret
-    ansible:
-      ansibleUser: root
-      ansibleVars:
-        edpm_bootstrap_release_version_package: []
-        # edpm_network_config
-        # Default nic config template for a EDPM node
-        # These vars are edpm_network_config role vars
-        edpm_network_config_template: |
-           ---
-           {% set mtu_list = [ctlplane_mtu] %}
-           {% for network in nodeset_networks %}
-           {% set _ = mtu_list.append(lookup('vars', networks_lower[network] ~ '_mtu')) %}
-           {%- endfor %}
-           {% set min_viable_mtu = mtu_list | max %}
-           network_config:
-           - type: ovs_bridge
-             name: {{ neutron_physical_bridge_name }}
-             mtu: {{ min_viable_mtu }}
-             use_dhcp: false
-             dns_servers: {{ ctlplane_dns_nameservers }}
-             domain: {{ dns_search_domains }}
-             addresses:
-             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
-             routes: {{ ctlplane_host_routes }}
-             members:
-             - type: interface
-               name: nic1
-               mtu: {{ min_viable_mtu }}
-               # force the MAC address of the bridge to this interface
-               primary: true
-           {% for network in nodeset_networks %}
-             - type: vlan
-               mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
-               vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
-               addresses:
-               - ip_netmask:
-                   {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
-               routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
-           {% endfor %}
-
-        edpm_network_config_hide_sensitive_logs: false
-        #
-        # These vars are for the network config templates themselves and are
-        # considered EDPM network defaults.
-        neutron_physical_bridge_name: br-ctlplane
-        neutron_public_interface_name: eth0
-
-        # edpm_nodes_validation
-        edpm_nodes_validation_validate_controllers_icmp: false
-        edpm_nodes_validation_validate_gateway_icmp: false
-
-        # edpm ovn-controller configuration
-        edpm_ovn_bridge_mappings: &lt;bridge_mappings&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-        edpm_ovn_bridge: br-int
-        edpm_ovn_encap_type: geneve
-        ovn_monitor_all: true
-        edpm_ovn_remote_probe_interval: 60000
-        edpm_ovn_ofctrl_wait_before_clear: 8000
-
-        # serve as a OVN gateway
-        edpm_enable_chassis_gw: true <i class="conum" data-value="3"></i><b>(3)</b>
-
-        timesync_ntp_servers:
-
-
-        gather_facts: false
-        enable_debug: false
-        # edpm firewall, change the allowed CIDR if needed
-        edpm_sshd_configure_firewall: true
-        edpm_sshd_allowed_ranges: ['192.168.122.0/24']
-        # SELinux module
-        edpm_selinux_mode: enforcing
-
-        # Do not attempt OVS major upgrades here
-        edpm_ovs_packages:
-        - openvswitch3.3
-EOF</pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If TLS Everywhere is enabled, change <code>spec:tlsEnabled</code> to <code>true</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Set to the same values that you used in your {rhos_prev_long} {rhos_prev_ver} deployment.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Set to <code>true</code> to run <code>ovn-controller</code> in gateway mode.</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Ensure that you use the same <code>ovn-controller</code> settings in the <code>OpenStackDataPlaneNodeSet</code> CR that you used in the Networker nodes before adoption. This configuration is stored in the <code>external_ids</code> column in the <code>Open_vSwitch</code> table in the Open vSwitch database:</p>
-<div class="listingblock">
-<div class="content">
-<pre>ovs-vsctl list Open .
-...
-external_ids        : {hostname=controller-0.localdomain, ovn-bridge=br-int, ovn-bridge-mappings=&lt;bridge_mappings&gt;, ovn-chassis-mac-mappings="datacentre:1e:0a:bb:e6:7c:ad", ovn-cms-options=enable-chassis-as-gw, ovn-encap-ip="172.19.0.100", ovn-encap-tos="0", ovn-encap-type=geneve, ovn-match-northd-version=False, ovn-monitor-all=True, ovn-ofctrl-wait-before-clear="8000", ovn-openflow-probe-interval="60", ovn-remote="tcp:ovsdbserver-sb.openstack.svc:6642", ovn-remote-probe-interval="60000", rundir="/var/run/openvswitch", system-id="2eec68e6-aa21-4c95-a868-31aeafc11736"}
-...</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;bridge_mappings&gt;</code> with the value of the bridge mappings in your configuration, for example, <code>"datacentre:br-ctlplane"</code>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Optional: Enable <code>neutron-metadata</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
-  {
-    "op": "add",
-    "path": "/spec/services/-",
-    "value": "neutron-metadata"
-  }]'</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;networker_CR_name&gt;</code> with the name of the CR that you deployed for your Networker nodes, for example, <code>openstack-networker</code>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Optional: Enable <code>neutron-dhcp</code> in the <code>OpenStackDataPlaneNodeSet</code> CR:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc patch openstackdataplanenodeset &lt;networker_CR_name&gt; --type='json' --patch='[
-  {
-    "op": "add",
-    "path": "/spec/services/-",
-    "value": "neutron-dhcp"
-  }]'</pre>
+<pre>oc apply -f osp-ng-dataplane-node-set-deploy-adoption-networker.yaml</pre>
 </div>
 </div>
 </li>
@@ -469,6 +244,18 @@ spec:
   - openstack-networker
 EOF</pre>
 </div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Wait for the deployment to reach the <code>Ready</code> status:</p>
+<div class="listingblock">
+<div class="content">
+<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-networker --timeout=10m</pre>
+</div>
+</div>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>

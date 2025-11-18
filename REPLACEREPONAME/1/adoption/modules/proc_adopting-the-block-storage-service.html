@@ -60,7 +60,7 @@
     <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../adoption-dp.html">Option - Data plane Adoption</a>
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -207,6 +207,14 @@ EOF</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for Cinder control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Cinder/cinder</code></pre>
 </div>
 </div>
 </li>
