@@ -125,9 +125,9 @@
 </li>
 <li>
 <p>Define the following shell variables. Replace the following example values with values that are correct for your environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>STORAGE_CLASS=nfs-storage
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">STORAGE_CLASS=nfs-storage
 MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
 
 CELLS="default"
@@ -169,7 +169,7 @@ done
 
 declare -A SOURCE_MARIADB_IP
 SOURCE_MARIADB_IP[default]=192.168.52.55
-SOURCE_MARIADB_IP[cell1]=192.168.52.55</pre>
+SOURCE_MARIADB_IP[cell1]=192.168.52.55</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -203,9 +203,9 @@ The <code>super</code> is the top-scope Nova API upcall database instance. A sup
 <ul>
 <li>
 <p>To get the values for <code>SOURCE_MARIADB_IP</code>, query the puppet-generated configurations in the Controller and CellController nodes:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -218,9 +218,9 @@ The <code>super</code> is the top-scope Nova API upcall database instance. A sup
 <ol class="arabic">
 <li>
 <p>Create a temporary volume claim and a pod for the database data copy. Edit the volume claim storage request if necessary, to give it enough space for the overcloud databases:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -262,7 +262,7 @@ spec:
   - name: mariadb-data
     persistentVolumeClaim:
       claimName: mariadb-data
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>

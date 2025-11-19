@@ -120,13 +120,10 @@
 <p>An operational OpenShift cluster which supports Multus CNI</p>
 </li>
 <li>
-<p>oc command line tool on your workstation (workstation host)</p>
+<p>oc command line tool on your workstation (utility host)</p>
 </li>
 <li>
-<p>k9s command line tool on your workstation (workstation host)</p>
-</li>
-<li>
-<p>podman command line tool on your workstation (workstation host)</p>
+<p>podman command line tool on your workstation (utility host)</p>
 </li>
 <li>
 <p>Access to repositories which contain the Dev Preview code</p>
@@ -148,7 +145,7 @@ For ease of instructions it will be assumed the repo has been cloned</p>
 <div class="sect3">
 <h4 id="_accessing_the_cluster"><a class="anchor" href="#_accessing_the_cluster"></a>Accessing the Cluster</h4>
 <div class="paragraph">
-<p>From the workstation, access to the utility host</p>
+<p>From the workstation, access to the utility host by executing the following command:</p>
 </div>
 <div class="paragraph">
 <p>+</p>
@@ -371,6 +368,79 @@ EOF</code></pre>
 cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
 cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s</pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_start_tests_virtual_machines"><a class="anchor" href="#_start_tests_virtual_machines"></a>Start tests virtual machines</h3>
+<div class="paragraph">
+<p>From the workstation, access to the director host and change to the stack user:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh 172.25.250.15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Escalate to root:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Change to the stack user:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">su - stack</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Load the overclourdc file:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">. overcloudrc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Start the test virtual machines:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack server start server-2-compute-1
+openstack server start server-1-compute-0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can ssh and ping the test virtual machines from the workstation by executing the following command during the whole lab:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh cirros@172.25.250.207
+ssh cirros@172.25.250.206
+ping 172.25.250.207
+ping 172.25.250.206</code></pre>
 </div>
 </div>
 </div>

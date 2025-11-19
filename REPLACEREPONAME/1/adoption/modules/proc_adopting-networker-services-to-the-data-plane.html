@@ -123,9 +123,9 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <ol class="arabic">
 <li>
 <p>Check for the nodes where <code>OVN Controller Gateway agent</code> agents are running. The list of agents varies depending on the services you enabled:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec openstackclient -- openstack network agent list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
@@ -137,7 +137,7 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 | 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
 | eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
 | ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
 </div>
 </div>
 </li>
@@ -150,12 +150,12 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <p>Define the shell variable. Based on above agent list output,
 overcloud-networker.localdomain is our target
 host.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>declare -A networkers
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">declare -A networkers
 networkers+=(
   ["overcloud-networker"]="172.25.249.250"
-)</pre>
+)</code></pre>
 </div>
 </div>
 </li>
@@ -178,9 +178,9 @@ You can reuse most of the <code>nodeTemplate</code> section from the <code>OpenS
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f osp-ng-dataplane-node-set-deploy-adoption-networker.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-node-set-deploy-adoption-networker.yaml</code></pre>
 </div>
 </div>
 </li>
@@ -190,9 +190,9 @@ You can reuse most of the <code>nodeTemplate</code> section from the <code>OpenS
 <ol class="loweralpha" type="a">
 <li>
 <p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -202,28 +202,28 @@ spec:
   - openstack-networker
   servicesOverride:
   - pre-adoption-validation
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>watch oc get pod -l app=openstackansibleee</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch oc get pod -l app=openstackansibleee</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -l app=openstackansibleee -f --max-log-requests 20</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Wait for the deployment to reach the <code>Ready</code> status:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m</code></pre>
 </div>
 </div>
 </li>
@@ -232,9 +232,9 @@ EOF</pre>
 </li>
 <li>
 <p>Deploy the <code>OpenStackDataPlaneDeployment</code> CR for Networker nodes:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -242,32 +242,20 @@ metadata:
 spec:
   nodeSets:
   - openstack-networker
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>Wait for the deployment to reach the <code>Ready</code> status:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-networker --timeout=10m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployment/openstack-networker --timeout=10m</code></pre>
 </div>
 </div>
 </li>
 </ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Alternatively, you can include the Networker node set in the <code>nodeSets</code> list before you deploy the main <code>OpenStackDataPlaneDeployment</code> CR. You cannot add new node sets to the <code>OpenStackDataPlaneDeployment</code> CR after deployment.
-</td>
-</tr>
-</table>
 </div>
 </li>
 <li>
@@ -288,85 +276,45 @@ In some cases, agents from the old data plane that are replaced or retired remai
 <ol class="loweralpha" type="a">
 <li>
 <p>List the agents:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| 856960f0-5530-46c7-a331-6eadcba362da | DHCP agent                   | controller-1.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-| 8bd22720-789f-45b8-8d7d-006dee862bf9 | DHCP agent                   | controller-2.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-| e584e00d-be4c-4e98-a11a-4ecd87d21be7 | DHCP agent                   | controller-0.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list</code></pre>
 </div>
-</div>
-</li>
-<li>
-<p>If any agent in the list shows <code>XXX</code> in the <code>Alive</code> field, verify the Host and Agent Type, if the functions of this agent is no longer required, and the agent has been permanently stopped on the {rhos_prev_long} host. Then, delete the agent:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc exec openstackclient -- openstack network agent &lt;agent_id&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;agent_id&gt;</code> with the ID of the agent to delete, for example, <code>856960f0-5530-46c7-a331-6eadcba362da</code>.</p>
-</li>
-</ul>
 </div>
 </li>
 </ol>
 </div>
 </li>
+<li>
+<p>Sample output:</p>
+</li>
 </ol>
 </div>
-<div class="olist arabic">
-<div class="title">Verification</div>
-<ol class="arabic">
-<li>
-<p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>watch oc get pod -l app=openstackansibleee</pre>
+<pre>+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
+| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
+| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
-</div>
-</div>
-</li>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
 <li>
-<p>Wait for the data plane node set to reach the <code>Ready</code> status:</p>
-<div class="listingblock">
+<p>Then, delete the agent with XXX state:</p>
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready osdpns/&lt;networker_CR_name&gt; --timeout=30m</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Replace <code>&lt;networker_CR_name&gt;</code> with the name of the CR that you deployed for your Networker nodes, for example, <code>openstack-networker</code>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Verify that the {networking_first_ref} agents are running. The list of agents varies depending on the services you enabled:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| f3112349-054c-403a-b00a-e219238192b8 | OVN Controller agent         | compute-0.localdomain    |                   | :-)   | UP    | ovn-controller             |
-| af9dae2d-1c1c-55a8-a743-f84719f6406d | OVN Metadata agent           | compute-0.localdomain    |                   | :-)   | UP    | neutron-ovn-metadata-agent |
-| 51a11df8-a66e-47a2-aec0-52eb8589626c | OVN Controller Gateway agent | controller-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-| bb817e5e-7832-410a-9e67-934dac8c602f | OVN Controller Gateway agent | controller-2.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent delete ad88316a-0f35-4a6e-87c8-db6a792e566f
+oc exec openstackclient -- openstack network agent delete 3fb27b31-9381-42be-89ed-b3a6f6f6a328
+oc exec openstackclient -- openstack network agent delete b182ecee-95ff-4c10-8698-23936d97b3d7</code></pre>
 </div>
 </div>
 </li>

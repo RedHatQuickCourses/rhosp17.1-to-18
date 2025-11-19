@@ -157,9 +157,9 @@ oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/H
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {orchestration}:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   heat:
     enabled: true
@@ -174,7 +174,7 @@ spec:
         authEncryptionKey: HeatAuthEncryptionKey
         service: HeatPassword
         stackDomainAdminPassword: HeatStackDomainAdminPassword
-'</pre>
+'</code></pre>
 </div>
 </div>
 </li>
@@ -185,10 +185,20 @@ spec:
 <ol class="arabic">
 <li>
 <p>Ensure that the statuses of all the CRs are <code>Setup complete</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI
-NAME                           STATUS   MESSAGE
+<pre>NAME                           STATUS   MESSAGE
 heat.heat.openstack.org/heat   True     Setup complete
 
 NAME                                  STATUS   MESSAGE
@@ -201,13 +211,24 @@ NAME                                        STATUS   MESSAGE
 heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Check that the {orchestration} is registered in the {identity_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack service list -c Name -c Type</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec -it openstackclient -- openstack service list -c Name -c Type
-+------------+----------------+
+<pre>+------------+----------------+
 | Name       | Type           |
 +------------+----------------+
 | heat       | orchestration  |
@@ -222,10 +243,21 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 +------------+----------------+</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+Sample output:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
-- Enabled: true
+<pre>- Enabled: true
   ID: 1da7df5b25b94d1cae85e3ad736b25a5
   Interface: public
   Region: regionOne
@@ -241,9 +273,16 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
   URL: http://heat-api-internal.openstack-operators.svc:8004/v1/%(tenant_id)s</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Check that the {orchestration} engine services are running:</p>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>oc exec -it openstackclient -- openstack orchestration service list -f yaml
@@ -277,22 +316,30 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
   Updated At: '2023-10-11T21:48:01.000000'</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Verify that you can see your {orchestration} stacks:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack stack list -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>openstack stack list -f yaml
-- Creation Time: '2023-10-11T22:03:20Z'
+<pre>- Creation Time: '2023-10-11T22:03:20Z'
   ID: 20f95925-7443-49cb-9561-a1ab736749ba
   Project: 4eacd0d1cab04427bc315805c28e66c9
   Stack Name: test-networks
   Stack Status: CREATE_COMPLETE
   Updated Time: null</pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 </article>
   </div>

@@ -170,11 +170,24 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 <ul>
 <li>
 <p>In the <strong>director host</strong>, get the internal_api VIP from this file:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /home/stack/templates/overcloud-vip-deployed.yaml</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sample output:</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[student@director ~]cat /home/stack/templates/overcloud-vip-deployed.yaml
-
-[...]
+<pre>[...]
   VipPortMap:
     external:
       ip_address: 172.25.250.109
@@ -192,10 +205,27 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
       ip_address: 192.168.51.41
       ip_address_uri: 192.168.51.41
       ip_subnet: 192.168.51.41/24
-[...]
-
-[student@director ~] metalsmith list
-+--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
+[...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also get the internal_api VIP by accessing one of the controller nodes:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[student@director ~] metalsmith list</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sample output:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 | UUID                                 | Node Name           | Allocation UUID                      | Hostname                | State  | IP Addresses            |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 | 1c708c39-91d6-4500-a395-42c081adea78 | overcloud-control0  | 3b077ad2-ddb4-462d-a573-4a3ab6aa7b84 | overcloud-controller-0  | ACTIVE | ctlplane=172.25.249.16  |
@@ -206,83 +236,113 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 | 51d45604-8bf8-43f9-9718-d704398296e3 | overcloud-networker | b5f71cd8-5f42-46a8-8c51-a75608745744 | overcloud-networker     | ACTIVE | ctlplane=172.25.249.250 |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 
-[student@director ~] ssh tripleo-admin@172.25.249.16
-[tripleo-admin@overcloud-controller-0 ~]$
-sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
-/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent
-
-[tripleo-admin@overcloud-controller-0 ~]$ logout</code></pre>
+[source,bash,role=execute,subs=attributes]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>SOURCE_MARIADB_IP is then 192.168.52.55
-CONTROLLER1_IP is then 172.25.249.16</p>
+<p>ssh tripleo-admin@172.25.249.16</p>
 </div>
-<div class="paragraph">
-<p>In the <strong>director host</strong>, copy the overcloud-passwords from the director node to the student user home directory:</p>
-</div>
-<div class="listingblock execute">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
+<pre>[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>. Sample output:</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[source,bash,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>logout</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Then the values for SOURCE_MARIADB_IP and CONTROLLER_IP are:
++
+SOURCE_MARIADB_IP is then 192.168.52.55
+CONTROLLER1_IP is then 172.25.249.16
+CONTROLLER2_IP is then 172.25.249.17
+CONTROLLER3_IP is then 172.25.249.18
++
+
+In the *director host*, copy the overcloud-passwords from the director node to the student user home directory:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
 sudo chown student:student /home/student/overcloud-passwords.yaml
 sudo cp /home/stack/.ssh/id_rsa_tripleo* /home/student/.ssh/
 sudo chown student:student /home/student/.ssh/id_rsa_tripleo
-sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</code></pre>
+sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</p>
 </div>
-</div>
-<div class="paragraph">
-<p>In the <strong>workstation host</strong>, copy the overcloud-passwords from the director node to the utiliy node:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
-scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the <strong>utility host</strong> log in to the Red Hat registry and create the secret:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile</code></pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Authenticate to the Red Hat registry:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">podman login registry.redhat.io --authfile authfile</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Set the pull secret:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>+
-.Prerequisites</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In the <strong>utility host</strong>, define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
+<pre>+
+In the *workstation host*, copy the overcloud-passwords from the director node to the utiliy node:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
+scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+In the *utility host* log in to the Red Hat registry and create the secret, it will be used to pull the helper pod images:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d &gt; authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Authenticate to the Red Hat registry:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>podman login registry.redhat.io --authfile authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Set the pull secret:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+.Prerequisites
+
+. In the *utility host*, define the following shell variables. Replace the example values with values that are correct for your environment:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
 MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
 declare -A TRIPLEO_PASSWORDS
 CELLS="default"
@@ -292,77 +352,65 @@ done
 declare -A SOURCE_DB_ROOT_PASSWORD
 for CELL in $(echo $CELLS); do
   SOURCE_DB_ROOT_PASSWORD[$CELL]=$(cat ${TRIPLEO_PASSWORDS[$CELL]} | grep ' MysqlRootPassword:' | awk -F ': ' '{ print $2; }')
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
-MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
-CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
+<pre>+
 
-declare -A SOURCE_MARIADB_IP
-SOURCE_MARIADB_IP[default]=192.168.52.55</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:</p>
-<div class="listingblock">
-<div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_DATABASES
-declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
-for CELL in $(echo $CELLS); do
-  PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
-done</pre>
+. Define the following shell variables. Replace the example values with values that are correct for your environment:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the connection is successful, the expected output is nothing.</p>
+<p>MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
+MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
+CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>nova</code>, <code>nova_api</code>, and <code>nova_cell0</code> databases are included in the same database host for the main overcloud {orchestration_first_ref} stack.
-Additional cells use the <code>nova</code> database of their local Galera clusters.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>declare -A SOURCE_MARIADB_IP
+SOURCE_MARIADB_IP[default]=192.168.52.55</p>
 </div>
-</li>
-<li>
-<p>Run <code>mysqlcheck</code> on the {OpenStackShort} database to check for inaccuracies:</p>
 <div class="listingblock">
 <div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+<pre>[NOTE]
+The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
+
+.Procedure
+
+. Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_DATABASES
+declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
+for CELL in $(echo $CELLS); do
+  PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
+    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
+done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+If the connection is successful, the expected output is nothing.
++
+[NOTE]
+The `nova`, `nova_api`, and `nova_cell0` databases are included in the same database host for the main overcloud {orchestration_first_ref} stack.
+Additional cells use the `nova` database of their local Galera clusters.
+
+. Run `mysqlcheck` on the {OpenStackShort} database to check for inaccuracies:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 run_mysqlcheck() {
-  PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" | grep -v OK)
 }
 for CELL in $(echo $CELLS); do
@@ -370,52 +418,60 @@ for CELL in $(echo $CELLS); do
 done
 if [ "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" != "" ]; then
   for CELL in $(echo $CELLS); do
-    MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
       mysql_upgrade -v -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}")
     # rerun mysqlcheck to check if problem is resolved
     run_mysqlcheck
   done
-fi</pre>
+fi</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the {compute_service_first_ref} cell mappings:</p>
 <div class="listingblock">
 <div class="content">
-<pre>export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+<pre>. Get the {compute_service_first_ref} cell mappings:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh "${SOURCE_MARIADB_IP['default']}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD['default']}" nova_api -e \
-    'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')</pre>
+    'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the hostnames of the registered Compute services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+<pre>. Get the hostnames of the registered Compute services:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 for CELL in $(echo $CELLS); do
-  PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e \
       "select host from nova.services where services.binary='nova-compute' and deleted=0;")
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the list of the mapped {compute_service} cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)</pre>
+<pre>. Get the list of the mapped {compute_service} cells:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Store the exported variables for future use:</p>
+<div class="paragraph">
+<p>export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>unset SRIOV_AGENTS
+<pre>. Store the exported variables for future use:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset SRIOV_AGENTS
 declare -xA SRIOV_AGENTS
 for CELL in $(echo $CELLS); do
   RCELL=$CELL
@@ -427,30 +483,31 @@ unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
 declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e 'SHOW databases;')"
-PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$RCELL]} -u root -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} | grep -v OK)"
-PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e \
   "select host from nova.services where services.binary='nova-compute' and deleted=0;")"
 if [ "$RCELL" = "default" ]; then
-  PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} nova_api -e \
       'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')"
   PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS="$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)"
 fi
 EOF
 done
-chmod 0600 ~/.source_cloud_exported_variables*</pre>
+chmod 0600 ~/.source_cloud_exported_variables*</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+
+.Next steps
+
+This configuration and the exported values are required later, during the data plane adoption post-checks. After the {OpenStackShort} control plane services are shut down, if any of the exported values are lost, re-running the `export` command fails because the control plane services are no longer running on the source cloud, and the data cannot be retrieved. To avoid data loss, preserve the exported values in an environment file before shutting down the control plane services.</pre>
 </div>
-<div class="paragraph">
-<div class="title">Next steps</div>
-<p>This configuration and the exported values are required later, during the data plane adoption post-checks. After the {OpenStackShort} control plane services are shut down, if any of the exported values are lost, re-running the <code>export</code> command fails because the control plane services are no longer running on the source cloud, and the data cannot be retrieved. To avoid data loss, preserve the exported values in an environment file before shutting down the control plane services.</p>
-</div>
-</li>
-</ol>
 </div>
 </article>
   </div>

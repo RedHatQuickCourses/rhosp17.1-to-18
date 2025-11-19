@@ -141,15 +141,6 @@
 <ul>
 <li>
 <p>Ensure that there no long-running tasks that require the services that you plan to stop, such as instance live migrations, volume migrations, volume creation, backup and restore, attaching, detaching, and other similar operations:</p>
-<div class="listingblock">
-<div class="content">
-<pre>openstack server list --all-projects -c ID -c Status |grep -E '\| .+ing \|'
-openstack volume list --all-projects -c ID -c Status |grep -E '\| .+ing \|'| grep -vi error
-openstack volume backup list --all-projects -c ID -c Status |grep -E '\| .+ing \|' | grep -vi error
-openstack share list --all-projects -c ID -c Status |grep -E '\| .+ing \|'| grep -vi error
-openstack image list -c ID -c Status |grep -E '\| .+ing \|'</pre>
-</div>
-</div>
 </li>
 <li>
 <p>Collect the services topology-specific configuration. For more information, see <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
@@ -159,11 +150,11 @@ openstack image list -c ID -c Status |grep -E '\| .+ing \|'</pre>
 </li>
 <li>
 <p>Specify the IP addresses of all Controller nodes, for example:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
 CONTROLLER2_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.17"
-CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.18"</pre>
+CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.18"</code></pre>
 </div>
 </div>
 </li>
@@ -174,9 +165,9 @@ CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.1
 <ol class="arabic">
 <li>
 <p>Disable {OpenStackShort} control plane services:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># Update the services list to be stopped
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Update the services list to be stopped
 ServicesToStop=("tripleo_aodh_api.service"
                 "tripleo_aodh_api_cron.service"
                 "tripleo_aodh_evaluator.service"

@@ -113,9 +113,9 @@
 <ul>
 <li>
 <p>Create the keystone secret that includes the Fernet keys that were copied from the {OpenStackShort} environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   CredentialKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/0 | base64 -w 0)
@@ -126,7 +126,7 @@ kind: Secret
 metadata:
   name: keystone
 type: Opaque
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
@@ -137,9 +137,9 @@ EOF</pre>
 <ol class="arabic">
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {identity_service}:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   keystone:
     enabled: true
@@ -158,7 +158,7 @@ spec:
               type: LoadBalancer
       databaseInstance: openstack
       secret: osp-secret
-'</pre>
+'</code></pre>
 </div>
 </div>
 </li>
@@ -174,22 +174,22 @@ oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstac
 </li>
 <li>
 <p>Create an alias to use the <code>openstack</code> command in the {rhos_long} deployment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Remove services and endpoints that still point to the {OpenStackShort}
 control plane, excluding the {identity_service} and its endpoints:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
 
 for service in aodh heat heat-cfn barbican cinderv3 glance gnocchi manila manilav2 neutron nova placement swift ironic-inspector ironic octavia; do
   openstack service list | awk "/ $service /{ print \$2; }" | xargs -r ${BASH_ALIASES[openstack]} service delete || true
-done</pre>
+done</code></pre>
 </div>
 </div>
 </li>

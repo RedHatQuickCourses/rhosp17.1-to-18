@@ -132,11 +132,11 @@ Using the same user across all services makes it simpler to create a common {Cep
 </li>
 <li>
 <p>The following shell variables are defined. Replace the following example values with values that are correct for your environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
 CEPH_KEY=$($CEPH_SSH "sudo cat /etc/ceph/ceph.client.openstack.keyring | base64 -w 0")
-CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
+CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</code></pre>
 </div>
 </div>
 </li>
@@ -147,9 +147,9 @@ CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
 <ol class="arabic">
 <li>
 <p>Create the <code>ceph-conf-files</code> secret that includes the {Ceph} configuration:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   ceph.client.openstack.keyring: $CEPH_KEY
@@ -158,7 +158,7 @@ kind: Secret
 metadata:
   name: ceph-conf-files
 type: Opaque
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -132,14 +132,6 @@
 <li>
 <p>The Storage network is correctly configured on the {OpenShiftShort} cluster.</p>
 </li>
-<li>
-<p>The contents of <code>cinder.conf</code> file. Download the file so that you can access it locally:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf &gt; cinder.conf</pre>
-</div>
-</div>
-</li>
 </ul>
 </div>
 <div class="olist arabic">
@@ -147,9 +139,9 @@
 <ol class="arabic">
 <li>
 <p>Create a new file, for example, <code>cinder_api.patch</code>:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cat &lt;&lt; EOF &gt; cinder_api.patch
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; cinder_api.patch
 spec:
   extraMounts:
   - extraVol:
@@ -204,9 +196,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Apply the configuration::</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</code></pre>
 </div>
 </div>
 </li>
@@ -220,9 +212,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Retrieve the list of the previous scheduler and backup services:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume service list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list
 
 +------------------+------------------------+------+---------+-------+----------------------------+
 | Binary           | Host                   | Zone | Status  | State | Updated At                 |
@@ -231,18 +223,18 @@ EOF</code></pre>
 | cinder-scheduler | overcloud-controller-1 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 | cinder-scheduler | overcloud-controller-2 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 | cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
-+------------------+------------------------+------+---------+-------+----------------------------+</pre>
++------------------+------------------------+------+---------+-------+----------------------------+</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Remove services for hosts that are in the <code>down</code> state:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-2
-oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</pre>
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</code></pre>
 </div>
 </div>
 </li>
@@ -285,9 +277,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Apply the configuration::</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</code></pre>
 </div>
 </div>
 </li>
@@ -307,9 +299,9 @@ EOF</code></pre>
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</code></pre>
 </div>
 </div>
 </li>
@@ -320,17 +312,17 @@ EOF</code></pre>
 <ol class="arabic">
 <li>
 <p>Ensure that the <code>openstack</code> alias is defined:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list --service cinderv3</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list --service cinderv3</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -343,9 +335,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Confirm that the Block Storage services are running:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume service list</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -363,11 +355,11 @@ Cinder API services do not appear in the list. However, if you get a response fr
 </li>
 <li>
 <p>Confirm that you have your previous volume types, volumes, snapshots, and backups:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume type list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume type list
 openstack volume list
-openstack volume snapshot list</pre>
+openstack volume snapshot list</code></pre>
 </div>
 </div>
 </li>
@@ -377,17 +369,17 @@ openstack volume snapshot list</pre>
 <ol class="loweralpha" type="a">
 <li>
 <p>Create a volume from an image to check that the connection to {image_service_first_ref} is working:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume create --image cirros --bootable --size 1 disk_new</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume create --image cirros --bootable --size 1 disk_new</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Back up the previous attached volume:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</code></pre>
 </div>
 </div>
 <div class="ulist">

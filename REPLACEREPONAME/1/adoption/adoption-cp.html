@@ -123,9 +123,9 @@
 <ul>
 <li>
 <p>Create the keystone secret that includes the Fernet keys that were copied from the RHOSP environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   CredentialKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/0 | base64 -w 0)
@@ -136,7 +136,7 @@ kind: Secret
 metadata:
   name: keystone
 type: Opaque
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
@@ -147,9 +147,9 @@ EOF</pre>
 <ol class="arabic">
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Identity service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   keystone:
     enabled: true
@@ -168,7 +168,7 @@ spec:
               type: LoadBalancer
       databaseInstance: openstack
       secret: osp-secret
-'</pre>
+'</code></pre>
 </div>
 </div>
 </li>
@@ -184,22 +184,22 @@ oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstac
 </li>
 <li>
 <p>Create an alias to use the <code>openstack</code> command in the Red&#160;Hat OpenStack Services on OpenShift (RHOSO) deployment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Remove services and endpoints that still point to the RHOSP
 control plane, excluding the Identity service and its endpoints:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
 
 for service in aodh heat heat-cfn barbican cinderv3 glance gnocchi manila manilav2 neutron nova placement swift ironic-inspector ironic octavia; do
   openstack service list | awk "/ $service /{ print \$2; }" | xargs -r ${BASH_ALIASES[openstack]} service delete || true
-done</pre>
+done</code></pre>
 </div>
 </div>
 </li>
@@ -268,9 +268,9 @@ configuration parameters that are provided by the Red&#160;Hat OpenStack Platfor
 <ul>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Networking service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   neutron:
     enabled: true
@@ -303,35 +303,45 @@ spec:
 <ul>
 <li>
 <p>Inspect the resulting Networking service pods:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc get pods -l service=neutron</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l service=neutron</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Ensure that the <code>Neutron API</code> service is registered in the Identity service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack service list | grep network</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep network</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">openstack endpoint list | grep network
-
-| 6a805bd6c9f54658ad2f24e5a0ae0ab6 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps-crc.testing  |
-| b943243e596847a9a317c8ce1800fa98 | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696        |</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep network</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
 </div>
 </li>
-<li>
-<p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>openstack network create net
+<pre>| a866aef3d9354bf6b37110692e1e5aee | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696             |
+| b0f4743dc3e24fd8acf7b406d6f92ea5 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps.ocp4.example.com  |</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack network create net
 openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet
-openstack router create router</pre>
+openstack router create router</code></pre>
 </div>
 </div>
 </li>
@@ -384,9 +394,9 @@ openstack router create router</pre>
 <p>Ensure that the Ceph-related secret (<code>ceph-conf-files</code>) is created in
 the <code>openstack</code> namespace and that the <code>extraMounts</code> property of the
 <code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>cat &lt;&lt; EOF &gt; glance_patch.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; glance_patch.yaml
 spec:
   glance:
     enabled: true
@@ -419,15 +429,15 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Image service with a Red Hat Ceph Storage back end:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</code></pre>
 </div>
 </div>
 </li>
@@ -444,34 +454,62 @@ EOF</pre>
 <ol class="arabic">
 <li>
 <p>Check that the service is active, and that the endpoints are updated in the RHOSP CLI:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc rsh openstackclient
-openstack service list | grep image
-
-| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |
-
-openstack endpoint list | grep image
-
-| 569ed81064f84d4a91e0d2d807e4c1f1 | regionOne | glance       | image        | True    | internal  | http://glance-internal-openstack.apps-crc.testing   |
-| 5843fae70cba4e73b29d4aff3e8b616c | regionOne | glance       | image        | True    | public    | http://glance-public-openstack.apps-crc.testing     |</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep image</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
-<div class="listingblock">
-<div class="content">
-<pre>openstack image list
-+--------------------------------------+--------+--------+
-| ID                                   | Name   | Status |
-+--------------------------------------+--------+--------+
-| c3158cad-d50b-452f-bec1-f250562f5c1f | cirros | active |
-+--------------------------------------+--------+--------+</pre>
-</div>
+<div class="paragraph">
+<p>Sample output:</p>
 </div>
 </li>
 </ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
+| ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack image list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 1088f6e4-d0a8-4d63-8f93-f14f708a4dbc | cirros | active |
++--------------------------------------+--------+--------+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -557,12 +595,12 @@ openstack resource class list</pre>
 </li>
 <li>
 <p>You have defined the following shell variables. Replace the following example values with the values that are correct for your environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"
 
 DEFAULT_CELL_NAME="cell3"
-RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</pre>
+RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -572,10 +610,10 @@ RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</pre>
 </li>
 <li>
 <p>If you deployed the source cloud with a <code>default</code> cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>DEFAULT_CELL_NAME="cell1"
-RENAMED_CELLS="cell1"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"</code></pre>
 </div>
 </div>
 </li>
@@ -602,9 +640,9 @@ To enable the metadata services of a local cell, set the <code>enabled</code> pr
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">rm -f celltemplates
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
  cat &gt;&gt; celltemplates &lt;&lt; EOF
         ${CELL}:
@@ -705,61 +743,47 @@ Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for al
 </tr>
 </table>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wait for Nova control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Nova/nova</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
 <div class="ulist">
 <div class="title">Verification</div>
 <ul>
 <li>
 <p>Check that Compute service endpoints are defined and pointing to the
 control plane FQDNs, and that the Nova API responds:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list | grep nova
-openstack server list</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Compare the outputs with the topology-specific configuration in <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:</p>
-<div class="listingblock">
-<div class="content">
-<pre>for CELL in $(echo $CELLS); do
-  set +u
-  . ~/.source_cloud_exported_variables_$CELL
-  set -u
-  RCELL=$CELL
-  [ "$CELL" = "default" ] &amp;&amp; RCELL=$DEFAULT_CELL_NAME
-
-  echo "comparing $CELL to $RCELL"
-  echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
-oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
-done</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep nova
+openstack server list</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The following changes are expected for each cell:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>cellX</code> <code>nova</code> database and username become <code>nova_cellX</code>.</p>
-</li>
-<li>
-<p>The <code>default</code> cell is renamed to <code>DEFAULT_CELL_NAME</code>. The <code>default</code> cell might retain the original name if there are multiple cells.</p>
-</li>
-<li>
-<p>The RabbitMQ transport URL no longer uses <code>guest</code>.</p>
-</li>
-</ul>
+<p>Sample output:</p>
 </div>
 </li>
 </ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 764454a0fe6540829496a91706be0fc9 | regionOne | nova         | compute      | True    | internal  | http://nova-internal.openstack.svc:8774/v2.1                 |
+| ce98dcc7e5a54ae4b08274ecf36c1a91 | regionOne | nova         | compute      | True    | public    | http://nova-public-openstack.apps.ocp4.example.com/v2.1      |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| ID                                   | Name               | Status | Networks                                | Image  | Flavor |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| 32316d67-70bc-4c39-a462-93d18a3f6594 | server-2-compute-1 | ACTIVE | private=172.25.250.207, 192.168.100.91  | cirros | tiny   |
+| e776a713-6f7c-419a-a153-89fd1abb5a2d | server-1-compute-0 | ACTIVE | private=172.25.250.206, 192.168.100.187 | cirros | tiny   |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+</pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -818,14 +842,6 @@ For more information, see <a href="#adopting-compute-services-to-the-data-plane_
 <li>
 <p>The Storage network is correctly configured on the RHOCP cluster.</p>
 </li>
-<li>
-<p>The contents of <code>cinder.conf</code> file. Download the file so that you can access it locally:</p>
-<div class="listingblock">
-<div class="content">
-<pre>$CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf &gt; cinder.conf</pre>
-</div>
-</div>
-</li>
 </ul>
 </div>
 <div class="olist arabic">
@@ -833,9 +849,9 @@ For more information, see <a href="#adopting-compute-services-to-the-data-plane_
 <ol class="arabic">
 <li>
 <p>Create a new file, for example, <code>cinder_api.patch</code>:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cat &lt;&lt; EOF &gt; cinder_api.patch
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; cinder_api.patch
 spec:
   extraMounts:
   - extraVol:
@@ -890,9 +906,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Apply the configuration::</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</code></pre>
 </div>
 </div>
 </li>
@@ -906,9 +922,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Retrieve the list of the previous scheduler and backup services:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume service list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list
 
 +------------------+------------------------+------+---------+-------+----------------------------+
 | Binary           | Host                   | Zone | Status  | State | Updated At                 |
@@ -917,18 +933,18 @@ EOF</code></pre>
 | cinder-scheduler | overcloud-controller-1 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 | cinder-scheduler | overcloud-controller-2 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
 | cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
-+------------------+------------------------+------+---------+-------+----------------------------+</pre>
++------------------+------------------------+------+---------+-------+----------------------------+</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Remove services for hosts that are in the <code>down</code> state:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-2
-oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</pre>
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</code></pre>
 </div>
 </div>
 </li>
@@ -971,9 +987,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Apply the configuration::</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</code></pre>
 </div>
 </div>
 </li>
@@ -993,9 +1009,9 @@ EOF</code></pre>
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</code></pre>
 </div>
 </div>
 </li>
@@ -1006,17 +1022,17 @@ EOF</code></pre>
 <ol class="arabic">
 <li>
 <p>Ensure that the <code>openstack</code> alias is defined:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Confirm that Block Storage service endpoints are defined and pointing to the control plane FQDNs:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list --service cinderv3</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list --service cinderv3</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1029,9 +1045,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Confirm that the Block Storage services are running:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume service list</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1049,11 +1065,11 @@ Cinder API services do not appear in the list. However, if you get a response fr
 </li>
 <li>
 <p>Confirm that you have your previous volume types, volumes, snapshots, and backups:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume type list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume type list
 openstack volume list
-openstack volume snapshot list</pre>
+openstack volume snapshot list</code></pre>
 </div>
 </div>
 </li>
@@ -1063,17 +1079,17 @@ openstack volume snapshot list</pre>
 <ol class="loweralpha" type="a">
 <li>
 <p>Create a volume from an image to check that the connection to Image Service (glance) is working:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack volume create --image cirros --bootable --size 1 disk_new</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume create --image cirros --bootable --size 1 disk_new</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Back up the previous attached volume:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack --os-volume-api-version 3.47 volume create --backup &lt;backup_name&gt;</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1123,9 +1139,9 @@ You do not boot a Compute service (nova) instance by using the new <code>volume 
 <ul>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Dashboard service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   horizon:
     enabled: true
@@ -1134,7 +1150,7 @@ spec:
     template:
       memcachedInstance: memcached
       secret: osp-secret
-'</pre>
+'</code></pre>
 </div>
 </div>
 </li>
@@ -1145,18 +1161,18 @@ spec:
 <ol class="arabic">
 <li>
 <p>Verify that the Dashboard service instance is successfully deployed and ready:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc get horizon</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get horizon</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Confirm that the Dashboard service is reachable and returns a <code>200</code> status code:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>PUBLIC_URL=$(oc get horizon horizon -o jsonpath='{.status.endpoint}')
-curl --silent --output /dev/stderr --head --write-out "%{http_code}" "$PUBLIC_URL/dashboard/auth/login/?next=/dashboard/" -k | grep 200</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PUBLIC_URL=$(oc get horizon horizon -o jsonpath='{.status.endpoint}')
+curl --silent --output /dev/stderr --head --write-out "%{http_code}" "$PUBLIC_URL/dashboard/auth/login/?next=/dashboard/" -k | grep 200</code></pre>
 </div>
 </div>
 </li>
@@ -1217,9 +1233,9 @@ oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/H
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Orchestration service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   heat:
     enabled: true
@@ -1234,7 +1250,7 @@ spec:
         authEncryptionKey: HeatAuthEncryptionKey
         service: HeatPassword
         stackDomainAdminPassword: HeatStackDomainAdminPassword
-'</pre>
+'</code></pre>
 </div>
 </div>
 </li>
@@ -1245,10 +1261,20 @@ spec:
 <ol class="arabic">
 <li>
 <p>Ensure that the statuses of all the CRs are <code>Setup complete</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI
-NAME                           STATUS   MESSAGE
+<pre>NAME                           STATUS   MESSAGE
 heat.heat.openstack.org/heat   True     Setup complete
 
 NAME                                  STATUS   MESSAGE
@@ -1261,13 +1287,24 @@ NAME                                        STATUS   MESSAGE
 heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Check that the Orchestration service is registered in the Identity service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack service list -c Name -c Type</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec -it openstackclient -- openstack service list -c Name -c Type
-+------------+----------------+
+<pre>+------------+----------------+
 | Name       | Type           |
 +------------+----------------+
 | heat       | orchestration  |
@@ -1282,10 +1319,21 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
 +------------+----------------+</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+Sample output:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
-- Enabled: true
+<pre>- Enabled: true
   ID: 1da7df5b25b94d1cae85e3ad736b25a5
   Interface: public
   Region: regionOne
@@ -1301,9 +1349,16 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
   URL: http://heat-api-internal.openstack-operators.svc:8004/v1/%(tenant_id)s</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Check that the Orchestration service engine services are running:</p>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre>oc exec -it openstackclient -- openstack orchestration service list -f yaml
@@ -1337,22 +1392,30 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
   Updated At: '2023-10-11T21:48:01.000000'</pre>
 </div>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Verify that you can see your Orchestration service stacks:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack stack list -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>openstack stack list -f yaml
-- Creation Time: '2023-10-11T22:03:20Z'
+<pre>- Creation Time: '2023-10-11T22:03:20Z'
   ID: 20f95925-7443-49cb-9561-a1ab736749ba
   Project: 4eacd0d1cab04427bc315805c28e66c9
   Stack Name: test-networks
   Stack Status: CREATE_COMPLETE
   Updated Time: null</pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>

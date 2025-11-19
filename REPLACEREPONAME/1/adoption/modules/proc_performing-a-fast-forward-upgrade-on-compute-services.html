@@ -126,15 +126,15 @@
 <ul>
 <li>
 <p>Define the shell variables necessary to apply the fast-forward upgrade commands for each {compute_service} cell.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>DEFAULT_CELL_NAME="cell1"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DEFAULT_CELL_NAME="cell1"
 RENAMED_CELLS="$DEFAULT_CELL_NAME"
 
 declare -A PODIFIED_DB_ROOT_PASSWORD
 for CELL in $(echo "super $RENAMED_CELLS"); do
   PODIFIED_DB_ROOT_PASSWORD[$CELL]=$(oc get -o json secret/osp-secret | jq -r .data.DbRootPassword | base64 -d)
-done</pre>
+done</code></pre>
 </div>
 </div>
 </li>
@@ -148,12 +148,12 @@ done</pre>
 <ol class="arabic">
 <li>
 <p>Wait for the {compute_service} data plane services version to update for all the cells:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>for CELL in $(echo $RENAMED_CELLS); do
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $RENAMED_CELLS); do
 oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
     -e "select a.version from nova_${CELL}.services a join nova_${CELL}.services b where a.version!=b.version and a.binary='nova-compute' and a.deleted=0;"
-done</pre>
+done</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -176,9 +176,9 @@ done</pre>
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to remove the pre-fast-forward upgrade workarounds from the Compute control plane services:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>rm -f celltemplates
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
 cat &gt;&gt; celltemplates &lt;&lt; EOF
         ${CELL}:
@@ -216,31 +216,31 @@ spec:
               [workarounds]
               disable_compute_service_check_for_ffu=false
 EOF
-cat celltemplates &gt;&gt; oscp-patch.yaml</pre>
+cat celltemplates &gt;&gt; oscp-patch.yaml</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Apply the patch file:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Wait until the Compute control plane services CRs are ready:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready --timeout=300s Nova/nova</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Nova/nova</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Remove the pre-fast-forward upgrade workarounds from the Compute data plane services:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
 oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
@@ -253,62 +253,43 @@ spec:
   servicesOverride:
     - nova-cell1
 backoffLimit: 3
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Wait for the Compute data plane services to be ready for all the cells:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Run Compute database online migrations to complete the upgrade:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
 for CELL in $(echo $RENAMED_CELLS); do
 oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
-done</pre>
+done</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Discover the Compute hosts in the cells:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Verify if the existing test VM instance is running:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test 2&gt;&amp;1 || echo FAIL</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Verify if the Compute services can stop the existing test VM instance:</p>
-<div class="listingblock">
-<div class="content">
-<pre>${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test ACTIVE" &amp;&amp; ${BASH_ALIASES[openstack]} server stop test || echo PASS
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test SHUTOFF" || echo FAIL
-${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test 2&gt;&amp;1 || echo PASS</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Verify if the Compute services can start the existing test VM instance:</p>
-<div class="listingblock">
-<div class="content">
-<pre>${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test SHUTOFF" &amp;&amp; ${BASH_ALIASES[openstack]} server start test || echo PASS
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test ACTIVE" &amp;&amp; \
-  ${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test --fit-width -f json | jq -r '.state' | grep running || echo FAIL</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-2-compute-1 2&gt;&amp;1 || echo FAIL
+${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-1-compute-0 2&gt;&amp;1 || echo FAIL</code></pre>
 </div>
 </div>
 </li>

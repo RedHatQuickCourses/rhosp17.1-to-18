@@ -180,11 +180,24 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 <ul>
 <li>
 <p>In the <strong>director host</strong>, get the internal_api VIP from this file:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat /home/stack/templates/overcloud-vip-deployed.yaml</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sample output:</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[student@director ~]cat /home/stack/templates/overcloud-vip-deployed.yaml
-
-[...]
+<pre>[...]
   VipPortMap:
     external:
       ip_address: 172.25.250.109
@@ -202,10 +215,27 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
       ip_address: 192.168.51.41
       ip_address_uri: 192.168.51.41
       ip_subnet: 192.168.51.41/24
-[...]
-
-[student@director ~] metalsmith list
-+--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
+[...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also get the internal_api VIP by accessing one of the controller nodes:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[student@director ~] metalsmith list</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sample output:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 | UUID                                 | Node Name           | Allocation UUID                      | Hostname                | State  | IP Addresses            |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 | 1c708c39-91d6-4500-a395-42c081adea78 | overcloud-control0  | 3b077ad2-ddb4-462d-a573-4a3ab6aa7b84 | overcloud-controller-0  | ACTIVE | ctlplane=172.25.249.16  |
@@ -216,83 +246,113 @@ Get the controller VIP, to use it later in the environment variable SOURCE_MARIA
 | 51d45604-8bf8-43f9-9718-d704398296e3 | overcloud-networker | b5f71cd8-5f42-46a8-8c51-a75608745744 | overcloud-networker     | ACTIVE | ctlplane=172.25.249.250 |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 
-[student@director ~] ssh tripleo-admin@172.25.249.16
-[tripleo-admin@overcloud-controller-0 ~]$
-sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
-/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent
-
-[tripleo-admin@overcloud-controller-0 ~]$ logout</code></pre>
+[source,bash,role=execute,subs=attributes]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>SOURCE_MARIADB_IP is then 192.168.52.55
-CONTROLLER1_IP is then 172.25.249.16</p>
+<p>ssh tripleo-admin@172.25.249.16</p>
 </div>
-<div class="paragraph">
-<p>In the <strong>director host</strong>, copy the overcloud-passwords from the director node to the student user home directory:</p>
-</div>
-<div class="listingblock execute">
+<div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
+<pre>[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>. Sample output:</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[source,bash,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>logout</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Then the values for SOURCE_MARIADB_IP and CONTROLLER_IP are:
++
+SOURCE_MARIADB_IP is then 192.168.52.55
+CONTROLLER1_IP is then 172.25.249.16
+CONTROLLER2_IP is then 172.25.249.17
+CONTROLLER3_IP is then 172.25.249.18
++
+
+In the *director host*, copy the overcloud-passwords from the director node to the student user home directory:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
 sudo chown student:student /home/student/overcloud-passwords.yaml
 sudo cp /home/stack/.ssh/id_rsa_tripleo* /home/student/.ssh/
 sudo chown student:student /home/student/.ssh/id_rsa_tripleo
-sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</code></pre>
+sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</p>
 </div>
-</div>
-<div class="paragraph">
-<p>In the <strong>workstation host</strong>, copy the overcloud-passwords from the director node to the utiliy node:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
-scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the <strong>utility host</strong> log in to the Red Hat registry and create the secret:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile</code></pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Authenticate to the Red Hat registry:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">podman login registry.redhat.io --authfile authfile</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Set the pull secret:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>+
-.Prerequisites</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In the <strong>utility host</strong>, define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
+<pre>+
+In the *workstation host*, copy the overcloud-passwords from the director node to the utiliy node:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
+scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+In the *utility host* log in to the Red Hat registry and create the secret, it will be used to pull the helper pod images:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d &gt; authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Authenticate to the Red Hat registry:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>podman login registry.redhat.io --authfile authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Set the pull secret:
++
+[source,bash,role=execute,subs=attributes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+.Prerequisites
+
+. In the *utility host*, define the following shell variables. Replace the example values with values that are correct for your environment:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
 MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
 declare -A TRIPLEO_PASSWORDS
 CELLS="default"
@@ -302,77 +362,65 @@ done
 declare -A SOURCE_DB_ROOT_PASSWORD
 for CELL in $(echo $CELLS); do
   SOURCE_DB_ROOT_PASSWORD[$CELL]=$(cat ${TRIPLEO_PASSWORDS[$CELL]} | grep ' MysqlRootPassword:' | awk -F ': ' '{ print $2; }')
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
-MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
-CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
+<pre>+
 
-declare -A SOURCE_MARIADB_IP
-SOURCE_MARIADB_IP[default]=192.168.52.55</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Export the shell variables for the following outputs and test the connection to the RHOSP database:</p>
-<div class="listingblock">
-<div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_DATABASES
-declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
-for CELL in $(echo $CELLS); do
-  PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
-    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
-done</pre>
+. Define the following shell variables. Replace the example values with values that are correct for your environment:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the connection is successful, the expected output is nothing.</p>
+<p>MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
+MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
+CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>nova</code>, <code>nova_api</code>, and <code>nova_cell0</code> databases are included in the same database host for the main overcloud Orchestration service (heat) stack.
-Additional cells use the <code>nova</code> database of their local Galera clusters.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>declare -A SOURCE_MARIADB_IP
+SOURCE_MARIADB_IP[default]=192.168.52.55</p>
 </div>
-</li>
-<li>
-<p>Run <code>mysqlcheck</code> on the RHOSP database to check for inaccuracies:</p>
 <div class="listingblock">
 <div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
+<pre>[NOTE]
+The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
+
+.Procedure
+
+. Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_DATABASES
+declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
+for CELL in $(echo $CELLS); do
+  PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]=$(oc run mariadb-client-1-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
+    mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;')
+done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+If the connection is successful, the expected output is nothing.
++
+[NOTE]
+The `nova`, `nova_api`, and `nova_cell0` databases are included in the same database host for the main overcloud {orchestration_first_ref} stack.
+Additional cells use the `nova` database of their local Galera clusters.
+
+. Run `mysqlcheck` on the {OpenStackShort} database to check for inaccuracies:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 run_mysqlcheck() {
-  PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK=$(oc run mariadb-client-2-$1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" | grep -v OK)
 }
 for CELL in $(echo $CELLS); do
@@ -380,52 +428,60 @@ for CELL in $(echo $CELLS); do
 done
 if [ "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" != "" ]; then
   for CELL in $(echo $CELLS); do
-    MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+    MYSQL_UPGRADE=$(oc run mariadb-client-3 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
       mysql_upgrade -v -h ${SOURCE_MARIADB_IP[$CELL]} -u root -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}")
     # rerun mysqlcheck to check if problem is resolved
     run_mysqlcheck
   done
-fi</pre>
+fi</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the Compute service (nova) cell mappings:</p>
 <div class="listingblock">
 <div class="content">
-<pre>export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+<pre>. Get the {compute_service_first_ref} cell mappings:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh "${SOURCE_MARIADB_IP['default']}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD['default']}" nova_api -e \
-    'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')</pre>
+    'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the hostnames of the registered Compute services:</p>
 <div class="listingblock">
 <div class="content">
-<pre>unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
+<pre>. Get the hostnames of the registered Compute services:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 for CELL in $(echo $CELLS); do
-  PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]=$(oc run mariadb-client-4-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e \
       "select host from nova.services where services.binary='nova-compute' and deleted=0;")
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Get the list of the mapped Compute service cells:</p>
 <div class="listingblock">
 <div class="content">
-<pre>export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)</pre>
+<pre>. Get the list of the mapped {compute_service} cells:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Store the exported variables for future use:</p>
+<div class="paragraph">
+<p>export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>unset SRIOV_AGENTS
+<pre>. Store the exported variables for future use:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>unset SRIOV_AGENTS
 declare -xA SRIOV_AGENTS
 for CELL in $(echo $CELLS); do
   RCELL=$CELL
@@ -437,76 +493,75 @@ unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
 declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
-PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_DATABASES[$CELL]="$(oc run mariadb-client-5-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e 'SHOW databases;')"
-PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK[$CELL]="$(oc run mariadb-client-6-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysqlcheck --all-databases -h ${SOURCE_MARIADB_IP[$RCELL]} -u root -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} | grep -v OK)"
-PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[$CELL]="$(oc run mariadb-client-7-$CELL ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
   mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} -e \
   "select host from nova.services where services.binary='nova-compute' and deleted=0;")"
 if [ "$RCELL" = "default" ]; then
-  PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
+  PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS="$(oc run mariadb-client-2 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh ${SOURCE_MARIADB_IP[$RCELL]} -uroot -p${SOURCE_DB_ROOT_PASSWORD[$RCELL]} nova_api -e \
       'select uuid,name,transport_url,database_connection,disabled from cell_mappings;')"
   PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS="$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)"
 fi
 EOF
 done
-chmod 0600 ~/.source_cloud_exported_variables*</pre>
+chmod 0600 ~/.source_cloud_exported_variables*</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+
+.Next steps
+
+This configuration and the exported values are required later, during the data plane adoption post-checks. After the {OpenStackShort} control plane services are shut down, if any of the exported values are lost, re-running the `export` command fails because the control plane services are no longer running on the source cloud, and the data cannot be retrieved. To avoid data loss, preserve the exported values in an environment file before shutting down the control plane services.
+
+:leveloffset: 1
+
+:leveloffset: +1
+
+:_mod-docs-content-type: PROCEDURE
+[id="deploying-backend-services_{context}"]
+
+= Deploying back-end services
+
+[role="_abstract"]
+Create the `OpenStackControlPlane` custom resource (CR) with the basic back-end services deployed, and disable all the {rhos_prev_long} ({OpenStackShort}) services. This CR is the foundation of the control plane.
+
+.Prerequisites
+
+* The cloud that you want to adopt is running, and it is on the latest minor version of {OpenStackShort} {rhos_prev_ver}.
+* All control plane and data plane hosts of the source cloud are running, and continue to run throughout the adoption procedure.
+* The `openstack-operator` is deployed, but `OpenStackControlPlane` is
+not deployed.
+* Install the OpenStack Operators. For more information, see link:https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/{rhos_curr_ver}/html-single/deploying_red_hat_openstack_services_on_openshift/index#assembly_installing-and-preparing-the-Operators[Installing and preparing the Operators] in _Deploying Red Hat OpenStack Services on OpenShift_.
+
+* There are free PVs available for Galera and RabbitMQ.
+* We will use the existing {OpenStackShort} deployment password:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
 <div class="paragraph">
-<div class="title">Next steps</div>
-<p>This configuration and the exported values are required later, during the data plane adoption post-checks. After the RHOSP control plane services are shut down, if any of the exported values are lost, re-running the <code>export</code> command fails because the control plane services are no longer running on the source cloud, and the data cannot be retrieved. To avoid data loss, preserve the exported values in an environment file before shutting down the control plane services.</p>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="deploying-backend-services_migrating-databases"><a class="anchor" href="#deploying-backend-services_migrating-databases"></a>Deploying back-end services</h3>
-<div class="paragraph _abstract">
-<p>Create the <code>OpenStackControlPlane</code> custom resource (CR) with the basic back-end services deployed, and disable all the Red&#160;Hat OpenStack Platform (RHOSP) services. This CR is the foundation of the control plane.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>The cloud that you want to adopt is running, and it is on the latest minor version of RHOSP 17.1.</p>
-</li>
-<li>
-<p>All control plane and data plane hosts of the source cloud are running, and continue to run throughout the adoption procedure.</p>
-</li>
-<li>
-<p>The <code>openstack-operator</code> is deployed, but <code>OpenStackControlPlane</code> is
-not deployed.</p>
-</li>
-<li>
-<p>Install the OpenStack Operators. For more information, see <a href="https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/18.0/html-single/deploying_red_hat_openstack_services_on_openshift/index#assembly_installing-and-preparing-the-Operators">Installing and preparing the Operators</a> in <em>Deploying Red Hat OpenStack Services on OpenShift</em>.</p>
-</li>
-<li>
-<p>There are free PVs available for Galera and RabbitMQ.</p>
-</li>
-<li>
-<p>We will use the existing RHOSP deployment password:</p>
-<div class="listingblock">
-<div class="content">
-<pre>declare -A TRIPLEO_PASSWORDS
+<p>declare -A TRIPLEO_PASSWORDS
 TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
-ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AdminPassword:' | awk -F ': ' '{ print $2; }')</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Set the service password variables to match the original deployment.
-Database passwords can differ in the control plane environment, but
-you must synchronize the service account passwords.</p>
-<div class="paragraph">
-<p>For example, in developer environments with director Standalone, the passwords can be extracted:</p>
+ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AdminPassword:' | awk -F ': ' '{ print $2; }')</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
+<pre>* Set the service password variables to match the original deployment.
+Database passwords can differ in the control plane environment, but
+you must synchronize the service account passwords.
++
+For example, in developer environments with {OpenStackPreviousInstaller} Standalone, the passwords can be extracted:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
 BARBICAN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' BarbicanPassword:' | awk -F ': ' '{ print $2; }')
 CEILOMETER_METERING_SECRET=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerMeteringSecret:' | awk -F ': ' '{ print $2; }')
 CEILOMETER_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerPassword:' | awk -F ': ' '{ print $2; }')
@@ -521,39 +576,42 @@ NEUTRON_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NeutronPassword:' 
 NOVA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NovaPassword:' | awk -F ': ' '{ print $2; }')
 OCTAVIA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' OctaviaPassword:' | awk -F ': ' '{ print $2; }')
 PLACEMENT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' PlacementPassword:' | awk -F ': ' '{ print $2; }')
-SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | awk -F ': ' '{ print $2; }')</pre>
+SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | awk -F ': ' '{ print $2; }')</p>
 </div>
-</div>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Create the RHOSP secret.</p>
 <div class="listingblock">
 <div class="content">
-<pre>cd /home/lab/labrepo/files
-oc apply -f osp-ng-ctlplane-secret.yaml</pre>
+<pre>.Procedure
+
+. Create the {OpenStackShort} secret.
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
-</li>
-<li>
-<p>If the <code>$ADMIN_PASSWORD</code> is different than the password you set
-in <code>osp-secret</code>, amend the <code>AdminPassword</code> key in the <code>osp-secret</code>:</p>
+<div class="paragraph">
+<p>cd /home/lab/labrepo/files
+oc apply -f osp-ng-ctlplane-secret.yaml</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</pre>
+<pre>. If the `$ADMIN_PASSWORD` is different than the password you set
+in `osp-secret`, amend the `AdminPassword` key in the `osp-secret`:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Set service account passwords in <code>osp-secret</code> to match the service
-account passwords from the original deployment:</p>
+<div class="paragraph">
+<p>oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
+<pre>. Set service account passwords in `osp-secret` to match the service
+account passwords from the original deployment:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
 oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"
 oc set data secret/osp-secret "CeilometerPassword=$CEILOMETER_PASSWORD"
 oc set data secret/osp-secret "CinderPassword=$CINDER_PASSWORD"
@@ -569,118 +627,115 @@ oc set data secret/osp-secret "NeutronPassword=$NEUTRON_PASSWORD"
 oc set data secret/osp-secret "NovaPassword=$NOVA_PASSWORD"
 oc set data secret/osp-secret "OctaviaPassword=$OCTAVIA_PASSWORD"
 oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
-oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
+oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</p>
 </div>
-</div>
-</li>
-<li>
-<p>Deploy the <code>OpenStackControlPlane</code> CR. Ensure that you only enable the DNS, Galera, Memcached, and RabbitMQ services. All other services must
-be disabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">oc apply -f osp-ng-ctlplane-deploy-backend.yaml</code></pre>
+<pre>. Deploy the `OpenStackControlPlane` CR. Ensure that you only enable the DNS, Galera, Memcached, and RabbitMQ services. All other services must
+be disabled:
++
+[source,shell]</pre>
 </div>
 </div>
-<div class="ulist">
-<div class="title">Verification</div>
-<ul>
-<li>
-<p>Verify that the Galera and RabbitMQ status is <code>Running</code> for all defined cells:</p>
+<div class="paragraph">
+<p>oc apply -f osp-ng-ctlplane-deploy-backend.yaml</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>RENAMED_CELLS="cell1"
+<pre>+
+
+.Verification
+
+* Verify that the Galera and RabbitMQ status is `Running` for all defined cells:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RENAMED_CELLS="cell1"
 oc get pod openstack-galera-0 -o jsonpath='{.status.phase}{"\n"}'
 oc get pod rabbitmq-server-0 -o jsonpath='{.status.phase}{"\n"}'
 for CELL in $(echo $RENAMED_CELLS); do
   oc get pod openstack-$CELL-galera-0 -o jsonpath='{.status.phase}{"\n"}'
   oc get pod rabbitmq-$CELL-server-0 -o jsonpath='{.status.phase}{"\n"}'
-done</pre>
+done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+The given cells names are later referred to by using the environment variable `RENAMED_CELLS`.
+During the database migration procedure, the Nova cells are renamed. `RENAMED_CELLS` variable represents the new cell names used in the RHOSO deployment.
+
+* Ensure that the statuses of all the Rabbitmq and Galera CRs are `Setup complete`:
++</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The given cells names are later referred to by using the environment variable <code>RENAMED_CELLS</code>.
-During the database migration procedure, the Nova cells are renamed. <code>RENAMED_CELLS</code> variable represents the new cell names used in the RHOSO deployment.</p>
-</div>
-</li>
-<li>
-<p>Ensure that the statuses of all the Rabbitmq and Galera CRs are <code>Setup complete</code>:</p>
-<div class="listingblock">
-<div class="content">
-<pre>oc get Rabbitmqs,Galera
+<p>oc get Rabbitmqs,Galera
 NAME                                                                  STATUS   MESSAGE
 rabbitmq.rabbitmq.openstack.org/rabbitmq                              True     Setup complete
-rabbitmq.rabbitmq.openstack.org/rabbitmq-cell1                        True     Setup complete
-
-NAME                                                               READY   MESSAGE
+rabbitmq.rabbitmq.openstack.org/rabbitmq-cell1                        True     Setup complete</p>
+</div>
+<div class="paragraph">
+<p>NAME                                                               READY   MESSAGE
 galera.mariadb.openstack.org/openstack                             True     Setup complete
-galera.mariadb.openstack.org/openstack-cell1                       True     Setup complete</pre>
+galera.mariadb.openstack.org/openstack-cell1                       True     Setup complete</p>
 </div>
-</div>
-</li>
-<li>
-<p>Verify that the <code>OpenStackControlPlane</code> CR is waiting for deployment
-of the <code>openstackclient</code> pod:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc get OpenStackControlPlane openstack
+<pre>* Verify that the `OpenStackControlPlane` CR is waiting for deployment
+  of the `openstackclient` pod:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc get OpenStackControlPlane openstack
 NAME        STATUS    MESSAGE
-openstack   Unknown   OpenStackControlPlane Client not started</pre>
+openstack   Unknown   OpenStackControlPlane Client not started</p>
 </div>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="configuring-a-ceph-backend_migrating-databases"><a class="anchor" href="#configuring-a-ceph-backend_migrating-databases"></a>Configuring a Red Hat Ceph Storage back end</h3>
-<div class="paragraph _abstract">
-<p>If your Red&#160;Hat OpenStack Platform (RHOSP) 17.1 deployment uses a Red Hat Ceph Storage back end for any service, such as Image Service (glance), Block Storage service (cinder), Compute service (nova), or Shared File Systems service (manila), you must configure the custom resources (CRs) to use the same back end in the Red&#160;Hat OpenStack Services on OpenShift (RHOSO) 18.0 deployment.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-To run <code>ceph</code> commands, you must use SSH to connect to a Red Hat Ceph Storage node and run <code>sudo cephadm shell</code>. This generates a Ceph orchestrator container that enables you to run administrative commands against the Red Hat Ceph Storage cluster. If you deployed the Red Hat Ceph Storage cluster by using director, you can launch the <code>cephadm</code> shell from an RHOSP Controller node.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>The <code>OpenStackControlPlane</code> CR is created.</p>
-</li>
-<li>
-<p>If your RHOSP 17.1 deployment uses the Shared File Systems service, the openstack keyring is updated.
-Using the same user across all services makes it simpler to create a common Red Hat Ceph Storage secret that includes the keyring and <code>ceph.conf</code> file and propagate the secret to all the services that need it.</p>
-</li>
-<li>
-<p>The following shell variables are defined. Replace the following example values with values that are correct for your environment:</p>
 <div class="listingblock">
 <div class="content">
-<pre>CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
+<pre>:leveloffset: 2
+
+:leveloffset: +1
+
+:_mod-docs-content-type: PROCEDURE
+[id="configuring-a-ceph-backend_{context}"]
+
+= Configuring a {Ceph} back end
+
+[role="_abstract"]
+If your {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment uses a {Ceph} back end for any service, such as {image_service_first_ref}, {block_storage_first_ref}, {compute_service_first_ref}, or {rhos_component_storage_file_first_ref}, you must configure the custom resources (CRs) to use the same back end in the {rhos_long} {rhos_curr_ver} deployment.
+
+[NOTE]
+To run `ceph` commands, you must use SSH to connect to a {Ceph} node and run `sudo cephadm shell`. This generates a Ceph orchestrator container that enables you to run administrative commands against the {CephCluster} cluster. If you deployed the {CephCluster} cluster by using {OpenStackPreviousInstaller}, you can launch the `cephadm` shell from an {OpenStackShort} Controller node.
+
+.Prerequisites
+
+* The `OpenStackControlPlane` CR is created.
+* If your {OpenStackShort} {rhos_prev_ver} deployment uses the {rhos_component_storage_file}, the openstack keyring is updated.
+Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and `ceph.conf` file and propagate the secret to all the services that need it.
+* The following shell variables are defined. Replace the following example values with values that are correct for your environment:
++
+[source,bash,role=execute]
+[subs=+quotes]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
 CEPH_KEY=$($CEPH_SSH "sudo cat /etc/ceph/ceph.client.openstack.keyring | base64 -w 0")
-CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</pre>
+CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</p>
 </div>
-</div>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Create the <code>ceph-conf-files</code> secret that includes the Red Hat Ceph Storage configuration:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre>.Procedure
+
+. Create the `ceph-conf-files` secret that includes the {Ceph} configuration:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 data:
   ceph.client.openstack.keyring: $CEPH_KEY
@@ -689,15 +744,18 @@ kind: Secret
 metadata:
   name: ceph-conf-files
 type: Opaque
-EOF</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The content of the file should be similar to the following example:</p>
+EOF</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+<pre>+
+The content of the file should be similar to the following example:
++
+[source,yaml]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>apiVersion: v1
 kind: Secret
 metadata:
   name: ceph-conf-files
@@ -711,24 +769,21 @@ stringData:
   ceph.conf: |
     [global]
     fsid = 7a1719e8-9c59-49e2-ae2b-d7eb08c695d4
-    mon_host = 10.1.1.2,10.1.1.3,10.1.1.4 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+    mon_host = 10.1.1.2,10.1.1.3,10.1.1.4 &lt;1&gt;</p>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>If you use IPv6, use brackets for the <code>mon_host</code>. For example:
-<code>mon_host = [v2:[fd00:cccc::100]:3300/0,v1:[fd00:cccc::100]:6789/0]</code></td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>In your <code>OpenStackControlPlane</code> CR, inject <code>ceph.conf</code> and <code>ceph.client.openstack.keyring</code> to the RHOSP services that are defined in the propagation list. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>+
+&lt;1&gt; If you use IPv6, use brackets for the `mon_host`. For example:
+`mon_host = [v2:[fd00:cccc::100]:3300/0,v1:[fd00:cccc::100]:6789/0]`
+
+. In your `OpenStackControlPlane` CR, inject `ceph.conf` and `ceph.client.openstack.keyring` to the {OpenStackShort} services that are defined in the propagation list. For example:
++
+[source,yaml]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   extraMounts:
     - name: v1
@@ -749,88 +804,64 @@ spec:
           - name: ceph
             mountPath: "/etc/ceph"
             readOnly: true
-'</code></pre>
+'</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>:leveloffset: 2
+
+:leveloffset: +1
+
+:_mod-docs-content-type: PROCEDURE
+[id="stopping-openstack-services_{context}"]
+
+= Stopping {rhos_prev_long} services
+
+[role="_abstract"]
+Before you start the {rhos_long} adoption, you must stop the {rhos_prev_long} ({OpenStackShort}) services to avoid inconsistencies in the data that you migrate for the data plane adoption. Inconsistencies are caused by resource changes after the database is copied to the new deployment.
+
+You should not stop the infrastructure management services yet, such as:
+
+* Database
+* RabbitMQ
+* HAProxy Load Balancer
+* Ceph-nfs
+* Compute service
+* Containerized modular libvirt daemons
+* {object_storage_first_ref} back-end services
+
+.Prerequisites
+
+* Ensure that there no long-running tasks that require the services that you plan to stop, such as instance live migrations, volume migrations, volume creation, backup and restore, attaching, detaching, and other similar operations:
++
+* Collect the services topology-specific configuration. For more information, see xref:proc_retrieving-topology-specific-service-configuration_migrating-databases[Retrieving topology-specific service configuration].
+* Define the following shell variables. The values are examples and refer to a single node standalone {OpenStackPreviousInstaller} deployment. Replace these example values with values that are correct for your environment:
++
+* Specify the IP addresses of all Controller nodes, for example:
++
+[source,bash,role=execute]
+[subs=+quotes]</pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p>CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
+CONTROLLER2_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.17"
+CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.18"</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>.Procedure
+
+. Disable {OpenStackShort} control plane services:
++
+[source,bash,role=execute]</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="stopping-openstack-services_migrating-databases"><a class="anchor" href="#stopping-openstack-services_migrating-databases"></a>Stopping Red&#160;Hat OpenStack Platform services</h3>
-<div class="paragraph _abstract">
-<p>Before you start the Red&#160;Hat OpenStack Services on OpenShift (RHOSO) adoption, you must stop the Red&#160;Hat OpenStack Platform (RHOSP) services to avoid inconsistencies in the data that you migrate for the data plane adoption. Inconsistencies are caused by resource changes after the database is copied to the new deployment.</p>
-</div>
+<h3 id="_update_the_services_list_to_be_stopped"><a class="anchor" href="#_update_the_services_list_to_be_stopped"></a>Update the services list to be stopped</h3>
 <div class="paragraph">
-<p>You should not stop the infrastructure management services yet, such as:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Database</p>
-</li>
-<li>
-<p>RabbitMQ</p>
-</li>
-<li>
-<p>HAProxy Load Balancer</p>
-</li>
-<li>
-<p>Ceph-nfs</p>
-</li>
-<li>
-<p>Compute service</p>
-</li>
-<li>
-<p>Containerized modular libvirt daemons</p>
-</li>
-<li>
-<p>Object Storage service (swift) back-end services</p>
-</li>
-</ul>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>Ensure that there no long-running tasks that require the services that you plan to stop, such as instance live migrations, volume migrations, volume creation, backup and restore, attaching, detaching, and other similar operations:</p>
-<div class="listingblock">
-<div class="content">
-<pre>openstack server list --all-projects -c ID -c Status |grep -E '\| .+ing \|'
-openstack volume list --all-projects -c ID -c Status |grep -E '\| .+ing \|'| grep -vi error
-openstack volume backup list --all-projects -c ID -c Status |grep -E '\| .+ing \|' | grep -vi error
-openstack share list --all-projects -c ID -c Status |grep -E '\| .+ing \|'| grep -vi error
-openstack image list -c ID -c Status |grep -E '\| .+ing \|'</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Collect the services topology-specific configuration. For more information, see <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
-</li>
-<li>
-<p>Define the following shell variables. The values are examples and refer to a single node standalone director deployment. Replace these example values with values that are correct for your environment:</p>
-</li>
-<li>
-<p>Specify the IP addresses of all Controller nodes, for example:</p>
-<div class="listingblock">
-<div class="content">
-<pre>CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
-CONTROLLER2_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.17"
-CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.18"</pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Disable RHOSP control plane services:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># Update the services list to be stopped
-ServicesToStop=("tripleo_aodh_api.service"
+<p>ServicesToStop=("tripleo_aodh_api.service"
                 "tripleo_aodh_api_cron.service"
                 "tripleo_aodh_evaluator.service"
                 "tripleo_aodh_listener.service"
@@ -885,13 +916,15 @@ ServicesToStop=("tripleo_aodh_api.service"
                 "tripleo_ironic_conductor.service"
                 "tripleo_ironic_inspector_dnsmasq.service"
                 "tripleo_ironic_pxe_http.service"
-                "tripleo_ironic_pxe_tftp.service")
-
-PacemakerResourcesToStop=("openstack-cinder-volume"
+                "tripleo_ironic_pxe_tftp.service")</p>
+</div>
+<div class="paragraph">
+<p>PacemakerResourcesToStop=("openstack-cinder-volume"
                           "openstack-cinder-backup"
-                          "openstack-manila-share")
-
-echo "Stopping systemd OpenStack services"
+                          "openstack-manila-share")</p>
+</div>
+<div class="paragraph">
+<p>echo "Stopping systemd OpenStack services"
 for service in ${ServicesToStop[*]}; do
     for i in {1..3}; do
         SSH_CMD=CONTROLLER${i}_SSH
@@ -902,9 +935,10 @@ for service in ${ServicesToStop[*]}; do
             fi
         fi
     done
-done
-
-echo "Checking systemd OpenStack services"
+done</p>
+</div>
+<div class="paragraph">
+<p>echo "Checking systemd OpenStack services"
 for service in ${ServicesToStop[*]}; do
     for i in {1..3}; do
         SSH_CMD=CONTROLLER${i}_SSH
@@ -916,9 +950,10 @@ for service in ${ServicesToStop[*]}; do
             fi
         fi
     done
-done
-
-echo "Stopping pacemaker OpenStack services"
+done</p>
+</div>
+<div class="paragraph">
+<p>echo "Stopping pacemaker OpenStack services"
 for i in {1..3}; do
     SSH_CMD=CONTROLLER${i}_SSH
     if [ ! -z "${!SSH_CMD}" ]; then
@@ -933,9 +968,10 @@ for i in {1..3}; do
     done
         break
     fi
-done
-
-echo "Checking pacemaker OpenStack services"
+done</p>
+</div>
+<div class="paragraph">
+<p>echo "Checking pacemaker OpenStack services"
 for i in {1..3}; do
     SSH_CMD=CONTROLLER${i}_SSH
     if [ ! -z "${!SSH_CMD}" ]; then
@@ -951,65 +987,71 @@ for i in {1..3}; do
         done
         break
     fi
-    done</code></pre>
+    done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+If the status of each service is `OK`, then the services stopped successfully.
+
+:leveloffset: 2
+
+:leveloffset: +1
+
+:_mod-docs-content-type: PROCEDURE
+[id="migrating-databases-to-mariadb-instances_{context}"]
+
+= Migrating databases to MariaDB instances
+
+[role="_abstract"]
+Migrate your databases from the original {rhos_prev_long} ({OpenStackShort}) deployment to the MariaDB instances in the {rhocp_long} cluster.
+
+//[NOTE]
+//TOD(bogdando): For OSPDo, this example scenario describes a simple single-cell setup.
+//TODO(kgilliga): I hid the same note in the Compute adoption procedure. Will likely reinstate this after multi-cell is released.
+
+.Prerequisites
+
+* Ensure that the control plane MariaDB and RabbitMQ are running, and that no other control plane services are running.
+* Retrieve the topology-specific service configuration. For more information, see xref:proc_retrieving-topology-specific-service-configuration_migrating-databases[Retrieving topology-specific service configuration].
+* Stop the {OpenStackShort} services. For more information, see xref:stopping-openstack-services_{context}[Stopping {rhos_prev_long} services].
+* Ensure that there is network routability between the original MariaDB and the MariaDB for the control plane.
+* Define the following shell variables. Replace the following example values with values that are correct for your environment:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the status of each service is <code>OK</code>, then the services stopped successfully.</p>
+<p>STORAGE_CLASS=nfs-storage
+MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0</p>
 </div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="migrating-databases-to-mariadb-instances_migrating-databases"><a class="anchor" href="#migrating-databases-to-mariadb-instances_migrating-databases"></a>Migrating databases to MariaDB instances</h3>
-<div class="paragraph _abstract">
-<p>Migrate your databases from the original Red&#160;Hat OpenStack Platform (RHOSP) deployment to the MariaDB instances in the Red Hat OpenShift Container Platform (RHOCP) cluster.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>Ensure that the control plane MariaDB and RabbitMQ are running, and that no other control plane services are running.</p>
-</li>
-<li>
-<p>Retrieve the topology-specific service configuration. For more information, see <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
-</li>
-<li>
-<p>Stop the RHOSP services. For more information, see <a href="#stopping-openstack-services_migrating-databases">Stopping Red&#160;Hat OpenStack Platform services</a>.</p>
-</li>
-<li>
-<p>Ensure that there is network routability between the original MariaDB and the MariaDB for the control plane.</p>
-</li>
-<li>
-<p>Define the following shell variables. Replace the following example values with values that are correct for your environment:</p>
-<div class="listingblock">
-<div class="content">
-<pre>STORAGE_CLASS=nfs-storage
-MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
-
-CELLS="default"
+<div class="paragraph">
+<p>CELLS="default"
 DEFAULT_CELL_NAME="cell1"
-RENAMED_CELLS="$DEFAULT_CELL_NAME"
-
-CHARACTER_SET=utf8
-COLLATION=utf8_general_ci
-
-declare -A PODIFIED_DB_ROOT_PASSWORD
+RENAMED_CELLS="$DEFAULT_CELL_NAME"</p>
+</div>
+<div class="paragraph">
+<p>CHARACTER_SET=utf8
+COLLATION=utf8_general_ci</p>
+</div>
+<div class="paragraph">
+<p>declare -A PODIFIED_DB_ROOT_PASSWORD
 for CELL in $(echo "super $RENAMED_CELLS"); do
   PODIFIED_DB_ROOT_PASSWORD[$CELL]=$(oc get -o json secret/osp-secret | jq -r .data.DbRootPassword | base64 -d)
-done
-
-declare -A PODIFIED_MARIADB_IP
+done</p>
+</div>
+<div class="paragraph">
+<p>declare -A PODIFIED_MARIADB_IP
 for CELL in $(echo "super $RENAMED_CELLS"); do
   if [ "$CELL" = "super" ]; then
     PODIFIED_MARIADB_IP[$CELL]=$(oc get svc --selector "mariadb/name=openstack" -ojsonpath='{.items[0].spec.clusterIP}')
   else
     PODIFIED_MARIADB_IP[$CELL]=$(oc get svc --selector "mariadb/name=openstack-$CELL" -ojsonpath='{.items[0].spec.clusterIP}')
   fi
-done
-
-declare -A TRIPLEO_PASSWORDS
+done</p>
+</div>
+<div class="paragraph">
+<p>declare -A TRIPLEO_PASSWORDS
 for CELL in $(echo $CELLS); do
   if [ "$CELL" = "default" ]; then
     TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
@@ -1017,68 +1059,51 @@ for CELL in $(echo $CELLS); do
     # in a split-stack source cloud, it should take a stack-specific passwords file instead
     TRIPLEO_PASSWORDS[$CELL]="$HOME/overcloud-passwords.yaml"
   fi
-done
-
-declare -A SOURCE_DB_ROOT_PASSWORD
+done</p>
+</div>
+<div class="paragraph">
+<p>declare -A SOURCE_DB_ROOT_PASSWORD
 for CELL in $(echo $CELLS); do
   SOURCE_DB_ROOT_PASSWORD[$CELL]=$(cat ${TRIPLEO_PASSWORDS[$CELL]} | grep ' MysqlRootPassword:' | awk -F ': ' '{ print $2; }')
-done
-
-
-declare -A SOURCE_MARIADB_IP
+done</p>
+</div>
+<div class="paragraph">
+<p>declare -A SOURCE_MARIADB_IP
 SOURCE_MARIADB_IP[default]=192.168.52.55
-SOURCE_MARIADB_IP[cell1]=192.168.52.55</pre>
+SOURCE_MARIADB_IP[cell1]=192.168.52.55</p>
 </div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-A standalone director environment only creates a 'default' cell, which should be the only <code>CELLS</code> value in this case. The <code>DEFAULT_CELL_NAME</code> value should be <code>cell1</code>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>super</code> is the top-scope Nova API upcall database instance. A super conductor connects to that database. In subsequent examples, the upcall and cells databases use the same password that is defined in <code>osp-secret</code>. Old passwords are only needed to prepare the data exports.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>To get the values for <code>SOURCE_MARIADB_IP</code>, query the puppet-generated configurations in the Controller and CellController nodes:</p>
 <div class="listingblock">
 <div class="content">
-<pre>sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</pre>
+<pre>+
+
+[NOTE]
+A standalone {OpenStackPreviousInstaller} environment only creates a 'default' cell, which should be the only `CELLS` value in this case. The `DEFAULT_CELL_NAME` value should be `cell1`.
+
+[NOTE]
+The `super` is the top-scope Nova API upcall database instance. A super conductor connects to that database. In subsequent examples, the upcall and cells databases use the same password that is defined in `osp-secret`. Old passwords are only needed to prepare the data exports.
+
+* To get the values for `SOURCE_MARIADB_IP`, query the puppet-generated configurations in the Controller and CellController nodes:
++
+[source,bash,role=execute]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.</p>
+<p>sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind</p>
 </div>
-</li>
-<li>
-<p>Prepare the MariaDB adoption helper pod:</p>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a temporary volume claim and a pod for the database data copy. Edit the volume claim storage request if necessary, to give it enough space for the overcloud databases:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre>+
+The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
+
+* Prepare the MariaDB adoption helper pod:
+
+. Create a temporary volume claim and a pod for the database data copy. Edit the volume claim storage request if necessary, to give it enough space for the overcloud databases:
++
+[source,bash,role=execute]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -1120,77 +1145,68 @@ spec:
   - name: mariadb-data
     persistentVolumeClaim:
       claimName: mariadb-data
-EOF</pre>
+EOF</p>
 </div>
-</div>
-</li>
-<li>
-<p>Wait for the pod to be ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc wait --for condition=Ready pod/mariadb-copy-data --timeout=30s</pre>
+<pre>. Wait for the pod to be ready:
++</pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p>oc wait --for condition=Ready pod/mariadb-copy-data --timeout=30s</p>
 </div>
-</li>
-</ul>
-</div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Get the count of source databases with the <code>NOK</code> (not-OK) status:</p>
 <div class="listingblock">
 <div class="content">
-<pre>for CELL in $(echo $CELLS); do
+<pre>.Procedure
+
+. Get the count of source databases with the `NOK` (not-OK) status:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for CELL in $(echo $CELLS); do
   oc rsh mariadb-copy-data mysql -h "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e "SHOW databases;"
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Check that <code>mysqlcheck</code> had no errors:</p>
 <div class="listingblock">
 <div class="content">
-<pre>for CELL in $(echo $CELLS); do
+<pre>. Check that `mysqlcheck` had no errors:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for CELL in $(echo $CELLS); do
   set +u
   . ~/.source_cloud_exported_variables_$CELL
   set -u
 done
-test -z "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK"  || [ "x$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" = "x " ] &amp;&amp; echo "OK" || echo "CHECK FAILED"</pre>
+test -z "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK"  || [ "x$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" = "x " ] &amp;&amp; echo "OK" || echo "CHECK FAILED"</p>
 </div>
-</div>
-</li>
-<li>
-<p>Test the connection to the control plane upcall and cells databases:</p>
 <div class="listingblock">
 <div class="content">
-<pre>for CELL in $(echo "super $RENAMED_CELLS"); do
-  oc run mariadb-client --image $MARIADB_IMAGE -i --rm --restart=Never -- \
+<pre>. Test the connection to the control plane upcall and cells databases:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for CELL in $(echo "super $RENAMED_CELLS"); do
+  oc run mariadb-client --image $MARIADB_IMAGE -i --rm --restart=Never&#8201;&#8212;&#8201;\
     mysql -rsh "${PODIFIED_MARIADB_IP[$CELL]}" -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" -e 'SHOW databases;'
-done</pre>
+done</p>
 </div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-You must transition Compute services that you import later into a superconductor architecture by deleting the old service records in the cell databases, starting with <code>cell1</code>. New records are registered with different hostnames that are provided by the Compute service operator. All Compute services, except the Compute agent, have no internal state, and you can safely delete their service records. You also need to rename the former <code>default</code> cell to <code>DEFAULT_CELL_NAME</code>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Create a dump of the original databases:</p>
 <div class="listingblock">
 <div class="content">
-<pre>for CELL in $(echo $CELLS); do
+<pre>+
+[NOTE]
+You must transition Compute services that you import later into a superconductor architecture by deleting the old service records in the cell databases, starting with `cell1`. New records are registered with different hostnames that are provided by the {compute_service} operator. All Compute services, except the Compute agent, have no internal state, and you can safely delete their service records. You also need to rename the former `default` cell to `DEFAULT_CELL_NAME`.
+
+. Create a dump of the original databases:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for CELL in $(echo $CELLS); do
   oc rsh mariadb-copy-data &lt;&lt; EOF
     mysql -h"${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" \
     -N -e "show databases" | grep -E -v "schema|mysql|gnocchi|aodh" | \
@@ -1201,19 +1217,20 @@ You must transition Compute services that you import later into a superconductor
         "\${dbname}" &gt; /backup/"${CELL}.\${dbname}".sql;
     done
 EOF
-done</pre>
+done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+Note filtering the information and performance schema tables.
+Gnocchi is no longer used as a metric store as well
+
+. Restore the databases from `.sql` files into the control plane MariaDB:
++</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Note filtering the information and performance schema tables.
-Gnocchi is no longer used as a metric store as well</p>
-</div>
-</li>
-<li>
-<p>Restore the databases from <code>.sql</code> files into the control plane MariaDB:</p>
-<div class="listingblock">
-<div class="content">
-<pre>for CELL in $(echo $CELLS); do
+<p>for CELL in $(echo $CELLS); do
   RCELL=$CELL
   [ "$CELL" = "default" ] &amp;&amp; RCELL=$DEFAULT_CELL_NAME
   oc rsh mariadb-copy-data &lt;&lt; EOF
@@ -1271,20 +1288,23 @@ Gnocchi is no longer used as a metric store as well</p>
     mysql -h "\${db_server_map["nova_$RCELL"]}" -uroot -p"\${db_server_password_map["nova_$RCELL"]}" -e \
       "delete from nova_${RCELL}.services where host not like '%nova_${RCELL}-%' and services.binary != 'nova-compute';"
 EOF
-done</pre>
+done</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+
+
+.Verification
+
+Compare the following outputs with the topology-specific service configuration.
+For more information, see xref:proc_retrieving-topology-specific-service-configuration_migrating-databases[Retrieving topology-specific service configuration].
+
+. Check that the databases are imported correctly:
++</pre>
 </div>
 </div>
 <div class="paragraph">
-<div class="title">Verification</div>
-<p>Compare the following outputs with the topology-specific service configuration.
-For more information, see <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
-</div>
-</li>
-<li>
-<p>Check that the databases are imported correctly:</p>
-<div class="listingblock">
-<div class="content">
-<pre>set +u
+<p>set u
 . ~/.source_cloud_exported_variables_default
 set -u
 dbs=$(oc exec openstack-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD['super']}" -e 'SHOW databases;')
@@ -1300,7 +1320,7 @@ difference=$(diff -ZNua \
   &lt;(printf "%s\n" "$novadb_mapped_cells")) || true
 if [ "$DEFAULT_CELL_NAME" != "default" ]; then
   printf "%s\n" "$difference" | grep -qE "^\-$default\s+default\b" &amp;&amp; echo "OK" || echo "CHECK FAILED"
-  printf "%s\n" "$difference" | grep -qE "^\+$default\s+$DEFAULT_CELL_NAME\b" &amp;&amp; echo "OK" || echo "CHECK FAILED"
+  printf "%s\n" "$difference" | grep -qE "^\$default\s+$DEFAULT_CELL_NAME\b" &amp;&amp; echo "OK" || echo "CHECK FAILED"
   [ $(grep -E "^[-\+]$uuidf" &lt;&lt;&lt;"$difference" | wc -l) -eq 2 ] &amp;&amp; echo "OK" || echo "CHECK FAILED"
 else
   [ "x$difference" = "x" ] &amp;&amp; echo "OK" || echo "CHECK FAILED"
@@ -1311,103 +1331,82 @@ for CELL in $(echo $RENAMED_CELLS); do
   set +u
   . ~/.source_cloud_exported_variables_$RCELL
   set -u
-  c1dbs=$(oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p${PODIFIED_DB_ROOT_PASSWORD[$CELL]} -e 'SHOW databases;')
+  c1dbs=$(oc exec openstack-$CELL-galera-0 -c galera&#8201;&#8212;&#8201;mysql -rs -uroot -p${PODIFIED_DB_ROOT_PASSWORD[$CELL]} -e 'SHOW databases;')
   echo $c1dbs | grep -Eq "\bnova_${CELL}\b" &amp;&amp; echo "OK" || echo "CHECK FAILED"
-  novadb_svc_records=$(oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p${PODIFIED_DB_ROOT_PASSWORD[$CELL]} \
+  novadb_svc_records=$(oc exec openstack-$CELL-galera-0 -c galera&#8201;&#8212;&#8201;mysql -rs -uroot -p${PODIFIED_DB_ROOT_PASSWORD[$CELL]} \
     nova_$CELL -e "select host from services where services.binary='nova-compute' and deleted=0 order by host asc;")
   diff -Z &lt;(echo "x$novadb_svc_records") &lt;(echo "x${PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES[@]}") &amp;&amp; echo "OK" || echo "CHECK FAILED"
-done</pre>
+done</p>
 </div>
-</div>
-</li>
-<li>
-<p>Delete the <code>mariadb-data</code> pod and the <code>mariadb-copy-data</code> persistent volume claim that contains the database backup:</p>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
+<div class="listingblock">
+<div class="content">
+<pre>+
+
+. Delete the `mariadb-data` pod and the `mariadb-copy-data` persistent volume claim that contains the database backup:
++
+[NOTE]
 Consider taking a snapshot of them before deleting.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>oc delete pod mariadb-copy-data
-oc delete pvc mariadb-data</pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-During the pre-checks and post-checks, the <code>mariadb-client</code> pod might return a pod security warning related to the <code>restricted:latest</code> security context constraint. This warning is due to default security context constraints and does not prevent the admission controller from creating a pod. You see a warning for the short-lived pod, but it does not interfere with functionality.
-For more information, see <a href="https://learn.redhat.com/t5/DO280-Red-Hat-OpenShift/About-pod-security-standards-and-warnings/m-p/32502">About pod security standards and warnings</a>.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="migrating-ovn-data_migrating-databases"><a class="anchor" href="#migrating-ovn-data_migrating-databases"></a>Migrating OVN data</h3>
-<div class="paragraph _abstract">
-<p>Migrate the data in the OVN databases from the original Red&#160;Hat OpenStack Platform deployment to <code>ovsdb-server</code> instances that are running in the Red Hat OpenShift Container Platform (RHOCP) cluster.</p>
-</div>
-<div class="ulist">
-<div class="title">Prerequisites</div>
-<ul>
-<li>
-<p>The <code>OpenStackControlPlane</code> resource is created.</p>
-</li>
-<li>
-<p><code>NetworkAttachmentDefinition</code> custom resources (CRs) for the original cluster are defined. Specifically, the <code>internalapi</code> network is defined.</p>
-</li>
-<li>
-<p>The original Networking service (neutron) and OVN <code>northd</code> are not running.</p>
-</li>
-<li>
-<p>There is network routability between the control plane services and the adopted cluster.</p>
-</li>
-<li>
-<p>The cloud is migrated to the Modular Layer 2 plug-in with Open Virtual Networking (ML2/OVN) mechanism driver.</p>
-</li>
-<li>
-<p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
-<div class="listingblock">
-<div class="content">
-<pre>STORAGE_CLASS=nfs-storage
-OVSDB_IMAGE=registry.redhat.io/rhoso/openstack-ovn-base-rhel9:18.0
-SOURCE_OVSDB_IP=192.168.52.16</pre>
++</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To get the value to set <code>SOURCE_OVSDB_IP</code>, query the puppet-generated configurations in a Controller node:</p>
+<p>oc delete pod mariadb-copy-data
+oc delete pvc mariadb-data</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>grep -rI 'ovn_[ns]b_conn' /var/lib/config-data/puppet-generated/</pre>
+<pre>[NOTE]
+During the pre-checks and post-checks, the `mariadb-client` pod might return a pod security warning related to the `restricted:latest` security context constraint. This warning is due to default security context constraints and does not prevent the admission controller from creating a pod. You see a warning for the short-lived pod, but it does not interfere with functionality.
+For more information, see link:https://learn.redhat.com/t5/DO280-Red-Hat-OpenShift/About-pod-security-standards-and-warnings/m-p/32502[About pod security standards and warnings].
+
+:leveloffset: 2
+
+:leveloffset: +1
+
+:_mod-docs-content-type: PROCEDURE
+[id="migrating-ovn-data_{context}"]
+
+= Migrating OVN data
+
+[role="_abstract"]
+Migrate the data in the OVN databases from the original {rhos_prev_long} deployment to `ovsdb-server` instances that are running in the {rhocp_long} cluster.
+
+.Prerequisites
+
+* The `OpenStackControlPlane` resource is created.
+* `NetworkAttachmentDefinition` custom resources (CRs) for the original cluster are defined. Specifically, the `internalapi` network is defined.
+* The original {networking_first_ref} and OVN `northd` are not running.
+* There is network routability between the control plane services and the adopted cluster.
+* The cloud is migrated to the Modular Layer 2 plug-in with Open Virtual Networking (ML2/OVN) mechanism driver.
+* Define the following shell variables. Replace the example values with values that are correct for your environment:
++</pre>
 </div>
 </div>
-</li>
-</ul>
+<div class="paragraph">
+<p>STORAGE_CLASS=nfs-storage
+OVSDB_IMAGE=registry.redhat.io/rhoso/openstack-ovn-base-rhel9:18.0
+SOURCE_OVSDB_IP=192.168.52.16</p>
 </div>
-<div class="olist arabic">
-<div class="title">Procedure</div>
-<ol class="arabic">
-<li>
-<p>Prepare a temporary <code>PersistentVolume</code> claim and the helper pod for the OVN backup. Adjust the storage requests for a large database, if needed:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc apply -f - &lt;&lt;EOF
+<pre>+
+To get the value to set `SOURCE_OVSDB_IP`, query the puppet-generated configurations in a Controller node:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>grep -rI 'ovn_[ns]b_conn' /var/lib/config-data/puppet-generated/</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>.Procedure
+. Prepare a temporary `PersistentVolume` claim and the helper pod for the OVN backup. Adjust the storage requests for a large database, if needed:
++
+[source,yaml]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -1465,39 +1464,41 @@ spec:
   - name: ovn-data-cert
     secret:
       secretName: ovn-data-cert
-EOF</code></pre>
+EOF</p>
 </div>
-</div>
-</li>
-<li>
-<p>Wait for the pod to be ready:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc wait --for=condition=Ready pod/ovn-copy-data --timeout=30s</pre>
+<pre>+
+
+. Wait for the pod to be ready:
++</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Back up your OVN databases:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>If you did not enable TLS everywhere, run the following command:</p>
+<div class="paragraph">
+<p>oc wait --for=condition=Ready pod/ovn-copy-data --timeout=30s</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
-oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</pre>
+<pre>. Back up your OVN databases:
+* If you did not enable TLS everywhere, run the following command:
++</pre>
 </div>
 </div>
-</li>
-</ul>
+<div class="paragraph">
+<p>oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
+oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</p>
 </div>
-</li>
-<li>
-<p>Start the control plane OVN database services prior to import, with <code>northd</code> disabled:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>+
+
+. Start the control plane OVN database services prior to import, with `northd` disabled:
++
+[source,yaml]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ovn:
     enabled: true
@@ -1515,113 +1516,103 @@ spec:
           networkAttachment: internalapi
       ovnNorthd:
         replicas: 0
-'</code></pre>
+'</p>
 </div>
-</div>
-</li>
-<li>
-<p>Wait for the OVN database services to reach the <code>Running</code> phase:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-nb
-oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-sb</pre>
+<pre>. Wait for the OVN database services to reach the `Running` phase:
++</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Fetch the OVN database IP addresses on the <code>clusterIP</code> service network:</p>
+<div class="paragraph">
+<p>oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-nb
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-sb</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>PODIFIED_OVSDB_NB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-nb-0" -ojsonpath='{.items[0].spec.clusterIP}')
-PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-sb-0" -ojsonpath='{.items[0].spec.clusterIP}')</pre>
+<pre>. Fetch the OVN database IP addresses on the `clusterIP` service network:
++</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Upgrade the database schema for the backup files:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
+<div class="paragraph">
+<p>PODIFIED_OVSDB_NB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-nb-0" -ojsonpath='{.items[0].spec.clusterIP}')
+PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-sb-0" -ojsonpath='{.items[0].spec.clusterIP}')</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
-oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</pre>
+<pre>. Upgrade the database schema for the backup files:
+.. If you did not enable TLS everywhere, use the following command:
++</pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p>oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
+oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</p>
 </div>
-</li>
-<li>
-<p>Restore the database backup to the new OVN database servers:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
-oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</pre>
+<pre>. Restore the database backup to the new OVN database servers:
+.. If you did not enable TLS everywhere, use the following command:
++</pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p>oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
+oc exec ovn-copy-data&#8201;&#8212;&#8201;bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</p>
 </div>
-</li>
-<li>
-<p>Check that the data was successfully migrated by running the following commands against the new database servers, for example:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc exec -it ovsdbserver-nb-0 -- ovn-nbctl show
-oc exec -it ovsdbserver-sb-0 -- ovn-sbctl list Chassis</pre>
+<pre>. Check that the data was successfully migrated by running the following commands against the new database servers, for example:
++</pre>
 </div>
 </div>
-</li>
-<li>
-<p>Start the control plane <code>ovn-northd</code> service to keep both OVN databases in sync:</p>
+<div class="paragraph">
+<p>oc exec -it ovsdbserver-nb-0&#8201;&#8212;&#8201;ovn-nbctl show
+oc exec -it ovsdbserver-sb-0&#8201;&#8212;&#8201;ovn-sbctl list Chassis</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre>. Start the control plane `ovn-northd` service to keep both OVN databases in sync:
++
+[source,yaml]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   ovn:
     enabled: true
     template:
       ovnNorthd:
         replicas: 1
-'</code></pre>
+'</p>
 </div>
-</div>
-</li>
-<li>
-<p>Delete the <code>ovn-data</code> helper pod and the temporary <code>PersistentVolumeClaim</code> that is used to store OVN database backup files:</p>
 <div class="listingblock">
 <div class="content">
-<pre>oc delete --ignore-not-found=true pod ovn-copy-data
-oc delete --ignore-not-found=true pvc ovn-data</pre>
+<pre>. Delete the `ovn-data` helper pod and the temporary `PersistentVolumeClaim` that is used to store OVN database backup files:
++</pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Consider taking a snapshot of the <code>ovn-data</code> helper pod and the temporary <code>PersistentVolumeClaim</code> before deleting them. For more information, see <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.16/html/storage/index#lvms-about-volume-snapsot_logical-volume-manager-storage">About volume snapshots</a> in <em>OpenShift Container Platform storage overview</em>.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>oc delete --ignore-not-found=true pod ovn-copy-data
+oc delete --ignore-not-found=true pvc ovn-data</p>
 </div>
-</li>
-<li>
-<p>Stop the adopted OVN database servers:</p>
 <div class="listingblock">
 <div class="content">
-<pre>ServicesToStop=("tripleo_ovn_cluster_north_db_server.service"
-                "tripleo_ovn_cluster_south_db_server.service")
+<pre>+
+[NOTE]
+Consider taking a snapshot of the `ovn-data` helper pod and the temporary `PersistentVolumeClaim` before deleting them. For more information, see link:{defaultOCPURL}/storage/index#lvms-about-volume-snapsot_logical-volume-manager-storage[About volume snapshots] in _OpenShift Container Platform storage overview_.
 
-echo "Stopping systemd OpenStack services"
+. Stop the adopted OVN database servers:
++</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ServicesToStop=("tripleo_ovn_cluster_north_db_server.service"
+                "tripleo_ovn_cluster_south_db_server.service")</p>
+</div>
+<div class="paragraph">
+<p>echo "Stopping systemd OpenStack services"
 for service in ${ServicesToStop[*]}; do
     for i in {1..3}; do
         SSH_CMD=CONTROLLER${i}_SSH
@@ -1632,9 +1623,10 @@ for service in ${ServicesToStop[*]}; do
             fi
         fi
     done
-done
-
-echo "Checking systemd OpenStack services"
+done</p>
+</div>
+<div class="paragraph">
+<p>echo "Checking systemd OpenStack services"
 for service in ${ServicesToStop[*]}; do
     for i in {1..3}; do
         SSH_CMD=CONTROLLER${i}_SSH
@@ -1646,11 +1638,16 @@ for service in ${ServicesToStop[*]}; do
             fi
         fi
     done
-done</pre>
+done</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>:leveloffset: 2
+
+:context: {parent-context}
+
+:leveloffset!:</pre>
 </div>
-</li>
-</ol>
 </div>
 </div>
 </div>

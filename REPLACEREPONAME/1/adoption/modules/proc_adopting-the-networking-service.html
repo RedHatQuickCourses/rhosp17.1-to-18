@@ -141,9 +141,9 @@ configuration parameters that are provided by the {rhos_prev_long} ({OpenStackSh
 <ul>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {networking_service}:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">oc patch openstackcontrolplane openstack --type=merge --patch '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
   neutron:
     enabled: true
@@ -176,35 +176,45 @@ spec:
 <ul>
 <li>
 <p>Inspect the resulting {networking_service} pods:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc get pods -l service=neutron</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l service=neutron</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Ensure that the <code>Neutron API</code> service is registered in the {identity_service}:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack service list | grep network</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep network</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">openstack endpoint list | grep network
-
-| 6a805bd6c9f54658ad2f24e5a0ae0ab6 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps-crc.testing  |
-| b943243e596847a9a317c8ce1800fa98 | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696        |</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep network</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
 </div>
 </li>
-<li>
-<p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>openstack network create net
+<pre>| a866aef3d9354bf6b37110692e1e5aee | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696             |
+| b0f4743dc3e24fd8acf7b406d6f92ea5 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps.ocp4.example.com  |</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack network create net
 openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet
-openstack router create router</pre>
+openstack router create router</code></pre>
 </div>
 </div>
 </li>

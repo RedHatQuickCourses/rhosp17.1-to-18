@@ -119,17 +119,17 @@
 </li>
 <li>
 <p>You have configured IP Address Management (IPAM):</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f osp-ng-dataplane-netconfig.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-netconfig.yaml</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>You have defined the shell variables to run the script that runs the upgrade:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
 
 alias openstack="oc exec -t openstackclient -- openstack"
 
@@ -155,7 +155,7 @@ for CELL in $(echo $RENAMED_CELLS); do
   [ -z "$names" ] &amp;&amp; continue
   NODESETS="'openstack-${CELL}', $NODESETS"
 done
-NODESETS="[${NODESETS%,*}]"</pre>
+NODESETS="[${NODESETS%,*}]"</code></pre>
 </div>
 </div>
 </li>
@@ -193,32 +193,32 @@ EOF</code></pre>
 </li>
 <li>
 <p>Create an SSH authentication secret for the data plane nodes:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/home/lab/.ssh/id_rsa_tripleo.pub --from-file=ssh-privatekey=/home/lab/.ssh/id_rsa_tripleo --from-file=ssh-publickey=/home/lab/.ssh/id_rsa_tripleo.pub -n openstack -o yaml | oc apply -f-</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/home/lab/.ssh/id_rsa_tripleo.pub --from-file=ssh-privatekey=/home/lab/.ssh/id_rsa_tripleo --from-file=ssh-publickey=/home/lab/.ssh/id_rsa_tripleo.pub -n openstack -o yaml | oc apply -f-</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Generate an ssh key-pair <code>nova-migration-ssh-key</code> secret:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>cd "$(mktemp -d)"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd "$(mktemp -d)"
 ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc get secret nova-migration-ssh-key || oc create secret generic nova-migration-ssh-key \
   --from-file=ssh-privatekey=id \
   --from-file=ssh-publickey=id.pub \
   --type kubernetes.io/ssh-auth
 rm -f id*
-cd -</pre>
+cd -</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Create a configuration map to use for all cells to configure a local storage back end for libvirt:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -227,7 +227,7 @@ data:
   99-nova-compute-cells-workarounds.conf: |
     [workarounds]
     disable_compute_service_check_for_ffu=true
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -245,9 +245,9 @@ If you adopt a live cloud, you might be required to carry over additional config
 </li>
 <li>
 <p>Configure a {Ceph} back end for libvirt:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -266,7 +266,7 @@ data:
     images_rbd_glance_copy_timeout=600
     rbd_user=openstack
     rbd_secret_uuid=$CEPH_FSID
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -284,9 +284,9 @@ For {Ceph} environments with multi-cell configurations, you must name configurat
 </li>
 <li>
 <p>Create the data plane services for {compute_service} cells to enable pre-upgrade workarounds, and to configure the Compute services for your chosen storage back end:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>for CELL in $(echo $RENAMED_CELLS); do
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $RENAMED_CELLS); do
  oc apply -f - &lt;&lt;EOF
 ---
 apiVersion: dataplane.openstack.org/v1beta1
@@ -308,7 +308,7 @@ spec:
   - NovaComputeImage
   - EdpmIscsidImage
 EOF
-  done</pre>
+  done</code></pre>
 </div>
 </div>
 </li>
@@ -389,24 +389,24 @@ The secret is already passed in with a node-specific <code>OpenStackDataPlaneNod
 <ol class="loweralpha" type="a">
 <li>
 <p>Create the validation service:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneService
 metadata:
   name: pre-adoption-validation
 spec:
   playbook: osp.edpm.pre_adoption_validation
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -416,15 +416,15 @@ spec:
   - compute0-1-set
   servicesOverride:
   - pre-adoption-validation
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>watch oc get pod -l app=openstackansibleee</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch oc get pod -l app=openstackansibleee</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -435,9 +435,9 @@ EOF</pre>
 </li>
 <li>
 <p>Wait for the deployment to reach the <code>Ready</code> status:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m</code></pre>
 </div>
 </div>
 </li>
@@ -477,24 +477,24 @@ to use the same profile as the one set on the {OpenStackShort} {rhos_prev_ver} n
 <ol class="loweralpha" type="a">
 <li>
 <p>Create an <code>OpenStackDataPlaneService</code> CR to clean up the data plane services you are adopting:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneService
 metadata:
   name: tripleo-cleanup
 spec:
   playbook: osp.edpm.tripleo_cleanup
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Create the <code>OpenStackDataPlaneDeployment</code> CR to run the clean-up:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -504,7 +504,7 @@ spec:
   - compute0-1-set
   servicesOverride:
   - tripleo-cleanup
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
@@ -513,9 +513,9 @@ EOF</pre>
 </li>
 <li>
 <p>When the clean-up is finished, deploy the <code>OpenStackDataPlaneDeployment</code> CR:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc apply -f - &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -524,7 +524,7 @@ spec:
   nodeSets:
   - compute0-1-set
 
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -548,30 +548,30 @@ add them in the <code>nodeSets</code> list in this step, or create separate <cod
 <ol class="arabic">
 <li>
 <p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>watch oc get pod -l app=openstackansibleee</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch oc get pod -l app=openstackansibleee</code></pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -l app=openstackansibleee -f --max-log-requests 20</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Wait for the data plane node sets to reach the <code>Ready</code> status:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Verify that the {networking_first_ref} agents are running:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc exec openstackclient -- openstack network agent list
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
@@ -583,7 +583,7 @@ add them in the <code>nodeSets</code> list in this step, or create separate <cod
 | 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
 | ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
 | eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)    | UP    | neutron-ovn-metadata-agent |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
 </div>
 </div>
 </li>

@@ -118,9 +118,9 @@
 <p>Ensure that the Ceph-related secret (<code>ceph-conf-files</code>) is created in
 the <code>openstack</code> namespace and that the <code>extraMounts</code> property of the
 <code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>cat &lt;&lt; EOF &gt; glance_patch.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; glance_patch.yaml
 spec:
   glance:
     enabled: true
@@ -153,15 +153,15 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with a {Ceph} back end:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</code></pre>
 </div>
 </div>
 </li>

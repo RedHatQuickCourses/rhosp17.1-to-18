@@ -154,9 +154,9 @@
 <p>Ensure that the Ceph-related secret (<code>ceph-conf-files</code>) is created in
 the <code>openstack</code> namespace and that the <code>extraMounts</code> property of the
 <code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>cat &lt;&lt; EOF &gt; glance_patch.yaml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; glance_patch.yaml
 spec:
   glance:
     enabled: true
@@ -189,15 +189,15 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-EOF</pre>
+EOF</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with a {Ceph} back end:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</code></pre>
 </div>
 </div>
 </li>
@@ -216,34 +216,62 @@ EOF</pre>
 <ol class="arabic">
 <li>
 <p>Check that the service is active, and that the endpoints are updated in the {OpenStackShort} CLI:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc rsh openstackclient
-openstack service list | grep image
-
-| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |
-
-openstack endpoint list | grep image
-
-| 569ed81064f84d4a91e0d2d807e4c1f1 | regionOne | glance       | image        | True    | internal  | http://glance-internal-openstack.apps-crc.testing   |
-| 5843fae70cba4e73b29d4aff3e8b616c | regionOne | glance       | image        | True    | public    | http://glance-public-openstack.apps-crc.testing     |</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep image</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
-<div class="listingblock">
-<div class="content">
-<pre>openstack image list
-+--------------------------------------+--------+--------+
-| ID                                   | Name   | Status |
-+--------------------------------------+--------+--------+
-| c3158cad-d50b-452f-bec1-f250562f5c1f | cirros | active |
-+--------------------------------------+--------+--------+</pre>
-</div>
+<div class="paragraph">
+<p>Sample output:</p>
 </div>
 </li>
 </ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
+| ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack image list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 1088f6e4-d0a8-4d63-8f93-f14f708a4dbc | cirros | active |
++--------------------------------------+--------+--------+</pre>
+</div>
 </div>
 </div>
 </div>

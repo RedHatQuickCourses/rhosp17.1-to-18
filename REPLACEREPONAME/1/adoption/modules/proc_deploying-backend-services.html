@@ -126,11 +126,11 @@ not deployed.</p>
 </li>
 <li>
 <p>We will use the existing {OpenStackShort} deployment password:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>declare -A TRIPLEO_PASSWORDS
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">declare -A TRIPLEO_PASSWORDS
 TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
-ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AdminPassword:' | awk -F ': ' '{ print $2; }')</pre>
+ADMIN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AdminPassword:' | awk -F ': ' '{ print $2; }')</code></pre>
 </div>
 </div>
 </li>
@@ -141,9 +141,9 @@ you must synchronize the service account passwords.</p>
 <div class="paragraph">
 <p>For example, in developer environments with {OpenStackPreviousInstaller} Standalone, the passwords can be extracted:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
 BARBICAN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' BarbicanPassword:' | awk -F ': ' '{ print $2; }')
 CEILOMETER_METERING_SECRET=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerMeteringSecret:' | awk -F ': ' '{ print $2; }')
 CEILOMETER_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' CeilometerPassword:' | awk -F ': ' '{ print $2; }')
@@ -158,7 +158,7 @@ NEUTRON_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NeutronPassword:' 
 NOVA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' NovaPassword:' | awk -F ': ' '{ print $2; }')
 OCTAVIA_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' OctaviaPassword:' | awk -F ': ' '{ print $2; }')
 PLACEMENT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' PlacementPassword:' | awk -F ': ' '{ print $2; }')
-SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | awk -F ': ' '{ print $2; }')</pre>
+SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | awk -F ': ' '{ print $2; }')</code></pre>
 </div>
 </div>
 </li>
@@ -169,28 +169,28 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 <ol class="arabic">
 <li>
 <p>Create the {OpenStackShort} secret.</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>cd /home/lab/labrepo/files
-oc apply -f osp-ng-ctlplane-secret.yaml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd /home/lab/labrepo/files
+oc apply -f osp-ng-ctlplane-secret.yaml</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>If the <code>$ADMIN_PASSWORD</code> is different than the password you set
 in <code>osp-secret</code>, amend the <code>AdminPassword</code> key in the <code>osp-secret</code>:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Set service account passwords in <code>osp-secret</code> to match the service
 account passwords from the original deployment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
 oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"
 oc set data secret/osp-secret "CeilometerPassword=$CEILOMETER_PASSWORD"
 oc set data secret/osp-secret "CinderPassword=$CINDER_PASSWORD"
@@ -206,7 +206,7 @@ oc set data secret/osp-secret "NeutronPassword=$NEUTRON_PASSWORD"
 oc set data secret/osp-secret "NovaPassword=$NOVA_PASSWORD"
 oc set data secret/osp-secret "OctaviaPassword=$OCTAVIA_PASSWORD"
 oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
-oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</pre>
+oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"</code></pre>
 </div>
 </div>
 </li>

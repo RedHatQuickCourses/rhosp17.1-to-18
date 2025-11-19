@@ -116,12 +116,12 @@
 </li>
 <li>
 <p>You have defined the following shell variables. Replace the following example values with the values that are correct for your environment:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>alias openstack="oc exec -t openstackclient -- openstack"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"
 
 DEFAULT_CELL_NAME="cell3"
-RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</pre>
+RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -131,10 +131,10 @@ RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</pre>
 </li>
 <li>
 <p>If you deployed the source cloud with a <code>default</code> cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>DEFAULT_CELL_NAME="cell1"
-RENAMED_CELLS="cell1"</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"</code></pre>
 </div>
 </div>
 </li>
@@ -161,9 +161,9 @@ To enable the metadata services of a local cell, set the <code>enabled</code> pr
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">rm -f celltemplates
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
  cat &gt;&gt; celltemplates &lt;&lt; EOF
         ${CELL}:
@@ -264,61 +264,47 @@ Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for al
 </tr>
 </table>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wait for Nova control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Nova/nova</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
 <div class="ulist">
 <div class="title">Verification</div>
 <ul>
 <li>
 <p>Check that {compute_service} endpoints are defined and pointing to the
 control plane FQDNs, and that the Nova API responds:</p>
-<div class="listingblock">
+<div class="listingblock execute">
 <div class="content">
-<pre>openstack endpoint list | grep nova
-openstack server list</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Compare the outputs with the topology-specific configuration in <a href="#proc_retrieving-topology-specific-service-configuration_migrating-databases">Retrieving topology-specific service configuration</a>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:</p>
-<div class="listingblock">
-<div class="content">
-<pre>for CELL in $(echo $CELLS); do
-  set +u
-  . ~/.source_cloud_exported_variables_$CELL
-  set -u
-  RCELL=$CELL
-  [ "$CELL" = "default" ] &amp;&amp; RCELL=$DEFAULT_CELL_NAME
-
-  echo "comparing $CELL to $RCELL"
-  echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
-oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
-done</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep nova
+openstack server list</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The following changes are expected for each cell:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>cellX</code> <code>nova</code> database and username become <code>nova_cellX</code>.</p>
-</li>
-<li>
-<p>The <code>default</code> cell is renamed to <code>DEFAULT_CELL_NAME</code>. The <code>default</code> cell might retain the original name if there are multiple cells.</p>
-</li>
-<li>
-<p>The RabbitMQ transport URL no longer uses <code>guest</code>.</p>
-</li>
-</ul>
+<p>Sample output:</p>
 </div>
 </li>
 </ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 764454a0fe6540829496a91706be0fc9 | regionOne | nova         | compute      | True    | internal  | http://nova-internal.openstack.svc:8774/v2.1                 |
+| ce98dcc7e5a54ae4b08274ecf36c1a91 | regionOne | nova         | compute      | True    | public    | http://nova-public-openstack.apps.ocp4.example.com/v2.1      |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| ID                                   | Name               | Status | Networks                                | Image  | Flavor |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| 32316d67-70bc-4c39-a462-93d18a3f6594 | server-2-compute-1 | ACTIVE | private=172.25.250.207, 192.168.100.91  | cirros | tiny   |
+| e776a713-6f7c-419a-a153-89fd1abb5a2d | server-1-compute-0 | ACTIVE | private=172.25.250.206, 192.168.100.187 | cirros | tiny   |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+</pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
