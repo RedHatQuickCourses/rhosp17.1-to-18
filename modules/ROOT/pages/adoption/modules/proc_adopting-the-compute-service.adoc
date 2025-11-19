@@ -15,6 +15,7 @@ To adopt the {compute_service_first_ref}, you patch an existing `OpenStackContro
 * You have completed the previous adoption steps.
 * You have defined the following shell variables. Replace the following example values with the values that are correct for your environment:
 +
+[source,bash,role=execute]
 ----
 alias openstack="oc exec -t openstackclient -- openstack"
 
@@ -25,6 +26,7 @@ RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"
 ** The source cloud `default` cell takes a new `$DEFAULT_CELL_NAME`. In a multi-cell adoption scenario, the 'default' cell might retain its original name,`DEFAULT_CELL_NAME=default`, or become renamed as a cell that is free for use. Do not use other existing cell names for `DEFAULT_CELL_NAME`, except for `default`.
 ** If you deployed the source cloud with a `default` cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:
 +
+[source,bash,role=execute]
 ----
 DEFAULT_CELL_NAME="cell1"
 RENAMED_CELLS="cell1"
@@ -38,7 +40,7 @@ RENAMED_CELLS="cell1"
 This procedure assumes that {compute_service} metadata is deployed on the top level and not on each cell level. If the {OpenStackShort} deployment has a per-cell metadata deployment, adjust the following patch as needed. You cannot run the metadata service in `cell0`.
 To enable the metadata services of a local cell, set the `enabled` property in the `metadataServiceTemplate` field of the local cell to `true` in the `OpenStackControlPlane` CR.
 +
-[source, shell]
+[source,bash,role=execute]
 ----
 rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
@@ -129,39 +131,35 @@ oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.y
 The local Conductor services are started for each cell, while the superconductor runs in `cell0`.
 Note that `disable_compute_service_check_for_ffu` is mandatory for all imported Compute services until the external data plane is imported, and until the Compute services are fast-forward upgraded. For more information, see xref:adopting-compute-services-to-the-data-plane_data-plane[Adopting Compute services to the {rhos_acro} data plane] and xref:performing-a-fast-forward-upgrade-on-compute-services_data-plane[Upgrading Compute services].
 
+. Wait for Nova control plane services' CRs to become ready:
++
+[source,bash,role=execute,subs=attributes]
+----
+oc wait --for condition=Ready --timeout=300s Nova/nova
+----
+
 .Verification
 
 * Check that {compute_service} endpoints are defined and pointing to the
 control plane FQDNs, and that the Nova API responds:
 +
+[source,bash,role=execute]
 ----
 openstack endpoint list | grep nova
 openstack server list
 ----
 +
-** Compare the outputs with the topology-specific configuration in xref:proc_retrieving-topology-specific-service-configuration_migrating-databases[Retrieving topology-specific service configuration].
-
-* Query the superconductor to check that the expected cells exist, and compare it to its pre-adoption values:
-+
+Sample output:
 ----
-for CELL in $(echo $CELLS); do
-  set +u
-  . ~/.source_cloud_exported_variables_$CELL
-  set -u
-  RCELL=$CELL
-  [ "$CELL" = "default" ] && RCELL=$DEFAULT_CELL_NAME
-
-  echo "comparing $CELL to $RCELL"
-  echo $PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS | grep -F "| $CELL |"
-oc rsh nova-cell0-conductor-0 nova-manage cell_v2 list_cells | grep -F "| $RCELL |"
-done
+| 764454a0fe6540829496a91706be0fc9 | regionOne | nova         | compute      | True    | internal  | http://nova-internal.openstack.svc:8774/v2.1                 |
+| ce98dcc7e5a54ae4b08274ecf36c1a91 | regionOne | nova         | compute      | True    | public    | http://nova-public-openstack.apps.ocp4.example.com/v2.1      |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| ID                                   | Name               | Status | Networks                                | Image  | Flavor |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| 32316d67-70bc-4c39-a462-93d18a3f6594 | server-2-compute-1 | ACTIVE | private=172.25.250.207, 192.168.100.91  | cirros | tiny   |
+| e776a713-6f7c-419a-a153-89fd1abb5a2d | server-1-compute-0 | ACTIVE | private=172.25.250.206, 192.168.100.187 | cirros | tiny   |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
 ----
-+
-The following changes are expected for each cell:
-+
-** The `cellX` `nova` database and username become `nova_cellX`.
-** The `default` cell is renamed to `DEFAULT_CELL_NAME`. The `default` cell might retain the original name if there are multiple cells.
-** The RabbitMQ transport URL no longer uses `guest`.
 
 [NOTE]
 ====

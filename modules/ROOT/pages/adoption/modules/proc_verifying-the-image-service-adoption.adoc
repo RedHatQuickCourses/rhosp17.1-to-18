@@ -10,25 +10,36 @@ Verify that you adopted the {image_service_first_ref} to the {rhos_long} {rhos_c
 
 . Check that the service is active, and that the endpoints are updated in the {OpenStackShort} CLI:
 +
+[source,bash,role=execute]
 ----
-oc rsh openstackclient
 openstack service list | grep image
-
+----
+Sample output:
+----
 | fc52dbffef36434d906eeb99adfc6186 | glance    | image        |
-
+----
++
+[source,bash,role=execute]
+----
 openstack endpoint list | grep image
-
-| 569ed81064f84d4a91e0d2d807e4c1f1 | regionOne | glance       | image        | True    | internal  | http://glance-internal-openstack.apps-crc.testing   |
-| 5843fae70cba4e73b29d4aff3e8b616c | regionOne | glance       | image        | True    | public    | http://glance-public-openstack.apps-crc.testing     |
+----
+Sample output:
+----
+| 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
+| ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |
 ----
 
 . Check that the images that you previously listed in the source cloud are available in the adopted service:
 +
+[source,bash,role=execute]
 ----
 openstack image list
+----
+Sample output:
+----
 +--------------------------------------+--------+--------+
 | ID                                   | Name   | Status |
 +--------------------------------------+--------+--------+
-| c3158cad-d50b-452f-bec1-f250562f5c1f | cirros | active |
+| 1088f6e4-d0a8-4d63-8f93-f14f708a4dbc | cirros | active |
 +--------------------------------------+--------+--------+
 ----

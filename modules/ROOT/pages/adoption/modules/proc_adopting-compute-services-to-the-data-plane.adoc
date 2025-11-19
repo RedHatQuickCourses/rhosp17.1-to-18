@@ -12,6 +12,7 @@ Adopt your Compute (nova) services to the {rhos_long} data plane.
 * You have configured the Ceph back end for the `NovaLibvirt` service. For more information, see xref:configuring-a-ceph-backend_migrating-databases[Configuring a Ceph back end].
 * You have configured IP Address Management (IPAM):
 +
+[source,bash,role=execute]
 ----
 oc apply -f osp-ng-dataplane-netconfig.yaml
 ----
@@ -19,6 +20,7 @@ oc apply -f osp-ng-dataplane-netconfig.yaml
 
 * You have defined the shell variables to run the script that runs the upgrade:
 +
+[source,bash,role=execute]
 ----
 CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
 
@@ -78,6 +80,7 @@ EOF
 
 . Create an SSH authentication secret for the data plane nodes:
 +
+[source,bash,role=execute]
 [subs=+quotes]
 ----
 oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/home/lab/.ssh/id_rsa_tripleo.pub --from-file=ssh-privatekey=/home/lab/.ssh/id_rsa_tripleo --from-file=ssh-publickey=/home/lab/.ssh/id_rsa_tripleo.pub -n openstack -o yaml | oc apply -f-
@@ -85,6 +88,7 @@ oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config 
 
 . Generate an ssh key-pair `nova-migration-ssh-key` secret:
 +
+[source,bash,role=execute]
 ----
 cd "$(mktemp -d)"
 ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
@@ -98,6 +102,7 @@ cd -
 
 . Create a configuration map to use for all cells to configure a local storage back end for libvirt:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: v1
@@ -116,6 +121,7 @@ If you adopt a live cloud, you might be required to carry over additional config
 
 . Configure a {Ceph} back end for libvirt:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: v1
@@ -144,6 +150,7 @@ For {Ceph} environments with multi-cell configurations, you must name configurat
 
 . Create the data plane services for {compute_service} cells to enable pre-upgrade workarounds, and to configure the Compute services for your chosen storage back end:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $RENAMED_CELLS); do
  oc apply -f - <<EOF
@@ -185,6 +192,7 @@ the safest option is to create a custom service and a dedicated configuration ma
 ifeval::["{build}" == "downstream"]
 . Create a secret for the subscription manager:
 +
+[source,bash,role=execute]
 ----
 oc create secret generic subscription-manager \
 --from-literal rhc_auth='{"login": {"username": "<subscription_manager_username>", "password": "<subscription_manager_password>"}}'
@@ -195,6 +203,7 @@ oc create secret generic subscription-manager \
 
 . Create a secret for the Red Hat registry:
 +
+[source,bash,role=execute]
 ----
 oc create secret generic redhat-registry \
 --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<registry_username>": "<registry_password>"}}'
@@ -222,6 +231,7 @@ oc apply -f osp-ng-dataplane-node-set-deploy-adoption-compute.yaml
 
 .. Create the validation service:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -235,6 +245,7 @@ EOF
 
 .. Create a `OpenStackDataPlaneDeployment` CR that runs only the validation:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -252,6 +263,7 @@ EOF
 
 .. When the validation is finished, confirm that the status of the Ansible EE pods is `Completed`:
 +
+[source,bash,role=execute]
 ----
 watch oc get pod -l app=openstackansibleee
 ----
@@ -262,6 +274,7 @@ oc logs -l app=openstackansibleee -f --max-log-requests 20
 
 .. Wait for the deployment to reach the `Ready` status:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m
 ----
@@ -284,6 +297,7 @@ to use the same profile as the one set on the {OpenStackShort} {rhos_prev_ver} n
 
 .. Create an `OpenStackDataPlaneService` CR to clean up the data plane services you are adopting:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -297,6 +311,7 @@ EOF
 
 .. Create the `OpenStackDataPlaneDeployment` CR to run the clean-up:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -313,6 +328,7 @@ EOF
 
 . When the clean-up is finished, deploy the `OpenStackDataPlaneDeployment` CR:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -334,22 +350,26 @@ add them in the `nodeSets` list in this step, or create separate `OpenStackDataP
 
 . Confirm that all the Ansible EE pods reach a `Completed` status:
 +
+[source,bash,role=execute]
 ----
 watch oc get pod -l app=openstackansibleee
 ----
 +
+[source,bash,role=execute]
 ----
 oc logs -l app=openstackansibleee -f --max-log-requests 20
 ----
 
 . Wait for the data plane node sets to reach the `Ready` status:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m
 ----
 
 . Verify that the {networking_first_ref} agents are running:
 +
+[source,bash,role=execute]
 ----
 oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+

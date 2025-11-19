@@ -15,6 +15,7 @@ To adopt the {dashboard_first_ref}, you patch an existing `OpenStackControlPlane
 
 * Patch the `OpenStackControlPlane` CR to deploy the {dashboard_service}:
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
@@ -32,12 +33,14 @@ spec:
 
 . Verify that the {dashboard_service} instance is successfully deployed and ready:
 +
+[source,bash,role=execute]
 ----
 oc get horizon
 ----
 
 . Confirm that the {dashboard_service} is reachable and returns a `200` status code:
 +
+[source,bash,role=execute]
 ----
 PUBLIC_URL=$(oc get horizon horizon -o jsonpath='{.status.endpoint}')
 curl --silent --output /dev/stderr --head --write-out "%{http_code}" "$PUBLIC_URL/dashboard/auth/login/?next=/dashboard/" -k | grep 200

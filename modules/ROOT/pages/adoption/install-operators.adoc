@@ -2,7 +2,7 @@
 
 . Clone the Files Repo
 +
-In the workstation terminal, clone the repo and change directory to the files that we will used later in the lab
+In the utility terminal, clone the repo and change directory to the files that we will used later in the lab
 +
 [source,bash,role=execute]
 ----

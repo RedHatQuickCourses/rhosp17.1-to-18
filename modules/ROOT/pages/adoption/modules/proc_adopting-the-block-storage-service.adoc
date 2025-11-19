@@ -15,17 +15,12 @@ To adopt a {OpenStackPreviousInstaller}-deployed {block_storage_first_ref}, crea
 * The service databases are imported into the control plane MariaDB.
 * The {identity_service_first_ref} and {key_manager_first_ref} are adopted.
 * The Storage network is correctly configured on the {OpenShiftShort} cluster.
-* The contents of `cinder.conf` file. Download the file so that you can access it locally:
-+
-----
-$CONTROLLER1_SSH cat /var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf > cinder.conf
-----
 
 .Procedure
 
 . Create a new file, for example, `cinder_api.patch`:
 +
-[source,yaml]
+[source,bash,role=execute]
 ----
 cat << EOF > cinder_api.patch
 spec:
@@ -81,6 +76,7 @@ EOF
 
 . Apply the configuration::
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch
 ----
@@ -94,6 +90,7 @@ oc wait --for condition=Ready --timeout=300s Cinder/cinder
 
 . Retrieve the list of the previous scheduler and backup services:
 +
+[source,bash,role=execute]
 ----
 openstack volume service list
 
@@ -109,6 +106,7 @@ openstack volume service list
 
 . Remove services for hosts that are in the `down` state:
 +
+[source,bash,role=execute]
 ----
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
 oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
@@ -148,6 +146,7 @@ EOF
 ----
 . Apply the configuration::
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch
 ----
@@ -159,6 +158,7 @@ oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_servic
 You are not required to run the data migrations at this step, but you must run them before the next upgrade. However, for adoption, you can run the migrations now to ensure that there are no issues before you run production workloads on the deployment.
 ====
 +
+[source,bash,role=execute]
 ----
 oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations
 ----
@@ -167,12 +167,14 @@ oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations
 
 . Ensure that the `openstack` alias is defined:
 +
+[source,bash,role=execute]
 ----
 alias openstack="oc exec -t openstackclient -- openstack"
 ----
 
 . Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:
 +
+[source,bash,role=execute]
 ----
 openstack endpoint list --service cinderv3
 ----
@@ -181,6 +183,7 @@ openstack endpoint list --service cinderv3
 
 . Confirm that the Block Storage services are running:
 +
+[source,bash,role=execute]
 ----
 openstack volume service list
 ----
@@ -190,6 +193,7 @@ Cinder API services do not appear in the list. However, if you get a response fr
 
 . Confirm that you have your previous volume types, volumes, snapshots, and backups:
 +
+[source,bash,role=execute]
 ----
 openstack volume type list
 openstack volume list
@@ -200,12 +204,14 @@ openstack volume snapshot list
 
 .. Create a volume from an image to check that the connection to {image_service_first_ref} is working:
 +
+[source,bash,role=execute]
 ----
 openstack volume create --image cirros --bootable --size 1 disk_new
 ----
 
 .. Back up the previous attached volume:
 +
+[source,bash,role=execute]
 ----
 openstack --os-volume-api-version 3.47 volume create --backup <backup_name>
 ----

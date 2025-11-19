@@ -10,6 +10,7 @@ To adopt the {identity_service_first_ref}, you patch an existing `OpenStackContr
 
 * Create the keystone secret that includes the Fernet keys that were copied from the {OpenStackShort} environment:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: v1
@@ -29,6 +30,7 @@ EOF
 
 . Patch the `OpenStackControlPlane` CR to deploy the {identity_service}:
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
@@ -63,6 +65,7 @@ oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstac
 
 . Create an alias to use the `openstack` command in the {rhos_long} deployment:
 +
+[source,bash,role=execute]
 ----
 alias openstack="oc exec -t openstackclient -- openstack"
 ----
@@ -70,6 +73,7 @@ alias openstack="oc exec -t openstackclient -- openstack"
 . Remove services and endpoints that still point to the {OpenStackShort}
 control plane, excluding the {identity_service} and its endpoints:
 +
+[source,bash,role=execute]
 ----
 openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
 

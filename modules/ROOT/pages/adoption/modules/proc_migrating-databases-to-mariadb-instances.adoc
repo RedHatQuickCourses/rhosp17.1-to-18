@@ -18,6 +18,7 @@ Migrate your databases from the original {rhos_prev_long} ({OpenStackShort}) dep
 * Ensure that there is network routability between the original MariaDB and the MariaDB for the control plane.
 * Define the following shell variables. Replace the following example values with values that are correct for your environment:
 +
+[source,bash,role=execute]
 ----
 STORAGE_CLASS=nfs-storage
 MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
@@ -73,6 +74,7 @@ The `super` is the top-scope Nova API upcall database instance. A super conducto
 
 * To get the values for `SOURCE_MARIADB_IP`, query the puppet-generated configurations in the Controller and CellController nodes:
 +
+[source,bash,role=execute]
 ----
 sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
 ----
@@ -83,6 +85,7 @@ The source cloud always uses the same password for cells databases. For that rea
 
 . Create a temporary volume claim and a pod for the database data copy. Edit the volume claim storage request if necessary, to give it enough space for the overcloud databases:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 ---

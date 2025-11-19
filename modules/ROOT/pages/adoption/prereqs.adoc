@@ -5,9 +5,8 @@
 Some prerequisites needed to install Red Hat OpenStack Services on OpenShift (RHOSO) are already included in the lab environment such as:
 
 * An operational OpenShift cluster which supports Multus CNI
-* oc command line tool on your workstation (workstation host)
-* k9s command line tool on your workstation (workstation host)
-* podman command line tool on your workstation (workstation host)
+* oc command line tool on your workstation (utility host)
+* podman command line tool on your workstation (utility host)
 * Access to repositories which contain the Dev Preview code
 * Access to an existing registry or create a local Quay registry
 * Example YAML files are available in this repository which can be cloned or copy and pasted for use.
@@ -19,7 +18,7 @@ There are three operators that are required to be installed before you can insta
 
 ==== Accessing the Cluster
 
-From the workstation, access to the utility host
+From the workstation, access to the utility host by executing the following command:
 +
 [source,bash,role=execute,subs=attributes]
 ----
@@ -213,4 +212,52 @@ Repeat command until all pods are showing READY 1/1
 NAME                                      READY   STATUS    RESTARTS   AGE
 cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
 cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s
+----
+
+=== Start tests virtual machines
+
+From the workstation, access to the director host and change to the stack user:
++
+[source,bash,role=execute,subs=attributes]
+----
+ssh 172.25.250.15
+----
+
+Escalate to root:
++
+[source,bash,role=execute,subs=attributes]
+----
+sudo -i
+----
+
+Change to the stack user:
++
+[source,bash,role=execute,subs=attributes]
+----
+su - stack
+----
+
+Load the overclourdc file:
++
+[source,bash,role=execute,subs=attributes]
+----
+. overcloudrc
+----
+
+Start the test virtual machines:
++
+[source,bash,role=execute,subs=attributes]
+----
+openstack server start server-2-compute-1
+openstack server start server-1-compute-0
+----
+
+You can ssh and ping the test virtual machines from the workstation by executing the following command during the whole lab:
++
+[source,bash,role=execute,subs=attributes]
+----
+ssh cirros@172.25.250.207
+ssh cirros@172.25.250.206
+ping 172.25.250.207
+ping 172.25.250.206
 ----

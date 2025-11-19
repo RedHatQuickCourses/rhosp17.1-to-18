@@ -42,6 +42,7 @@ oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/H
 
 . Patch the `OpenStackControlPlane` CR to deploy the {orchestration}:
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
@@ -65,8 +66,13 @@ spec:
 
 . Ensure that the statuses of all the CRs are `Setup complete`:
 +
+[source,bash,role=execute]
 ----
 oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI
+----
++
+Sample output:
+----
 NAME                           STATUS   MESSAGE
 heat.heat.openstack.org/heat   True     Setup complete
 
@@ -82,8 +88,13 @@ heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete
 
 . Check that the {orchestration} is registered in the {identity_service}:
 +
+[source,bash,role=execute]
 ----
 oc exec -it openstackclient -- openstack service list -c Name -c Type
+----
++
+Sample output:
+----
 +------------+----------------+
 | Name       | Type           |
 +------------+----------------+
@@ -99,8 +110,13 @@ oc exec -it openstackclient -- openstack service list -c Name -c Type
 +------------+----------------+
 ----
 +
+[source,bash,role=execute]
 ----
 oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
+----
++
+Sample output:
+----
 - Enabled: true
   ID: 1da7df5b25b94d1cae85e3ad736b25a5
   Interface: public
@@ -119,6 +135,8 @@ oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml
 
 . Check that the {orchestration} engine services are running:
 +
+
+Sample output:
 ----
 oc exec -it openstackclient -- openstack orchestration service list -f yaml
 - Binary: heat-engine
@@ -153,8 +171,12 @@ oc exec -it openstackclient -- openstack orchestration service list -f yaml
 
 . Verify that you can see your {orchestration} stacks:
 +
+[source,bash,role=execute]
 ----
 openstack stack list -f yaml
+----
+Sample output:
+----
 - Creation Time: '2023-10-11T22:03:20Z'
   ID: 20f95925-7443-49cb-9561-a1ab736749ba
   Project: 4eacd0d1cab04427bc315805c28e66c9

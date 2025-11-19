@@ -41,9 +41,12 @@ Load the stackrc file:
 
 * In the *director host*, get the internal_api VIP from this file:
 +
-[source,bash,subs=attributes]
+[source,bash,role=execute,subs=attributes]
 ----
-[student@director ~]cat /home/stack/templates/overcloud-vip-deployed.yaml
+cat /home/stack/templates/overcloud-vip-deployed.yaml
+----
+. Sample output:
+----
 
 [...]
   VipPortMap:
@@ -64,8 +67,16 @@ Load the stackrc file:
       ip_address_uri: 192.168.51.41
       ip_subnet: 192.168.51.41/24
 [...]
+----
+You can also get the internal_api VIP by accessing one of the controller nodes:
 
+[source,bash,role=execute,subs=attributes]
+----
 [student@director ~] metalsmith list
+----
+
+. Sample output:
+----
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 | UUID                                 | Node Name           | Allocation UUID                      | Hostname                | State  | IP Addresses            |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
@@ -77,19 +88,33 @@ Load the stackrc file:
 | 51d45604-8bf8-43f9-9718-d704398296e3 | overcloud-networker | b5f71cd8-5f42-46a8-8c51-a75608745744 | overcloud-networker     | ACTIVE | ctlplane=172.25.249.250 |
 +--------------------------------------+---------------------+--------------------------------------+-------------------------+--------+-------------------------+
 
-[student@director ~] ssh tripleo-admin@172.25.249.16
-[tripleo-admin@overcloud-controller-0 ~]$ 
-sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
-/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent
-
-[tripleo-admin@overcloud-controller-0 ~]$ logout
-
-
+[source,bash,role=execute,subs=attributes]
 ----
+ssh tripleo-admin@172.25.249.16
+----
+
+[source,bash,role=execute,subs=attributes]
+----
+sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
+----
+. Sample output:
+----
+/var/lib/config-data/puppet-generated/haproxy/etc/haproxy/haproxy.cfg-  bind 192.168.52.55:3306 transparent
+----
+
+[source,bash,subs=attributes]
+----
+logout
+----
+
+Then the values for SOURCE_MARIADB_IP and CONTROLLER_IP are:
 +
 SOURCE_MARIADB_IP is then 192.168.52.55
 CONTROLLER1_IP is then 172.25.249.16
+CONTROLLER2_IP is then 172.25.249.17
+CONTROLLER3_IP is then 172.25.249.18
 +
+
 In the *director host*, copy the overcloud-passwords from the director node to the student user home directory:
 +
 [source,bash,role=execute,subs=attributes]
@@ -108,8 +133,9 @@ In the *workstation host*, copy the overcloud-passwords from the director node t
 scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
 scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/
 ----
+
 +
-In the *utility host* log in to the Red Hat registry and create the secret:
+In the *utility host* log in to the Red Hat registry and create the secret, it will be used to pull the helper pod images:
 +
 [source,bash,role=execute,subs=attributes]
 ----
@@ -135,6 +161,7 @@ oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson
 
 . In the *utility host*, define the following shell variables. Replace the example values with values that are correct for your environment:
 +
+[source,bash,role=execute]
 ----
 PASSWORD_FILE="$HOME/overcloud-passwords.yaml"
 MARIADB_IMAGE=registry.redhat.io/rhoso/openstack-mariadb-rhel9:18.0
@@ -152,6 +179,7 @@ done
 
 . Define the following shell variables. Replace the example values with values that are correct for your environment:
 +
+[source,bash,role=execute]
 ----
 MARIADB_CLIENT_ANNOTATIONS='--annotations=k8s.v1.cni.cncf.io/networks=internalapi'
 MARIADB_RUN_OVERRIDES="$MARIADB_CLIENT_ANNOTATIONS"
@@ -168,6 +196,7 @@ The source cloud always uses the same password for cells databases. For that rea
 
 . Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:
 +
+[source,bash,role=execute]
 ----
 unset PULL_OPENSTACK_CONFIGURATION_DATABASES
 declare -xA PULL_OPENSTACK_CONFIGURATION_DATABASES
@@ -187,6 +216,7 @@ endif::[]
 
 . Run `mysqlcheck` on the {OpenStackShort} database to check for inaccuracies:
 +
+[source,bash,role=execute]
 ----
 unset PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
 declare -xA PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK
@@ -209,6 +239,7 @@ fi
 
 . Get the {compute_service_first_ref} cell mappings:
 +
+[source,bash,role=execute]
 ----
 export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-1 ${MARIADB_RUN_OVERRIDES} -q --image ${MARIADB_IMAGE} -i --rm --restart=Never -- \
     mysql -rsh "${SOURCE_MARIADB_IP['default']}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD['default']}" nova_api -e \
@@ -217,6 +248,7 @@ export PULL_OPENSTACK_CONFIGURATION_NOVADB_MAPPED_CELLS=$(oc run mariadb-client-
 
 . Get the hostnames of the registered Compute services:
 +
+[source,bash,role=execute]
 ----
 unset PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
 declare -xA PULL_OPENSTACK_CONFIGURATION_NOVA_COMPUTE_HOSTNAMES
@@ -229,12 +261,14 @@ done
 
 . Get the list of the mapped {compute_service} cells:
 +
+[source,bash,role=execute]
 ----
 export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)
 ----
 
 . Store the exported variables for future use:
 +
+[source,bash,role=execute]
 ----
 unset SRIOV_AGENTS
 declare -xA SRIOV_AGENTS

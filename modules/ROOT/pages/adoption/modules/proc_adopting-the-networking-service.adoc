@@ -24,7 +24,7 @@ The {networking_service} adoption is complete if you see the following results:
 
 * Patch the `OpenStackControlPlane` CR to deploy the {networking_service}:
 +
-[source,shell]
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
@@ -55,26 +55,32 @@ spec:
 
 * Inspect the resulting {networking_service} pods:
 +
+[source,bash,role=execute]
 ----
 oc get pods -l service=neutron
 ----
 
 * Ensure that the `Neutron API` service is registered in the {identity_service}:
 +
+[source,bash,role=execute]
 ----
 openstack service list | grep network
 ----
 +
-[source,shell]
+[source,bash,role=execute]
 ----
 openstack endpoint list | grep network
-
-| 6a805bd6c9f54658ad2f24e5a0ae0ab6 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps-crc.testing  |
-| b943243e596847a9a317c8ce1800fa98 | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696        |
+----
++
+Sample output:
+----
+| a866aef3d9354bf6b37110692e1e5aee | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696             |
+| b0f4743dc3e24fd8acf7b406d6f92ea5 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps.ocp4.example.com  |
 ----
 
 * Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:
 +
+[source,bash,role=execute]
 ----
 openstack network create net
 openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet

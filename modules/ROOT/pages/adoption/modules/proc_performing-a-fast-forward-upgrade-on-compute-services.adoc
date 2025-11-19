@@ -15,6 +15,7 @@ You must upgrade the Compute services from {rhos_prev_long} {rhos_prev_ver} to {
 * Define the shell variables necessary to apply the fast-forward upgrade commands for each {compute_service} cell.
 
 +
+[source,bash,role=execute]
 ----
 DEFAULT_CELL_NAME="cell1"
 RENAMED_CELLS="$DEFAULT_CELL_NAME"
@@ -31,6 +32,7 @@ done
 
 . Wait for the {compute_service} data plane services version to update for all the cells:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $RENAMED_CELLS); do
 oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
@@ -47,6 +49,7 @@ Review any errors in the nova Compute agent logs on the data plane, and the `nov
 
 . Patch the `OpenStackControlPlane` CR to remove the pre-fast-forward upgrade workarounds from the Compute control plane services:
 +
+[source,bash,role=execute]
 ----
 rm -f celltemplates
 for CELL in $(echo $RENAMED_CELLS); do
@@ -92,18 +95,21 @@ cat celltemplates >> oscp-patch.yaml
 
 . Apply the patch file:
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml
 ----
 
 . Wait until the Compute control plane services CRs are ready:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready --timeout=300s Nova/nova
 ----
 
 . Remove the pre-fast-forward upgrade workarounds from the Compute data plane services:
 +
+[source,bash,role=execute]
 ----
 oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
 oc apply -f - <<EOF
@@ -123,12 +129,14 @@ EOF
 
 . Wait for the Compute data plane services to be ready for all the cells:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m
 ----
 
 . Run Compute database online migrations to complete the upgrade:
 +
+[source,bash,role=execute]
 ----
 oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
 for CELL in $(echo $RENAMED_CELLS); do
@@ -138,30 +146,17 @@ done
 
 . Discover the Compute hosts in the cells:
 +
+[source,bash,role=execute]
 ----
 oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ----
 
 . Verify if the existing test VM instance is running:
 +
+[source,bash,role=execute]
 ----
-${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test 2>&1 || echo FAIL
-----
-
-. Verify if the Compute services can stop the existing test VM instance:
-+
-----
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test ACTIVE" && ${BASH_ALIASES[openstack]} server stop test || echo PASS
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test SHUTOFF" || echo FAIL
-${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test 2>&1 || echo PASS
-----
-
-. Verify if the Compute services can start the existing test VM instance:
-+
-----
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test SHUTOFF" && ${BASH_ALIASES[openstack]} server start test || echo PASS
-${BASH_ALIASES[openstack]} server list -c Name -c Status -f value | grep -qF "test ACTIVE" && \
-  ${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics test --fit-width -f json | jq -r '.state' | grep running || echo FAIL
+${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-2-compute-1 2>&1 || echo FAIL
+${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-1-compute-0 2>&1 || echo FAIL
 ----
 
 .Next steps

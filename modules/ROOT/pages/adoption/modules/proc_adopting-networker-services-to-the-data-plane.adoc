@@ -13,6 +13,7 @@ parameter set to `enable-chassis-as-gw` is considered OVN gateway chassis. In th
 
 . Check for the nodes where `OVN Controller Gateway agent` agents are running. The list of agents varies depending on the services you enabled:
 +
+[source,bash,role=execute]
 ----
 oc exec openstackclient -- openstack network agent list
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
@@ -35,7 +36,7 @@ oc exec openstackclient -- openstack network agent list
 overcloud-networker.localdomain is our target
 host.
 +
-[subs=+quotes]
+[source,bash,role=execute]
 ----
 declare -A networkers
 networkers+=(
@@ -50,6 +51,7 @@ networkers+=(
 [NOTE]
 You can reuse most of the `nodeTemplate` section from the `OpenStackDataPlaneNodeSet` CR that is designated for your Compute nodes. You can omit some of the variables because of the limited set of services that are running on the Networker nodes.
 +
+[source,bash,role=execute]
 ----
 oc apply -f osp-ng-dataplane-node-set-deploy-adoption-networker.yaml
 ----
@@ -59,6 +61,7 @@ oc apply -f osp-ng-dataplane-node-set-deploy-adoption-networker.yaml
 
 .. Create a `OpenStackDataPlaneDeployment` CR that runs only the validation:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -75,22 +78,26 @@ EOF
 
 .. When the validation is finished, confirm that the status of the Ansible EE pods is `Completed`:
 +
+[source,bash,role=execute]
 ----
 watch oc get pod -l app=openstackansibleee
 ----
 +
+[source,bash,role=execute]
 ----
 oc logs -l app=openstackansibleee -f --max-log-requests 20
 ----
 
 .. Wait for the deployment to reach the `Ready` status:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption-networker --timeout=10m
 ----
 
 . Deploy the `OpenStackDataPlaneDeployment` CR for Networker nodes:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
@@ -105,13 +112,12 @@ EOF
 
 .. Wait for the deployment to reach the `Ready` status:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready openstackdataplanedeployment/openstack-networker --timeout=10m
 ----
 
 +
-[NOTE]
-Alternatively, you can include the Networker node set in the `nodeSets` list before you deploy the main `OpenStackDataPlaneDeployment` CR. You cannot add new node sets to the `OpenStackDataPlaneDeployment` CR after deployment.
 
 . Clean up any {networking_first_ref} agents that are no longer running.
 +
@@ -120,57 +126,32 @@ In some cases, agents from the old data plane that are replaced or retired remai
 
 .. List the agents:
 +
+[source,bash,role=execute]
 ----
 oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| 856960f0-5530-46c7-a331-6eadcba362da | DHCP agent                   | controller-1.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-| 8bd22720-789f-45b8-8d7d-006dee862bf9 | DHCP agent                   | controller-2.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-| e584e00d-be4c-4e98-a11a-4ecd87d21be7 | DHCP agent                   | controller-0.localdomain | nova              | XXX   | UP    | neutron-dhcp-agent         |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-----
-
-.. If any agent in the list shows `XXX` in the `Alive` field, verify the Host and Agent Type, if the functions of this agent is no longer required, and the agent has been permanently stopped on the {rhos_prev_long} host. Then, delete the agent:
-+
-----
-oc exec openstackclient -- openstack network agent <agent_id>
-----
-* Replace `<agent_id>` with the ID of the agent to delete, for example, `856960f0-5530-46c7-a331-6eadcba362da`.
-
-
-.Verification
-
-. Confirm that all the Ansible EE pods reach a `Completed` status:
-+
-----
-watch oc get pod -l app=openstackansibleee
 ----
 +
+. Sample output:
 ----
-oc logs -l app=openstackansibleee -f --max-log-requests 20
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
+| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
+| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | XXX   | UP    | ovn-controller             |
+| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 ----
 
-. Wait for the data plane node set to reach the `Ready` status:
+.. Then, delete the agent with XXX state:
 +
+[source,bash,role=execute]
 ----
-oc wait --for condition=Ready osdpns/<networker_CR_name> --timeout=30m
-----
-+
-* Replace `<networker_CR_name>` with the name of the CR that you deployed for your Networker nodes, for example, `openstack-networker`.
-
-. Verify that the {networking_first_ref} agents are running. The list of agents varies depending on the services you enabled:
-+
-----
-oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                     | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
-| e5075ee0-9dd9-4f0a-a42a-6bbdf1a6111c | OVN Controller Gateway agent | controller-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| f3112349-054c-403a-b00a-e219238192b8 | OVN Controller agent         | compute-0.localdomain    |                   | :-)   | UP    | ovn-controller             |
-| af9dae2d-1c1c-55a8-a743-f84719f6406d | OVN Metadata agent           | compute-0.localdomain    |                   | :-)   | UP    | neutron-ovn-metadata-agent |
-| 51a11df8-a66e-47a2-aec0-52eb8589626c | OVN Controller Gateway agent | controller-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-| bb817e5e-7832-410a-9e67-934dac8c602f | OVN Controller Gateway agent | controller-2.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+--------------------------+-------------------+-------+-------+----------------------------+
+oc exec openstackclient -- openstack network agent delete ad88316a-0f35-4a6e-87c8-db6a792e566f
+oc exec openstackclient -- openstack network agent delete 3fb27b31-9381-42be-89ed-b3a6f6f6a328
+oc exec openstackclient -- openstack network agent delete b182ecee-95ff-4c10-8698-23936d97b3d7
 ----

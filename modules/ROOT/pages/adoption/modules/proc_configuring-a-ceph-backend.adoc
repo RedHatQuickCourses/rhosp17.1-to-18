@@ -16,6 +16,7 @@ To run `ceph` commands, you must use SSH to connect to a {Ceph} node and run `su
 Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and `ceph.conf` file and propagate the secret to all the services that need it.
 * The following shell variables are defined. Replace the following example values with values that are correct for your environment:
 +
+[source,bash,role=execute]
 [subs=+quotes]
 ----
 CEPH_SSH="ssh -i /home/lab/.ssh/lab_rsa student@ceph"
@@ -27,6 +28,7 @@ CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")
 
 . Create the `ceph-conf-files` secret that includes the {Ceph} configuration:
 +
+[source,bash,role=execute]
 ----
 oc apply -f - <<EOF
 apiVersion: v1

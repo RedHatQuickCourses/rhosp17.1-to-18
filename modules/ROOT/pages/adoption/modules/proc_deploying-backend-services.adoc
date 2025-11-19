@@ -19,6 +19,7 @@ endif::[]
 * There are free PVs available for Galera and RabbitMQ.
 * We will use the existing {OpenStackShort} deployment password:
 +
+[source,bash,role=execute]
 ----
 declare -A TRIPLEO_PASSWORDS
 TRIPLEO_PASSWORDS[default]="$HOME/overcloud-passwords.yaml"
@@ -30,6 +31,7 @@ you must synchronize the service account passwords.
 +
 For example, in developer environments with {OpenStackPreviousInstaller} Standalone, the passwords can be extracted:
 +
+[source,bash,role=execute]
 ----
 AODH_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' AodhPassword:' | awk -F ': ' '{ print $2; }')
 BARBICAN_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' BarbicanPassword:' | awk -F ': ' '{ print $2; }')
@@ -53,6 +55,7 @@ SWIFT_PASSWORD=$(cat ${TRIPLEO_PASSWORDS[default]} | grep ' SwiftPassword:' | aw
 
 . Create the {OpenStackShort} secret.
 +
+[source,bash,role=execute]
 ----
 cd /home/lab/labrepo/files
 oc apply -f osp-ng-ctlplane-secret.yaml
@@ -61,6 +64,7 @@ oc apply -f osp-ng-ctlplane-secret.yaml
 . If the `$ADMIN_PASSWORD` is different than the password you set
 in `osp-secret`, amend the `AdminPassword` key in the `osp-secret`:
 +
+[source,bash,role=execute]
 ----
 oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"
 ----
@@ -68,6 +72,7 @@ oc set data secret/osp-secret "AdminPassword=$ADMIN_PASSWORD"
 . Set service account passwords in `osp-secret` to match the service
 account passwords from the original deployment:
 +
+[source,bash,role=execute]
 ----
 oc set data secret/osp-secret "AodhPassword=$AODH_PASSWORD"
 oc set data secret/osp-secret "BarbicanPassword=$BARBICAN_PASSWORD"

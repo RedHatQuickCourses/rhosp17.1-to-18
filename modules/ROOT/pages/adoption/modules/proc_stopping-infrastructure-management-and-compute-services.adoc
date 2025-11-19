@@ -17,6 +17,7 @@ The following procedure applies to a standalone {OpenStackPreviousInstaller} dep
 
 * Define the shell variables. Replace the following example values with values that apply to your environment:
 +
+[source,bash,role=execute]
 [subs=+quotes]
 ----
 CONTROLLER1_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.16"
@@ -28,6 +29,7 @@ EDPM_PRIVATEKEY_PATH="/home/lab/.ssh/id_rsa_tripleo"
 
 * Stop the Pacemaker services:
 +
+[source,bash,role=execute]
 ----
 PacemakerResourcesToStop=(
                 "galera-bundle"
