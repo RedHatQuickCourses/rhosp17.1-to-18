@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting the {image_service} :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="assembly_adopting-the-image-service.html">Adopting the {image_service}</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting the {image_service}</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>To adopt the {image_service_first_ref} you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has the {image_service} disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="paragraph">
+<p>The {image_service} adoption is complete if you see the following results:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>GlanceAPI</code> service up and running.</p>
+</li>
+<li>
+<p>The {identity_service} endpoints are updated, and the same back end of the source cloud is available.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To complete the {image_service} adoption, ensure that your environment meets the following criteria:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You have a running {OpenStackPreviousInstaller} environment (the source cloud).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you have image quotas in {OpenStackShort} {rhos_prev_ver}, these quotas are transferred to {rhos_long} {rhos_curr_ver} because the image quota system in {rhos_curr_ver} is disabled by default. For more information about enabling image quotas in {rhos_curr_ver}, see <a href="{defaultURL}/customizing_persistent_storage/assembly_glance-customizing-the-image-service_customizing-cinder#assembly_glance-configuring-quotas_configuring-glance">Configuring image quotas</a> in <em>Customizing persistent storage</em>. If you enable image quotas in {rhos_acro} {rhos_curr_ver}, the new quotas replace the legacy quotas from {OpenStackShort} {rhos_prev_ver}.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-image-service-with-ceph-backend_image-service"><a class="anchor" href="#adopting-image-service-with-ceph-backend_image-service"></a>Adopting the {image_service} that is deployed with a {Ceph} back end</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Adopt the {image_service_first_ref} that you deployed with a {Ceph} back end. Use the <code>customServiceConfig</code> parameter to inject the right configuration to the <code>GlanceAPI</code> instance.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+<li>
+<p>Ensure that the Ceph-related secret (<code>ceph-conf-files</code>) is created in
+the <code>openstack</code> namespace and that the <code>extraMounts</code> property of the
+<code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; glance_patch.yaml
+spec:
+  glance:
+    enabled: true
+    template:
+      databaseInstance: openstack
+      customServiceConfig: |
+        [DEFAULT]
+        enabled_backends=default_backend:rbd
+        debug = true
+        [glance_store]
+        default_backend=default_backend
+        [default_backend]
+        rbd_store_ceph_conf=/etc/ceph/ceph.conf
+        rbd_store_user=openstack
+        rbd_store_pool=images
+        store_description=Ceph glance store backend.
+      storage:
+        storageRequest: 10G
+        storageClass: "nfs-storage"
+      glanceAPIs:
+        default:
+          replicas: 1
+          override:
+            service:
+              internal:
+                metadata:
+                  annotations:
+                    metallb.universe.tf/address-pool: internalapi
+                    metallb.universe.tf/allow-shared-ip: internalapi
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+                spec:
+                  type: LoadBalancer
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with a {Ceph} back end:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="verifying-the-image-service-adoption_image-service"><a class="anchor" href="#verifying-the-image-service-adoption_image-service"></a>Verifying the {image_service} adoption</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Verify that you adopted the {image_service_first_ref} to the {rhos_long} {rhos_curr_ver} deployment.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Check that the service is active, and that the endpoints are updated in the {OpenStackShort} CLI:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |</pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
+| ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack image list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 1088f6e4-d0a8-4d63-8f93-f14f708a4dbc | cirros | active |
++--------------------------------------+--------+--------+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

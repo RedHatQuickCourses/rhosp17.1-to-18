@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting Compute services to the {rhos_acro} data plane :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="proc_adopting-compute-services-to-the-data-plane.html">Adopting Compute services to the {rhos_acro} data plane</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting Compute services to the {rhos_acro} data plane</h1>
+<div class="paragraph _abstract">
+<p>Adopt your Compute (nova) services to the {rhos_long} data plane.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have stopped the remaining control plane nodes, repositories, and packages on the {compute_service_first_ref} hosts. For more information, see <a href="#stopping-infrastructure-management-and-compute-services_{context}">Stopping infrastructure management and Compute services</a>.</p>
+</li>
+<li>
+<p>You have configured the Ceph back end for the <code>NovaLibvirt</code> service. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
+</li>
+<li>
+<p>You have configured IP Address Management (IPAM):</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-netconfig.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You have defined the shell variables to run the script that runs the upgrade:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CEPH_FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //')
+
+alias openstack="oc exec -t openstackclient -- openstack"
+
+DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"
+
+declare -A COMPUTES_CELL1
+export COMPUTES_CELL1=(
+  ["overcloud-novacompute-0.localdomain"]="172.25.249.19"
+  ["overcloud-novacompute-1.localdomain"]="172.25.249.22"
+)
+
+declare -A COMPUTES_API_CELL1
+export COMPUTES_API_CELL1=(
+  ["overcloud-novacompute-0.localdomain"]="192.168.122.100"
+  ["overcloud-novacompute-1.localdomain"]="172.25.249.22"
+)
+
+NODESETS=""
+for CELL in $(echo $RENAMED_CELLS); do
+  ref="COMPUTES_$(echo ${CELL}|tr '[:lower:]' '[:upper:]')"
+  eval names=\${!${ref}[@]}
+  [ -z "$names" ] &amp;&amp; continue
+  NODESETS="'openstack-${CELL}', $NODESETS"
+done
+NODESETS="[${NODESETS%,*}]"</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>Get the libvirt secret password:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LIBVIRT_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' LibvirtTLSPassword:' | awk -F ': ' '{ print $2; }')
+LIBVIRT_PASSWORD_BASE64=$(echo -n "$LIBVIRT_PASSWORD" | base64)</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the libvirt secret:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: libvirt-secret
+  namespace: openstack
+type: Opaque
+data:
+  LibvirtPassword: ${LIBVIRT_PASSWORD_BASE64}
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create an SSH authentication secret for the data plane nodes:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/home/lab/.ssh/id_rsa_tripleo.pub --from-file=ssh-privatekey=/home/lab/.ssh/id_rsa_tripleo --from-file=ssh-publickey=/home/lab/.ssh/id_rsa_tripleo.pub -n openstack -o yaml | oc apply -f-</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Generate an ssh key-pair <code>nova-migration-ssh-key</code> secret:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd "$(mktemp -d)"
+ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
+oc get secret nova-migration-ssh-key || oc create secret generic nova-migration-ssh-key \
+  --from-file=ssh-privatekey=id \
+  --from-file=ssh-publickey=id.pub \
+  --type kubernetes.io/ssh-auth
+rm -f id*
+cd -</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a configuration map to use for all cells to configure a local storage back end for libvirt:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nova-cells-global-config
+data:
+  99-nova-compute-cells-workarounds.conf: |
+    [workarounds]
+    disable_compute_service_check_for_ffu=true
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you adopt a live cloud, you might be required to carry over additional configurations for the default <code>nova</code> data plane services that are stored in the cell1 default <code>nova-extra-config</code> configuration map. Do not delete or overwrite the existing configuration in the <code>cell1</code> default <code>nova-extra-config</code> configuration map that is assigned to <code>nova</code>. Overwriting the configuration can break the data place services that rely on specific contents of the <code>nova-extra-config</code> configuration map.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Configure a {Ceph} back end for libvirt:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nova-cells-global-config
+data:
+  99-nova-compute-cells-workarounds.conf: |
+    [workarounds]
+    disable_compute_service_check_for_ffu=true
+  03-ceph-nova.conf: |
+    [libvirt]
+    images_type=rbd
+    images_rbd_pool=vms
+    images_rbd_ceph_conf=/etc/ceph/ceph.conf
+    images_rbd_glance_store_name=default_backend
+    images_rbd_glance_copy_poll_interval=15
+    images_rbd_glance_copy_timeout=600
+    rbd_user=openstack
+    rbd_secret_uuid=$CEPH_FSID
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For {Ceph} environments with multi-cell configurations, you must name configuration maps and {rhos_prev_long} data plane services similar to the following examples: <code>nova-custom-ceph-cellX</code> and <code>nova-compute-extraconfig-cellX</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Create the data plane services for {compute_service} cells to enable pre-upgrade workarounds, and to configure the Compute services for your chosen storage back end:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $RENAMED_CELLS); do
+ oc apply -f - &lt;&lt;EOF
+---
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneService
+metadata:
+  name: nova-$CELL
+spec:
+  dataSources:
+    - secretRef:
+        name: nova-$CELL-compute-config
+    - secretRef:
+        name: nova-migration-ssh-key
+    - configMapRef:
+        name: nova-cells-global-config
+  playbook: osp.edpm.nova
+  caCerts: combined-ca-bundle
+  edpmServiceType: nova
+  containerImageFields:
+  - NovaComputeImage
+  - EdpmIscsidImage
+EOF
+  done</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When creating your data plane services for {compute_service} cells, review the following considerations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In this example, the same <code>nova-migration-ssh-key</code> key is shared across cells. However, you should use different keys for different cells.</p>
+</li>
+<li>
+<p>For simple configuration overrides, you do not need a custom data plane service. However, to reconfigure the cell, <code>cell1</code>,
+the safest option is to create a custom service and a dedicated configuration map for it.</p>
+</li>
+<li>
+<p>The cell, <code>cell1</code>, is already managed with the default <code>OpenStackDataPlaneService</code> CR called <code>nova</code> and its <code>nova-extra-config</code> configuration map. Do not change the default data plane service <code>nova</code> definition. The changes are lost when the {rhos_acro} operator is updated with OLM.</p>
+</li>
+<li>
+<p>When a cell spans multiple node sets, give the custom <code>OpenStackDataPlaneService</code> resources a name that relates to the node set, for example, <code>nova-cell1-nfv</code> and <code>nova-cell1-enterprise</code>. The auto-generated configuration maps are then named <code>nova-cell1-nfv-extra-config</code> and <code>nova-cell1-enterprise-extra-config</code>.</p>
+</li>
+<li>
+<p>Different configurations for nodes in multiple node sets of the same cell are also supported, but are not covered in this guide.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a secret for the subscription manager:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic subscription-manager \
+--from-literal rhc_auth='{"login": {"username": "&lt;subscription_manager_username&gt;", "password": "&lt;subscription_manager_password&gt;"}}'</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;subscription_manager_username&gt;</code> with the applicable username.</p>
+</li>
+<li>
+<p>Replace <code>&lt;subscription_manager_password&gt;</code> with the applicable password.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Create a secret for the Red Hat registry:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret generic redhat-registry \
+--from-literal edpm_container_registry_logins='{"registry.redhat.io": {"&lt;registry_username&gt;": "&lt;registry_password&gt;"}}'</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Replace <code>&lt;registry_username&gt;</code> with the applicable username.</p>
+</li>
+<li>
+<p>Replace <code>&lt;registry_password&gt;</code> with the applicable password.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You do not need to reference the <code>subscription-manager</code> secret in the <code>dataSources</code> field of the <code>OpenStackDataPlaneService</code> CR.
+The secret is already passed in with a node-specific <code>OpenStackDataPlaneNodeSet</code> CR in the <code>ansibleVarsFrom</code> property in the <code>nodeTemplate</code> field.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Create the <code>OpenStackDataPlaneNodeSet</code> CRs corresponding to compute02 and compute03:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-node-set-deploy-adoption-compute.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the pre-adoption validation:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create the validation service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneService
+metadata:
+  name: pre-adoption-validation
+spec:
+  playbook: osp.edpm.pre_adoption_validation
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a <code>OpenStackDataPlaneDeployment</code> CR that runs only the validation:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack-pre-adoption
+spec:
+  nodeSets:
+  - compute0-1-set
+  servicesOverride:
+  - pre-adoption-validation
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>When the validation is finished, confirm that the status of the Ansible EE pods is <code>Completed</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch oc get pod -l app=openstackansibleee</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>oc logs -l app=openstackansibleee -f --max-log-requests 20</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the deployment to reach the <code>Ready</code> status:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployment/openstack-pre-adoption --timeout=10m</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If any openstack-pre-adoption validations fail, you must reference the Ansible logs to determine which ones were unsuccessful, and then try the following troubleshooting options:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the hostname validation failed, check that the hostname of the data plane
+node is correctly listed in the <code>OpenStackDataPlaneNodeSet</code> CR.</p>
+</li>
+<li>
+<p>If the kernel argument check failed, ensure that the kernel argument configuration in the <code>edpm_kernel_args</code> and <code>edpm_kernel_hugepages</code> variables in the <code>OpenStackDataPlaneNodeSet</code> CR is the same as the kernel argument configuration that you used in the {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} node.</p>
+</li>
+<li>
+<p>If the tuned profile check failed, ensure that the
+<code>edpm_tuned_profile</code> variable in the <code>OpenStackDataPlaneNodeSet</code> CR is configured
+to use the same profile as the one set on the {OpenStackShort} {rhos_prev_ver} node.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Remove the remaining {OpenStackPreviousInstaller} services:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create an <code>OpenStackDataPlaneService</code> CR to clean up the data plane services you are adopting:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneService
+metadata:
+  name: tripleo-cleanup
+spec:
+  playbook: osp.edpm.tripleo_cleanup
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create the <code>OpenStackDataPlaneDeployment</code> CR to run the clean-up:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: tripleo-cleanup
+spec:
+  nodeSets:
+  - compute0-1-set
+  servicesOverride:
+  - tripleo-cleanup
+EOF</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>When the clean-up is finished, deploy the <code>OpenStackDataPlaneDeployment</code> CR:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack
+spec:
+  nodeSets:
+  - compute0-1-set
+
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you have other node sets to deploy, such as Networker nodes, you can
+add them in the <code>nodeSets</code> list in this step, or create separate <code>OpenStackDataPlaneDeployment</code> CRs later. You cannot add new node sets to an <code>OpenStackDataPlaneDeployment</code> CR after deployment.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Confirm that all the Ansible EE pods reach a <code>Completed</code> status:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch oc get pod -l app=openstackansibleee</code></pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -l app=openstackansibleee -f --max-log-requests 20</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the data plane node sets to reach the <code>Ready</code> status:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that the {networking_first_ref} agents are running:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
+| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
+| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | :-)   | UP    | ovn-controller             |
+| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
+| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
+| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)    | UP    | neutron-ovn-metadata-agent |
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>After you remove all the services from the {OpenStackPreviousInstaller} cell controllers, you can decomission the cell controllers.
+To create new cell Compute nodes, you re-provision the decomissioned controllers as new data plane hosts and add them to the node sets of corresponding or new cells.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<div class="title">Next steps</div>
+<ul>
+<li>
+<p>You must perform a fast-forward upgrade on your Compute services. For more information, see <a href="#performing-a-fast-forward-upgrade-on-compute-services_{context}">Performing a fast-forward upgrade on Compute services</a>.</p>
+</li>
+</ul>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

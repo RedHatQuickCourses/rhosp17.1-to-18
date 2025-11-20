@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Migrating OVN data :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="proc_migrating-ovn-data.html">Migrating OVN data</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Migrating OVN data</h1>
+<div class="paragraph _abstract">
+<p>Migrate the data in the OVN databases from the original {rhos_prev_long} deployment to <code>ovsdb-server</code> instances that are running in the {rhocp_long} cluster.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>The <code>OpenStackControlPlane</code> resource is created.</p>
+</li>
+<li>
+<p><code>NetworkAttachmentDefinition</code> custom resources (CRs) for the original cluster are defined. Specifically, the <code>internalapi</code> network is defined.</p>
+</li>
+<li>
+<p>The original {networking_first_ref} and OVN <code>northd</code> are not running.</p>
+</li>
+<li>
+<p>There is network routability between the control plane services and the adopted cluster.</p>
+</li>
+<li>
+<p>The cloud is migrated to the Modular Layer 2 plug-in with Open Virtual Networking (ML2/OVN) mechanism driver.</p>
+</li>
+<li>
+<p>Define the following shell variables. Replace the example values with values that are correct for your environment:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">STORAGE_CLASS=nfs-storage
+OVSDB_IMAGE=registry.redhat.io/rhoso/openstack-ovn-base-rhel9:18.0
+SOURCE_OVSDB_IP=192.168.52.16</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To get the value to set <code>SOURCE_OVSDB_IP</code>, query the puppet-generated configurations in a Controller node. You don&#8217;t need to run this on your environment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>grep -rI 'ovn_[ns]b_conn' /var/lib/config-data/puppet-generated/</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Prepare a temporary <code>PersistentVolume</code> claim and the helper pod for the OVN backup. Adjust the storage requests for a large database, if needed:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ovn-data-cert
+spec:
+  commonName: ovn-data-cert
+  secretName: ovn-data-cert
+  issuerRef:
+    name: rootca-internal
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ovn-data
+spec:
+  storageClassName: $STORAGE_CLASS
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ovn-copy-data
+  annotations:
+    openshift.io/scc: anyuid
+    k8s.v1.cni.cncf.io/networks: internalapi
+  labels:
+    app: adoption
+spec:
+  containers:
+  - image: $OVSDB_IMAGE
+    command: [ "sh", "-c", "sleep infinity"]
+    name: adoption
+    volumeMounts:
+    - mountPath: /backup
+      name: ovn-data
+    - mountPath: /etc/pki/tls/misc
+      name: ovn-data-cert
+      readOnly: true
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ALL
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  volumes:
+  - name: ovn-data
+    persistentVolumeClaim:
+      claimName: ovn-data
+  - name: ovn-data-cert
+    secret:
+      secretName: ovn-data-cert
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the pod to be ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for=condition=Ready pod/ovn-copy-data --timeout=30s</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Back up your OVN databases:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you did not enable TLS everywhere, run the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6641 &gt; /backup/ovs-nb.db"
+oc exec ovn-copy-data -- bash -c "ovsdb-client backup tcp:$SOURCE_OVSDB_IP:6642 &gt; /backup/ovs-sb.db"</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Start the control plane OVN database services prior to import, with <code>northd</code> disabled:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  ovn:
+    enabled: true
+    template:
+      ovnDBCluster:
+        ovndbcluster-nb:
+          replicas: 3
+          dbType: NB
+          storageRequest: 10G
+          networkAttachment: internalapi
+        ovndbcluster-sb:
+          replicas: 3
+          dbType: SB
+          storageRequest: 10G
+          networkAttachment: internalapi
+      ovnNorthd:
+        replicas: 0
+'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the OVN database services to reach the <code>Running</code> phase:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-nb
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=ovsdbserver-sb</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Fetch the OVN database IP addresses on the <code>clusterIP</code> service network:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PODIFIED_OVSDB_NB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-nb-0" -ojsonpath='{.items[0].spec.clusterIP}')
+PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name=ovsdbserver-sb-0" -ojsonpath='{.items[0].spec.clusterIP}')</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Upgrade the database schema for the backup files:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If you did not enable TLS everywhere, use the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
+oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB_IP:6642 &gt; /backup/ovs-sb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-sb.db /backup/ovs-sb.ovsschema"</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restore the database backup to the new OVN database servers:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If you did not enable TLS everywhere, use the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
+oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_SB_IP:6642 &lt; /backup/ovs-sb.db"</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check that the data was successfully migrated by running the following commands against the new database servers, for example:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it ovsdbserver-nb-0 -- ovn-nbctl show
+oc exec -it ovsdbserver-sb-0 -- ovn-sbctl list Chassis</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Start the control plane <code>ovn-northd</code> service to keep both OVN databases in sync:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  ovn:
+    enabled: true
+    template:
+      ovnNorthd:
+        replicas: 1
+'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Delete the <code>ovn-data</code> helper pod and the temporary <code>PersistentVolumeClaim</code> that is used to store OVN database backup files:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete --ignore-not-found=true pod ovn-copy-data
+oc delete --ignore-not-found=true pvc ovn-data</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Consider taking a snapshot of the <code>ovn-data</code> helper pod and the temporary <code>PersistentVolumeClaim</code> before deleting them. For more information, see <a href="{defaultOCPURL}/storage/index#lvms-about-volume-snapsot_logical-volume-manager-storage">About volume snapshots</a> in <em>OpenShift Container Platform storage overview</em>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Stop the adopted OVN database servers:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ServicesToStop=("tripleo_ovn_cluster_north_db_server.service"
+                "tripleo_ovn_cluster_south_db_server.service")
+
+echo "Stopping systemd OpenStack services"
+for service in ${ServicesToStop[*]}; do
+    for i in {1..3}; do
+        SSH_CMD=CONTROLLER${i}_SSH
+        if [ ! -z "${!SSH_CMD}" ]; then
+            echo "Stopping the $service in controller $i"
+            if ${!SSH_CMD} sudo systemctl is-active $service; then
+                ${!SSH_CMD} sudo systemctl stop $service
+            fi
+        fi
+    done
+done
+
+echo "Checking systemd OpenStack services"
+for service in ${ServicesToStop[*]}; do
+    for i in {1..3}; do
+        SSH_CMD=CONTROLLER${i}_SSH
+        if [ ! -z "${!SSH_CMD}" ]; then
+            if ! ${!SSH_CMD} systemctl show $service | grep ActiveState=inactive &gt;/dev/null; then
+                echo "ERROR: Service $service still running on controller $i"
+            else
+                echo "OK: Service $service is not running on controller $i"
+            fi
+        fi
+    done
+done</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

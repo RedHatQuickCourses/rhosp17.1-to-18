@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Add additional compute after adoption :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="add-additional-compute.html">Add additional compute after adoption</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Add additional compute after adoption</h1>
+<div class="sect1">
+<h2 id="_login_to_the_compute_and_configure_networking"><a class="anchor" href="#_login_to_the_compute_and_configure_networking"></a>Login to the Compute and configure networking</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From the workstation login to the compute01 host:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh -i /home/lab-user/.ssh/{guid}key.pem cloud-user@compute01</code></pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo hostnamectl set-hostname compute01.localdomain
+sudo nmcli con add con-name "static-eth1" ifname eth1 type ethernet ip4 172.22.0.100/24 ipv4.dns "172.22.0.89"
+sudo nmcli con up "static-eth1"
+sudo nmcli con add type ethernet ifname eth0 con-name eth0-dhcp ipv4.method auto ipv6.method ignore
+sudo nmcli con up eth0-dhcp
+sudo nmcli con mod eth0-dhcp connection.stable-id "user-set"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And log off VM</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">logout</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_finish_the_dataplane"><a class="anchor" href="#_finish_the_dataplane"></a>Finish the Dataplane</h3>
+<div class="paragraph">
+<p>Deploy the <strong>compute01</strong> host</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-node-set-deploy-compute-1.yaml
+oc apply -f osp-ng-dataplane-deployment-compute-1.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can view the Ansible logs while the deployment executes:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -l app=openstackansibleee -f --max-log-requests 10</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>(...)
+PLAY RECAP *********************************************************************
+compute-1           : ok=53   changed=26   unreachable=0    failed=0    skipped=54   rescued=0    ignored=0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ctrl-C to exit.</p>
+</div>
+<div class="paragraph">
+<p>Verify that the data plane is deployed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This takes several minutes.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get openstackdataplanedeployment</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat the query until you see the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME                  STATUS   MESSAGE
+compute-1   True     Setup Complete</pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get openstackdataplanenodeset</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Repeat the query until you see the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME                  STATUS   MESSAGE
+compute-1-deployment  True     NodeSet Ready</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_discover_the_new_compute"><a class="anchor" href="#_discover_the_new_compute"></a>Discover the new compute</h3>
+<div class="paragraph">
+<p>Map the Compute nodes to the Compute cell that they are connected to:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

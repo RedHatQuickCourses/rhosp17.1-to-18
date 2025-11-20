@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Install the OpenStack Operator :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="prev" href="prereqs.html">
+    <link rel="next" href="network-isolation.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Install the OpenStack Operator</h1>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the Files Repo</p>
+<div class="paragraph">
+<p>In the utility terminal, clone the repo and change directory to the files that we will used later in the lab</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/RedHatQuickCourses/rhosp17.1-to-18 labrepo
+cd labrepo/files</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the OpenStack Operators</p>
+<div class="paragraph">
+<p>The next step in installing the <strong>OpenStack Operators</strong> will be create the <strong>openstack-operators</strong> project for the RHOSO operators:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project openstack-operators</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create the <code>openstack</code> project for the deployed RHOSO environment:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc new-project openstack</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the <strong>Catalog Source, OperatorGroup and Subscription</strong> for the <strong>OpenStack Operator</strong> using your registry:</p>
+<div class="paragraph">
+<p>Create the new <strong>CatalogSource, OperatorGroup, and Subscription</strong> CRs in the <strong>openstack</strong> namespace from <strong>files/openstack-operators.yaml</strong>:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-openstack-operator.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Install the operator using the Manual approval strategy. Confirm that an install plan has been created but not executed as it has not been approved. Type Control + C, to exit the wait command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get installplan -n openstack-operators -w</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME            CSV                          APPROVAL   APPROVED
+install-j6ctg   openstack-operator.v1.0.14   Manual     false</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Approve the installation of the operator by updating the approved field of the InstallPlan. You will need to replace the &lt;install-plan-id&gt; with the NAME from the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch installplan &lt;install-plan-id&gt;  \
+    --namespace openstack-operators \
+    --type merge \
+    --patch '{"spec":{"approved":true}}'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Initialize the operator:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-openstack-operator-init.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that you have installed the Openstack Operator, <strong>openstack-operator.openstack-operators</strong>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get operators openstack-operator.openstack-operators</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Review the pods in the <strong>openstack-operators</strong> namespace:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n openstack-operators</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you run:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see a list of completed pods and then the running openstack services pods.
+It should look like:</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>NAME                                                              READY   STATUS    RESTARTS   AGE
+barbican-operator-controller-manager-d6967ff8d-nnznr              2/2     Running   0          3d
+cinder-operator-controller-manager-845dc559c8-7fjz2               2/2     Running   0          3d
+designate-operator-controller-manager-6cdf7c69df-lqdjc            2/2     Running   0          3d
+glance-operator-controller-manager-86ddd9797-cgfnj                2/2     Running   0          3d
+heat-operator-controller-manager-58598d9cc5-mlk8t                 2/2     Running   0          3d
+horizon-operator-controller-manager-7dfb9f8c64-h7q26              2/2     Running   0          3d
+infra-operator-controller-manager-74f7f74cdf-69bqd                2/2     Running   0          3d
+ironic-operator-controller-manager-7cbbbff888-kvvxc               2/2     Running   0          3d
+keystone-operator-controller-manager-68f6bc7769-gpt2q             2/2     Running   0          3d
+manila-operator-controller-manager-7b974c64c5-j8scn               2/2     Running   0          3d
+mariadb-operator-controller-manager-7b9dd46bbf-x986p              2/2     Running   0          3d
+neutron-operator-controller-manager-7bd55db89f-9r7bp              2/2     Running   0          3d
+nova-operator-controller-manager-5d6dbd76c5-dj4vj                 2/2     Running   0          3d
+octavia-operator-controller-manager-7549fd44-jk9w9                2/2     Running   0          3d
+openstack-baremetal-operator-controller-manager-5655597bddnd9w7   2/2     Running   0          3d
+openstack-operator-controller-manager-84dd6d9877-nbzfw            2/2     Running   0          3d
+ovn-operator-controller-manager-7479894546-57b8b                  2/2     Running   0          3d
+placement-operator-controller-manager-57d864b49b-kn2s6            2/2     Running   0          3d
+rabbitmq-cluster-operator-8599cc8fbf-w858q                        1/1     Running   0          3d
+swift-operator-controller-manager-7d6f7cc6db-7h5dx                2/2     Running   0          3d
+telemetry-operator-controller-manager-6f7984877c-zzzq5            2/2     Running   0          3d</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="prereqs.html">Perform OpenShift Prerequisite</a></span>
+  <span class="next"><a href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
