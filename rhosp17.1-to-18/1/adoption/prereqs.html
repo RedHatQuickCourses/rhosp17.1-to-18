@@ -186,26 +186,6 @@ Repeat this command until you see the desired output:</p>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="title">Sample Output</div>
-<div class="content">
-<pre>Name                                              Phase
-kubernetes-nmstate-operator.4.18.0-202504021503   Succeeded</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create instance of the <strong>nmstate</strong> operator:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
-apiVersion: nmstate.io/v1
-kind: NMState
-metadata:
-  name: nmstate
-EOF</code></pre>
-</div>
-</div>
 <div class="paragraph">
 <p>Confirm that the deployment for the <strong>nmstate</strong> operator is running:</p>
 </div>
@@ -270,74 +250,7 @@ node-maintenance-operator.v5.4.0        Succeeded</pre>
 <div class="sect3">
 <h4 id="_cert_manager_operator"><a class="anchor" href="#_cert_manager_operator"></a>Cert-Manager Operator</h4>
 <div class="paragraph">
-<p>Create the <strong>cert-manager-operator</strong> Operator namespace:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-    name: cert-manager-operator
-    labels:
-      pod-security.kubernetes.io/enforce: privileged
-      security.openshift.io/scc.podSecurityLabelSync: "false"
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create the <strong>OperatorGroup</strong>:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: cert-manager-operator
-  namespace: cert-manager-operator
-spec:
-  targetNamespaces:
-  - cert-manager-operator
-  upgradeStrategy: Default
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Confirm the OperatorGroup is installed in the namespace:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get operatorgroup -n cert-manager-operator</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Subscribe to the <strong>cert-manager</strong> Operator:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: openshift-cert-manager-operator
-  namespace: cert-manager-operator
-spec:
-  channel: stable-v1
-  installPlanApproval: Automatic
-  name: openshift-cert-manager-operator
-  source: cs-redhat-operator-index
-  sourceNamespace: openshift-marketplace
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Confirm the <strong>cert-manager</strong> installplan is in the namespace:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get installplan -n cert-manager-operator</code></pre>
-</div>
+<p>The <strong>cert-manager</strong> operator is already installed in this environment.</p>
 </div>
 <div class="paragraph">
 <p>Confirm the <strong>cert-manager</strong> operator is installed:</p>
@@ -371,68 +284,51 @@ cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s</pre>
 </div>
 <div class="sect2">
 <h3 id="_start_tests_virtual_machines"><a class="anchor" href="#_start_tests_virtual_machines"></a>Start tests virtual machines</h3>
-<div class="paragraph">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
 <p>From the workstation, access to the director host and change to the stack user:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh 172.25.250.15</code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>Escalate to root:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i</code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>Change to the stack user:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">su - stack</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Load the overclourdc file:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
+</li>
+<li>
+<p>Load the overcloudrc file:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">. overcloudrc</code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>Start the test virtual machines:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack server start server-2-compute-1
 openstack server start server-1-compute-0</code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>You can ssh and ping the test virtual machines from the workstation by executing the following command during the whole lab:</p>
-</div>
-<div class="paragraph">
-<p>+</p>
-</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ssh cirros@172.25.250.207
@@ -440,6 +336,9 @@ ssh cirros@172.25.250.206
 ping 172.25.250.207
 ping 172.25.250.206</code></pre>
 </div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
