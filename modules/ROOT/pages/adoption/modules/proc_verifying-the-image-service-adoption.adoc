@@ -14,7 +14,9 @@ Verify that you adopted the {image_service_first_ref} to the {rhos_long} {rhos_c
 ----
 openstack service list | grep image
 ----
++
 Sample output:
++
 ----
 | fc52dbffef36434d906eeb99adfc6186 | glance    | image        |
 ----
@@ -23,7 +25,9 @@ Sample output:
 ----
 openstack endpoint list | grep image
 ----
++
 Sample output:
++
 ----
 | 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
 | ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |
@@ -35,7 +39,9 @@ Sample output:
 ----
 openstack image list
 ----
++
 Sample output:
++
 ----
 +--------------------------------------+--------+--------+
 | ID                                   | Name   | Status |

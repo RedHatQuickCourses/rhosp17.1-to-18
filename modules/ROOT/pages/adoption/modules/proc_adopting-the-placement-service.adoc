@@ -15,6 +15,7 @@ To adopt the Placement service, you patch an existing `OpenStackControlPlane` cu
 
 * Patch the `OpenStackControlPlane` CR to deploy the Placement service:
 +
+[source,bash,role=execute]
 ----
 oc patch openstackcontrolplane openstack --type=merge --patch '
 spec:
@@ -45,12 +46,18 @@ spec:
 * Check that the Placement service endpoints are defined and pointing to the
 control plane FQDNs, and that the Placement API responds:
 +
+[source,bash,role=execute]
 ----
 alias openstack="oc exec -t openstackclient -- openstack"
-
+----
++
+[source,bash,role=execute]
+----
 openstack endpoint list | grep placement
+----
 
-
+[source,bash,role=execute]
+----
 # Without OpenStack CLI placement plugin installed:
 PLACEMENT_PUBLIC_URL=$(openstack endpoint list -c 'Service Name' -c 'Service Type' -c URL | grep placement | grep public | awk '{ print $6; }')
 oc exec -t openstackclient -- curl "$PLACEMENT_PUBLIC_URL"

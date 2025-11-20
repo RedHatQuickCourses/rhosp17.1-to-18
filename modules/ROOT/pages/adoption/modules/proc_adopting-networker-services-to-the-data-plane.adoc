@@ -131,7 +131,8 @@ In some cases, agents from the old data plane that are replaced or retired remai
 oc exec openstackclient -- openstack network agent list
 ----
 +
-. Sample output:
+Sample output:
++
 ----
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
@@ -154,4 +155,17 @@ oc exec openstackclient -- openstack network agent list
 oc exec openstackclient -- openstack network agent delete ad88316a-0f35-4a6e-87c8-db6a792e566f
 oc exec openstackclient -- openstack network agent delete 3fb27b31-9381-42be-89ed-b3a6f6f6a328
 oc exec openstackclient -- openstack network agent delete b182ecee-95ff-4c10-8698-23936d97b3d7
+----
+
+. Connect to the virtual machines to make sure that the process is completed successfully and had no impact on the virtual machines. Password is `gocubsgo`.
++
+[source,bash,role=execute]
+----
+ssh cirros@172.25.250.207
+----
++
+Sample output:
++
+----
+ssh cirros@172.25.250.206
 ----

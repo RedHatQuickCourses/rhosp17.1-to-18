@@ -70,16 +70,17 @@ SOURCE_MARIADB_IP[cell1]=192.168.52.55
 A standalone {OpenStackPreviousInstaller} environment only creates a 'default' cell, which should be the only `CELLS` value in this case. The `DEFAULT_CELL_NAME` value should be `cell1`.
 
 [NOTE]
+====
 The `super` is the top-scope Nova API upcall database instance. A super conductor connects to that database. In subsequent examples, the upcall and cells databases use the same password that is defined in `osp-secret`. Old passwords are only needed to prepare the data exports.
 
-* To get the values for `SOURCE_MARIADB_IP`, query the puppet-generated configurations in the Controller and CellController nodes:
-+
-[source,bash,role=execute]
+To get the values for `SOURCE_MARIADB_IP`, query the puppet-generated configurations in the Controller and CellController nodes. You don't need to run it on your environment:
+
 ----
 sudo grep -rI 'listen mysql' -A10 /var/lib/config-data/puppet-generated/ | grep bind
 ----
-+
+
 The source cloud always uses the same password for cells databases. For that reason, the same passwords file is used for all cells stacks. However, split-stack topology allows using different passwords files for each stack.
+====
 
 * Prepare the MariaDB adoption helper pod:
 
@@ -134,6 +135,7 @@ EOF
 
 . Wait for the pod to be ready:
 +
+[source,bash,role=execute]
 ----
 oc wait --for condition=Ready pod/mariadb-copy-data --timeout=30s
 ----
@@ -142,6 +144,7 @@ oc wait --for condition=Ready pod/mariadb-copy-data --timeout=30s
 
 . Get the count of source databases with the `NOK` (not-OK) status:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $CELLS); do
   oc rsh mariadb-copy-data mysql -h "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e "SHOW databases;"
@@ -150,6 +153,7 @@ done
 
 . Check that `mysqlcheck` had no errors:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $CELLS); do
   set +u
@@ -161,6 +165,7 @@ test -z "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK"  || [ "x$PULL_OPENSTACK_C
 
 . Test the connection to the control plane upcall and cells databases:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo "super $RENAMED_CELLS"); do
   oc run mariadb-client --image $MARIADB_IMAGE -i --rm --restart=Never -- \
@@ -173,6 +178,7 @@ You must transition Compute services that you import later into a superconductor
 
 . Create a dump of the original databases:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $CELLS); do
   oc rsh mariadb-copy-data << EOF
@@ -193,6 +199,7 @@ Gnocchi is no longer used as a metric store as well
 
 . Restore the databases from `.sql` files into the control plane MariaDB:
 +
+[source,bash,role=execute]
 ----
 for CELL in $(echo $CELLS); do
   RCELL=$CELL
@@ -263,6 +270,7 @@ For more information, see xref:proc_retrieving-topology-specific-service-configu
 
 . Check that the databases are imported correctly:
 +
+[source,bash,role=execute]
 ----
 set +u
 . ~/.source_cloud_exported_variables_default
@@ -305,6 +313,7 @@ done
 [NOTE]
 Consider taking a snapshot of them before deleting.
 +
+[source,bash,role=execute]
 ----
 oc delete pod mariadb-copy-data
 oc delete pvc mariadb-data

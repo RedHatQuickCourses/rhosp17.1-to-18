@@ -93,21 +93,20 @@ oc set data secret/osp-secret "PlacementPassword=$PLACEMENT_PASSWORD"
 oc set data secret/osp-secret "SwiftPassword=$SWIFT_PASSWORD"
 ----
 
-ifeval::["{build_variant}" != "ospdo"]
 . Deploy the `OpenStackControlPlane` CR. Ensure that you only enable the DNS, Galera, Memcached, and RabbitMQ services. All other services must
 be disabled:
 +
-[source,shell]
+[source,bash,role=execute]
 ----
 oc apply -f osp-ng-ctlplane-deploy-backend.yaml
 ----
 +
-endif::[]
 
 .Verification
 
 * Verify that the Galera and RabbitMQ status is `Running` for all defined cells:
 +
+[source,bash,role=execute]
 ----
 RENAMED_CELLS="cell1"
 oc get pod openstack-galera-0 -o jsonpath='{.status.phase}{"\n"}'
@@ -123,8 +122,14 @@ During the database migration procedure, the Nova cells are renamed. `RENAMED_CE
 
 * Ensure that the statuses of all the Rabbitmq and Galera CRs are `Setup complete`:
 +
+[source,bash,role=execute]
 ----
 oc get Rabbitmqs,Galera
+----
++
+Sample output:
++
+----
 NAME                                                                  STATUS   MESSAGE
 rabbitmq.rabbitmq.openstack.org/rabbitmq                              True     Setup complete
 rabbitmq.rabbitmq.openstack.org/rabbitmq-cell1                        True     Setup complete
@@ -137,8 +142,14 @@ galera.mariadb.openstack.org/openstack-cell1                       True     Setu
 * Verify that the `OpenStackControlPlane` CR is waiting for deployment
   of the `openstackclient` pod:
 +
+[source,bash,role=execute]
 ----
 oc get OpenStackControlPlane openstack
+----
++
+Sample output:
++
+----
 NAME        STATUS    MESSAGE
 openstack   Unknown   OpenStackControlPlane Client not started
 ----

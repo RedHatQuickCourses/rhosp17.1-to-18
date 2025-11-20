@@ -189,7 +189,6 @@ the safest option is to create a custom service and a dedicated configuration ma
 * Different configurations for nodes in multiple node sets of the same cell are also supported, but are not covered in this guide.
 ====
 
-ifeval::["{build}" == "downstream"]
 . Create a secret for the subscription manager:
 +
 [source,bash,role=execute]
@@ -211,7 +210,7 @@ oc create secret generic redhat-registry \
 +
 * Replace `<registry_username>` with the applicable username.
 * Replace `<registry_password>` with the applicable password.
-endif::[]
+
 +
 
 [NOTE]
@@ -226,7 +225,6 @@ The secret is already passed in with a node-specific `OpenStackDataPlaneNodeSet`
 oc apply -f osp-ng-dataplane-node-set-deploy-adoption-compute.yaml
 ----
 
-====
 . Run the pre-adoption validation:
 
 .. Create the validation service:

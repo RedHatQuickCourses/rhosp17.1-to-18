@@ -88,12 +88,14 @@ done
 
 . Confirm that the {identity_service} endpoints are defined and are pointing to the control plane FQDNs:
 +
+[source,bash,role=execute]
 ----
 openstack endpoint list | grep keystone
 ----
 
 . Wait for the `OpenStackControlPlane` resource to become `Ready`:
 +
+[source,bash,role=execute]
 ----
 oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack
 ----

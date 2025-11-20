@@ -1,10 +1,5 @@
-name: REPLACEREPONAME
-title: FIXME Course Title
+name: rhosp17.1-to-18
+title: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
 version: 1
 nav:
 - modules/ROOT/nav.adoc
-- modules/LABENV/nav.adoc
-- modules/chapter1/nav.adoc
-- modules/chapter2/nav.adoc
-- modules/chapter3/nav.adoc
-- modules/appendix/nav.adoc

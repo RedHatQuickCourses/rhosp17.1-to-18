@@ -179,7 +179,6 @@ alias openstack="oc exec -t openstackclient -- openstack"
 openstack endpoint list --service cinderv3
 ----
 +
-* Replace `<endpoint>` with the name of the endpoint that you want to confirm.
 
 . Confirm that the Block Storage services are running:
 +
@@ -208,15 +207,3 @@ openstack volume snapshot list
 ----
 openstack volume create --image cirros --bootable --size 1 disk_new
 ----
-
-.. Back up the previous attached volume:
-+
-[source,bash,role=execute]
-----
-openstack --os-volume-api-version 3.47 volume create --backup <backup_name>
-----
-+
-* Replace `<backup_name>` with the name of your new backup location.
-+
-[NOTE]
-You do not boot a {compute_service_first_ref} instance by using the new `volume from` image or try to detach the previous volume because the {compute_service} and the {block_storage} are still not connected.

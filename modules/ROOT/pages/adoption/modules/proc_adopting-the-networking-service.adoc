@@ -73,6 +73,7 @@ openstack endpoint list | grep network
 ----
 +
 Sample output:
++
 ----
 | a866aef3d9354bf6b37110692e1e5aee | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696             |
 | b0f4743dc3e24fd8acf7b406d6f92ea5 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps.ocp4.example.com  |

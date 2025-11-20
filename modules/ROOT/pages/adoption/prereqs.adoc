@@ -18,20 +18,20 @@ There are three operators that are required to be installed before you can insta
 
 ==== Accessing the Cluster
 
-From the workstation, access to the utility host by executing the following command:
+. From the workstation, access to the utility host by executing the following command:
 +
 [source,bash,role=execute,subs=attributes]
 ----
 ssh utility
 ----
-+
-Make sure you can reach out to the OpenShift cluster, for instance, by listing the nodes in your cluster:
 
+. Make sure you can reach out to the OpenShift cluster, for instance, by listing the nodes in your cluster:
++
 [source,bash,role=execute]
 ----
 oc get nodes
 ----
-
++
 .Sample Output
 ----
 NAME       STATUS   ROLES                         AGE    VERSION

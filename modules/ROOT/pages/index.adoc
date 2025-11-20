@@ -1,4 +1,4 @@
-= {lab_name}
+= Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
 
 include::adoption/adoption-attributes.adoc[]
 
