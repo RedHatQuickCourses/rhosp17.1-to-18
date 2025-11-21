@@ -1,32 +1,33 @@
-= Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
+= Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example
+:navtitle: Home
 
-include::adoption/adoption-attributes.adoc[]
+== Introduction
 
-Adoption is the process of migrating a {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} overcloud to a {rhos_long_noacro} {rhos_curr_ver} data plane. To ensure that you understand the entire adoption process and how to sufficiently prepare your {OpenStackShort} environment, review the prerequisites, adoption process, and post-adoption tasks.
+This is the course for IT professionals who are already experienced with OpenStack and they want to learn how to upgrade their environment to RHOSO 18.0 using the adoption mechanism. It requires no previous knowledge of Red Hat OpenShift, Kubernetes, and containers, but it requires familiarity with managing application workloads running as virtual machines (VM) on OpenStack and managing associated resources such as storage volumes and tenant or provider networks.
 
-In this lab, you will use the following infrastructure:
+This course helps both experienced OpenStack Administrators and OpenStack Operators who are growing into OpenStack Administrators understand the Red Hat OpenStack Services on OpenShift products and how managing it may be different than managing other incarnations of the Red Hat OpenStack Platform.
 
-* A 3 OCP controller/workers combo nodes 4.16 OCP cluster
-* A workstation host to access to the OCP environment
-* RHOSP 17.1 environment with 1 networker
-* 2 RHEL 9.2 virtualised compute host installed on the environment
-* A Ceph all-in-onecluster
-* A RHEL 9.4 virtualised compute host to be added optionally to the the upgraded RHOSO 18.0
+== Course Objective
 
-Pre-requisites before adoption process:
+As a result of taking this course, Administrators of Red Hat OpenStack clusters will be able to upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism.
 
-* Perform Prerequisite Operations in the OpenShift cluster
-* Install the Red Hat OpenStack Platform Service Operators
-* Prepare OCP for OpenStack Network Isolation
+== Audience
 
-Adoption process:
+Platform Engineers, Cloud Administrators, and System Administrators interested in deploying and managing Red Hat OpenStack clusters.
 
-* Migrating DBs
-* Control plane Adoption
-* Data plane Adoption
-* Networker adoption
+== Pre-requisites
 
-Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
-For some steps you may also need to edit some of the commands from the  instructions.
+* Basic administration of RHEL: https://www.redhat.com/en/services/training/rh124-red-hat-system-administration-i[RH124]
 
-*Be sure to review all commands carefully both for functionality and syntax!*
+* Basic experience with Red Hat OpenStack Platform 17.1
+
+* Basic operation of OpenStack Services on OpenShift: https://redhatquickcourses.github.io/rhoso-intro/[OSP-Operations-I-1] and OSP-Operations-I-2, or the equivalent courses from previous releases of Red Hat OpenStack, such as https://www.redhat.com/en/services/training/cl110-red-hat-openstack-administration-i[CL110] and https://www.redhat.com/en/services/training/cl210-red-hat-openstack-administration-ii[CL210].
+
+* Basic data center storage concepts: storage protocols, NAS, and SAN.
+
+* Data center networking concepts: ISO model, VLANs, firewalls, and Internet protocols, including but not limited to ICMP, IP, and HTTP.
+
+* Basic object storage concepts, such as experience with AWS S3, are useful but not required.
+
+* Ceph administration skills are useful but not required.
+

@@ -3,3 +3,5 @@ title: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
 version: 1
 nav:
 - modules/ROOT/nav.adoc
+- modules/LABENV/nav.adoc
+- modules/adoption-step-by-step/nav.adoc

@@ -1,0 +1,8 @@
+* xref:index.adoc[Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example]
+** xref:prereqs.adoc[Perform OpenShift Prerequisite]
+** xref:install-operators.adoc[Install the Red Hat OpenStack Platform Service Operators]
+** xref:network-isolation.adoc[Prepare OCP for OpenStack Network Isolation]
+** xref:adoption-overview.adoc[RHOSP 17.1 to RHOSO 18 adoption overview]
+** xref:migrating-databases.adoc[Migrating RHOSP 17.1 Database to RHOSO 18]
+** xref:adoption-cp.adoc[Control plane Adoption]
+** xref:adoption-dp.adoc[Data plane Adoption]

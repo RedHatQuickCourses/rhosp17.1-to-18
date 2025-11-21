@@ -1,0 +1,32 @@
+= Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example
+
+include::adoption-attributes.adoc[]
+
+Adoption is the process of migrating a {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} overcloud to a {rhos_long_noacro} {rhos_curr_ver} data plane. To ensure that you understand the entire adoption process and how to sufficiently prepare your {OpenStackShort} environment, review the prerequisites, adoption process, and post-adoption tasks.
+
+In this lab, you will use the following infrastructure:
+
+* A 3 OCP controller/workers combo nodes 4.16 OCP cluster
+* A workstation host to access to the OCP environment
+* RHOSP 17.1 environment with 1 networker
+* 2 RHEL 9.2 virtualised compute host installed on the environment
+* A Ceph all-in-onecluster
+* A RHEL 9.4 virtualised compute host to be added optionally to the the upgraded RHOSO 18.0
+
+Pre-requisites before adoption process:
+
+* Perform Prerequisite Operations in the OpenShift cluster
+* Install the Red Hat OpenStack Platform Service Operators
+* Prepare OCP for OpenStack Network Isolation
+
+Adoption process:
+
+* Migrating DBs
+* Control plane Adoption
+* Data plane Adoption
+* Networker adoption
+
+Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
+For some steps you may also need to edit some of the commands from the  instructions.
+
+*Be sure to review all commands carefully both for functionality and syntax!*
