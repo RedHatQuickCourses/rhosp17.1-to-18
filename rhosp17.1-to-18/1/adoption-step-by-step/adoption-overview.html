@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="prev" href="network-isolation.html">
+    <link rel="next" href="migrating-databases.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a></li>
+    <li><a href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="rhoso-180-adoption-overview_assembly"><a class="anchor" href="#rhoso-180-adoption-overview_assembly"></a>Red&#160;Hat OpenStack Services on OpenShift 18.0 adoption overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adoption is the process of migrating a Red&#160;Hat OpenStack Platform (RHOSP) 17.1 overcloud to a Red&#160;Hat OpenStack Services on OpenShift 18.0 data plane. To ensure that you understand the entire adoption process and how to sufficiently prepare your RHOSP environment, review the prerequisites, adoption process, and post-adoption tasks.</p>
+</div>
+<div class="sect2">
+<h3 id="adoption-guidelines_planning"><a class="anchor" href="#adoption-guidelines_planning"></a>Guidelines for planning the adoption</h3>
+<div class="paragraph _abstract">
+<p>When planning to adopt a Red&#160;Hat OpenStack Services on OpenShift (RHOSO) 18.0 environment, consider the scope of the change. An adoption is similar in scope to a data center upgrade. Different firmware levels, hardware vendors, hardware profiles, networking interfaces, storage interfaces, and so on affect the adoption process and can cause changes in behavior during the adoption.</p>
+</div>
+<div class="paragraph">
+<p>Review the following guidelines to adequately plan for the adoption and increase the chance that you complete the adoption successfully:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+All commands in the adoption documentation are examples. Do not copy and paste the commands without understanding what the commands do.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>To minimize the risk of an adoption failure, reduce the number of environmental differences between the staging environment and the production sites.</p>
+</li>
+<li>
+<p>If the staging environment is not representative of the production sites or if a staging environment is not available, you must plan to include contingency time in case the adoption fails.</p>
+</li>
+<li>
+<p>Review your custom Red&#160;Hat OpenStack Platform (RHOSP) service configuration at every major release.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Every major release upgrades through multiple OpenStack releases.</p>
+</li>
+<li>
+<p>Each major release might deprecate configuration options or change the format of the configuration.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Prepare a Method of Procedure (MOP) that is specific to your environment to reduce the risk of variance or omitted steps when running the adoption process.</p>
+</li>
+<li>
+<p>You can use representative hardware in a staging environment to prepare a MOP and validate any content changes.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Include a cross-section of firmware versions, additional interface or device hardware, and any additional software in the representative staging environment to ensure that it is broadly representative of the variety that is present in the production environments.</p>
+</li>
+<li>
+<p>Ensure that you validate any Red Hat Enterprise Linux update or upgrade in the representative staging environment.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Use Satellite for localized and version-pinned RPM content where your data plane nodes are located.</p>
+</li>
+<li>
+<p>In the production environment, use the content that you tested in the staging environment.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adoption-process-overview_planning"><a class="anchor" href="#adoption-process-overview_planning"></a>Adoption process overview</h3>
+<div class="paragraph _abstract">
+<p>Familiarize yourself with the steps of the adoption process and the optional post-adoption tasks.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Main adoption process</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="#migrating-databases-to-the-control-plane_configuring-network">Migrate your existing databases to the new control plane</a>.</p>
+</li>
+<li>
+<p><a href="#adopting-openstack-control-plane-services_configuring-network">Adopt your Red Hat OpenStack Platform 17.1 control plane services to the new RHOSO 18.0 deployment</a>.</p>
+</li>
+<li>
+<p><a href="#adopting-data-plane_adopt-control-plane">Adopt the RHOSO 18.0 data plane</a>.</p>
+</li>
+</ol>
+</div>
+</dd>
+<dt class="hdlist1">Post-adoption tasks</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Optional: Run tempest to verify that the entire adoption process is working properly. For more information, see <a href="https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/18.0/html/validating_and_troubleshooting_the_deployed_cloud/index">Validating and troubleshooting the deployed cloud</a>.</p>
+</li>
+<li>
+<p>Optional: Perform a minor update from RHEL 9.2 to 9.4. You can perform a minor update any time after you complete the adoption procedure. For more information, see <a href="https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/18.0/html/updating_your_environment_to_the_latest_maintenance_release/index">Updating your environment to the latest maintenance release</a>.</p>
+</li>
+<li>
+<p>Optional: Verify that you migrated all services from the Controller nodes, and then power off the nodes. If any services are still running in the Controller nodes, such as Open Virtual Networking (ML2/OVN), Object Storage service (swift), or Red Hat Ceph Storage, do not power off the nodes.</p>
+</li>
+<li>
+<p>If you enabled the high availability for Compute instances (Instance HA) service, remove the Pacemaker components from your Compute nodes. For more information, see <a href="#enabling-high-availability-for-instances_data-plane">Enabling the high availability for Compute instances service</a>.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a></span>
+  <span class="next"><a href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

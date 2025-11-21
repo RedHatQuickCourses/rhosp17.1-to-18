@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="prev" href="install-operators.html">
+    <link rel="next" href="adoption-overview.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a></li>
+    <li><a href="network-isolation.html">Prepare OCP for OpenStack Network Isolation</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_preparing_rhocp_for_rhosp_network_isolation"><a class="anchor" href="#_preparing_rhocp_for_rhosp_network_isolation"></a>Preparing RHOCP for RHOSP Network Isolation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Networking IP ranges table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">VLAN</th>
+<th class="tableblock halign-left valign-top">CIDR</th>
+<th class="tableblock halign-left valign-top">NetConfig allocationRange</th>
+<th class="tableblock halign-left valign-top">MetalLB IPAddressPool range</th>
+<th class="tableblock halign-left valign-top">net-attach-def ipam range</th>
+<th class="tableblock halign-left valign-top">OCP worker nncp range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ctlplane</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.0/24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.100 - 172.25.249.120 172.25.249.150 - 172.25.249.200</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.80 - 172.25.249.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.30 - 172.25.249.70</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.10 - 172.25.249.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.0/24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.19 - 172.25.250.100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">internalapi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.0/24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.100 - 192.168.52.250</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.80 - 192.168.52.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.30 - 192.168.52.70</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.10 - 192.168.52.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.0/24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.100 - 192.168.50.250</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.80 - 192.168.50.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.30 - 192.168.50.70</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.10 - 192.168.50.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tenant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">n/a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.0/24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.100 - 192.168.53.250</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.80 - 192.168.50.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.30 - 192.168.53.70</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.10 - 192.168.53.12</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note: The storage network is the network used by the OCP cluster network.</p>
+</div>
+<div class="paragraph">
+<p>From the utility host, we will be using a preconfigured set of yaml files in the <code>files</code> directory which start with <code>osp-ng-nncp-</code>. There are 3 files for worker nodes.</p>
+</div>
+<div class="paragraph">
+<p>Change to the <code>files</code> directory:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/labrepo/files</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Apply preconfigured yamls indivdually:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-nncp-w1.yaml
+oc apply -f osp-ng-nncp-w2.yaml
+oc apply -f osp-ng-nncp-w3.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait until they are in an available state before proceeding:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get nncp -w</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type Control + C when you see that the nncp has moved to SuccessfullyConfigured state</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                STATUS      REASON
+osp-multi-nic-worker-ocp4-worker1   Available   SuccessfullyConfigured
+osp-multi-nic-worker-ocp4-worker2   Available   SuccessfullyConfigured
+osp-multi-nic-worker-ocp4-worker3   Available   SuccessfullyConfigured</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before proceeding configure a <strong>nad</strong> resource for each isolated network to attach a service pod to the network:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-netattach.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the nodes are available and attached configure the <strong>MetalLB IP address range</strong> using a preconfigured yaml file:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-metal-lb-ip-address-pools.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Configure a <strong>L2Advertisement</strong> resource which will define which node advertises a service to the local network which has been preconfigured for your demo environment:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-metal-lb-l2-advertisements.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the following command to enable global IP forwarding:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a></span>
+  <span class="next"><a href="adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
-    <link rel="next" href="adoption/prereqs.html">
+    <title>Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="next" href="LABENV/index-lab-role.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../_/css/site.css">
     <script>var uiRootPath = '../../_'</script>
@@ -39,29 +39,43 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+    <a class="nav-link" href="adoption-step-by-step/index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/prereqs.html">Perform OpenShift Prerequisite</a>
+    <a class="nav-link" href="adoption-step-by-step/prereqs.html">Perform OpenShift Prerequisite</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+    <a class="nav-link" href="adoption-step-by-step/install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+    <a class="nav-link" href="adoption-step-by-step/network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+    <a class="nav-link" href="adoption-step-by-step/adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+    <a class="nav-link" href="adoption-step-by-step/migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/adoption-cp.html">Control plane Adoption</a>
+    <a class="nav-link" href="adoption-step-by-step/adoption-cp.html">Control plane Adoption</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="adoption/adoption-dp.html">Data plane Adoption</a>
+    <a class="nav-link" href="adoption-step-by-step/adoption-dp.html">Data plane Adoption</a>
   </li>
 </ul>
   </li>
@@ -95,6 +109,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="index.html">Home</a></li>
   </ul>
 </nav>
 </div>
@@ -103,79 +118,66 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</h1>
+<h1 class="page">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</h1>
+<div class="sect1">
+<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Adoption is the process of migrating a Red&#160;Hat OpenStack Platform (RHOSP) 17.1 overcloud to a Red&#160;Hat OpenStack Services on OpenShift 18.0 data plane. To ensure that you understand the entire adoption process and how to sufficiently prepare your RHOSP environment, review the prerequisites, adoption process, and post-adoption tasks.</p>
+<p>This is the course for IT professionals who are already experienced with OpenStack and they want to learn how to upgrade their environment to RHOSO 18.0 using the adoption mechanism. It requires no previous knowledge of Red Hat OpenShift, Kubernetes, and containers, but it requires familiarity with managing application workloads running as virtual machines (VM) on OpenStack and managing associated resources such as storage volumes and tenant or provider networks.</p>
 </div>
 <div class="paragraph">
-<p>In this lab, you will use the following infrastructure:</p>
+<p>This course helps both experienced OpenStack Administrators and OpenStack Operators who are growing into OpenStack Administrators understand the Red Hat OpenStack Services on OpenShift products and how managing it may be different than managing other incarnations of the Red Hat OpenStack Platform.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_course_objective"><a class="anchor" href="#_course_objective"></a>Course Objective</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a result of taking this course, Administrators of Red Hat OpenStack clusters will be able to upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_audience"><a class="anchor" href="#_audience"></a>Audience</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Platform Engineers, Cloud Administrators, and System Administrators interested in deploying and managing Red Hat OpenStack clusters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>A 3 OCP controller/workers combo nodes 4.16 OCP cluster</p>
+<p>Basic administration of RHEL: <a href="https://www.redhat.com/en/services/training/rh124-red-hat-system-administration-i">RH124</a></p>
 </li>
 <li>
-<p>A workstation host to access to the OCP environment</p>
+<p>Basic experience with Red Hat OpenStack Platform 17.1</p>
 </li>
 <li>
-<p>RHOSP 17.1 environment with 1 networker</p>
+<p>Basic operation of OpenStack Services on OpenShift: <a href="https://redhatquickcourses.github.io/rhoso-intro/">OSP-Operations-I-1</a> and OSP-Operations-I-2, or the equivalent courses from previous releases of Red Hat OpenStack, such as <a href="https://www.redhat.com/en/services/training/cl110-red-hat-openstack-administration-i">CL110</a> and <a href="https://www.redhat.com/en/services/training/cl210-red-hat-openstack-administration-ii">CL210</a>.</p>
 </li>
 <li>
-<p>2 RHEL 9.2 virtualised compute host installed on the environment</p>
+<p>Basic data center storage concepts: storage protocols, NAS, and SAN.</p>
 </li>
 <li>
-<p>A Ceph all-in-onecluster</p>
+<p>Data center networking concepts: ISO model, VLANs, firewalls, and Internet protocols, including but not limited to ICMP, IP, and HTTP.</p>
 </li>
 <li>
-<p>A RHEL 9.4 virtualised compute host to be added optionally to the the upgraded RHOSO 18.0</p>
+<p>Basic object storage concepts, such as experience with AWS S3, are useful but not required.</p>
+</li>
+<li>
+<p>Ceph administration skills are useful but not required.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Pre-requisites before adoption process:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Perform Prerequisite Operations in the OpenShift cluster</p>
-</li>
-<li>
-<p>Install the Red Hat OpenStack Platform Service Operators</p>
-</li>
-<li>
-<p>Prepare OCP for OpenStack Network Isolation</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Adoption process:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Migrating DBs</p>
-</li>
-<li>
-<p>Control plane Adoption</p>
-</li>
-<li>
-<p>Data plane Adoption</p>
-</li>
-<li>
-<p>Networker adoption</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
-For some steps you may also need to edit some of the commands from the  instructions.</p>
-</div>
-<div class="paragraph">
-<p><strong>Be sure to review all commands carefully both for functionality and syntax!</strong></p>
 </div>
 <nav class="pagination">
-  <span class="next"><a href="adoption/prereqs.html">Perform OpenShift Prerequisite</a></span>
+  <span class="next"><a href="LABENV/index-lab-role.html">Lab Environment</a></span>
 </nav>
 </article>
   </div>

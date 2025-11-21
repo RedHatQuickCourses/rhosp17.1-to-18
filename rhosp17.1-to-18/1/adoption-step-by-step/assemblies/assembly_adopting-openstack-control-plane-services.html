@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Adopting {rhos_prev_long} control plane services :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="assembly_adopting-openstack-control-plane-services.html">Adopting {rhos_prev_long} control plane services</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Adopting {rhos_prev_long} control plane services</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>Adopt your {rhos_prev_long} {rhos_prev_ver} control plane services to deploy them in the {rhos_long} {rhos_curr_ver} control plane.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-identity-service_adopt-control-plane"><a class="anchor" href="#adopting-the-identity-service_adopt-control-plane"></a>Adopting the {identity_service}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the {identity_service_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) where the {identity_service} is disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Create the keystone secret that includes the Fernet keys that were copied from the {OpenStackShort} environment:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: v1
+data:
+  CredentialKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/0 | base64 -w 0)
+  CredentialKeys1: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/credential-keys/1 | base64 -w 0)
+  FernetKeys0: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/fernet-keys/0 | base64 -w 0)
+  FernetKeys1: $($CONTROLLER1_SSH sudo cat /var/lib/config-data/puppet-generated/keystone/etc/keystone/fernet-keys/1 | base64 -w 0)
+kind: Secret
+metadata:
+  name: keystone
+type: Opaque
+EOF</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {identity_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  keystone:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      override:
+        service:
+          internal:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/allow-shared-ip: internalapi
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+            spec:
+              type: LoadBalancer
+      databaseInstance: openstack
+      secret: osp-secret
+'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the openstackclient reaching the running phase:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while ! oc get pods -n openstack | grep openstackclient ; do echo "waiting for osc pod"; sleep 5; done
+oc wait --for=condition=Ready pod/openstackclient --timeout=30s
+oc wait --for=jsonpath='{.status.phase}'=Running pod --selector=service=openstackclient</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create an alias to use the <code>openstack</code> command in the {rhos_long} deployment:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove services and endpoints that still point to the {OpenStackShort}
+control plane, excluding the {identity_service} and its endpoints:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep keystone | awk '/admin/{ print $2; }' | xargs ${BASH_ALIASES[openstack]} endpoint delete || true
+
+for service in aodh heat heat-cfn barbican cinderv3 glance gnocchi manila manilav2 neutron nova placement swift ironic-inspector ironic octavia; do
+  openstack service list | awk "/ $service /{ print \$2; }" | xargs -r ${BASH_ALIASES[openstack]} service delete || true
+done</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that you can access the <code>OpenStackClient</code> pod. For more information, see <a href="{defaultURL}/maintaining_the_red_hat_openstack_services_on_openshift_deployment/assembly_accessing-the-rhoso-cloud#proc_accessing-the-OpenStackClient-pod_cloud-access-admin">Accessing the OpenStackClient pod</a> in <em>Maintaining the {rhos_long_noacro} deployment</em>.</p>
+</li>
+<li>
+<p>Confirm that the {identity_service} endpoints are defined and are pointing to the control plane FQDNs:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep keystone</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the <code>OpenStackControlPlane</code> resource to become <code>Ready</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for=condition=Ready --timeout=1m OpenStackControlPlane openstack</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-networking-service_adopt-control-plane"><a class="anchor" href="#adopting-the-networking-service_adopt-control-plane"></a>Adopting the {networking_service}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the {networking_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has the {networking_service} disabled. The patch starts the service with the
+configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="paragraph">
+<p>The {networking_service} adoption is complete if you see the following results:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>NeutronAPI</code> service is running.</p>
+</li>
+<li>
+<p>The {identity_service_first_ref} endpoints are updated, and the same back end of the source cloud is available.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Ensure that Single Node OpenShift or OpenShift Local is running in the {rhocp_long} cluster.</p>
+</li>
+<li>
+<p>Adopt the {identity_service}. For more information, see <a href="#adopting-the-identity-service_adopt-control-plane">Adopting the {identity_service}</a>.</p>
+</li>
+<li>
+<p>Migrate your OVN databases to <code>ovsdb-server</code> instances that run in the {rhocp_long} cluster. For more information, see <a href="#migrating-ovn-data_migrating-databases">Migrating OVN data</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {networking_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  neutron:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      override:
+        service:
+          internal:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/allow-shared-ip: internalapi
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+            spec:
+              type: LoadBalancer
+      databaseInstance: openstack
+      databaseAccount: neutron
+      secret: osp-secret
+      networkAttachments:
+      - internalapi
+'</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Inspect the resulting {networking_service} pods:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l service=neutron</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the <code>Neutron API</code> service is registered in the {identity_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep network</code></pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep network</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| a866aef3d9354bf6b37110692e1e5aee | regionOne | neutron      | network      | True    | internal  | http://neutron-internal.openstack.svc:9696             |
+| b0f4743dc3e24fd8acf7b406d6f92ea5 | regionOne | neutron      | network      | True    | public    | http://neutron-public-openstack.apps.ocp4.example.com  |</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create sample resources so that you can test whether the user can create networks, subnets, ports, or routers:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack network create net
+openstack subnet create --network net --subnet-range 10.0.0.0/24 subnet
+openstack router create router</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 _abstract">
+<h2 id="adopting-the-image-service_adopt-control-plane"><a class="anchor" href="#adopting-the-image-service_adopt-control-plane"></a>Adopting the {image_service}</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To adopt the {image_service_first_ref} you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has the {image_service} disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="paragraph">
+<p>The {image_service} adoption is complete if you see the following results:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>GlanceAPI</code> service up and running.</p>
+</li>
+<li>
+<p>The {identity_service} endpoints are updated, and the same back end of the source cloud is available.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To complete the {image_service} adoption, ensure that your environment meets the following criteria:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You have a running {OpenStackPreviousInstaller} environment (the source cloud).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you have image quotas in {OpenStackShort} {rhos_prev_ver}, these quotas are transferred to {rhos_long} {rhos_curr_ver} because the image quota system in {rhos_curr_ver} is disabled by default. For more information about enabling image quotas in {rhos_curr_ver}, see <a href="{defaultURL}/customizing_persistent_storage/assembly_glance-customizing-the-image-service_customizing-cinder#assembly_glance-configuring-quotas_configuring-glance">Configuring image quotas</a> in <em>Customizing persistent storage</em>. If you enable image quotas in {rhos_acro} {rhos_curr_ver}, the new quotas replace the legacy quotas from {OpenStackShort} {rhos_prev_ver}.</p>
+</div>
+<div class="sect2">
+<h3 id="adopting-image-service-with-ceph-backend_image-service"><a class="anchor" href="#adopting-image-service-with-ceph-backend_image-service"></a>Adopting the {image_service} that is deployed with a {Ceph} back end</h3>
+<div class="paragraph _abstract">
+<p>Adopt the {image_service_first_ref} that you deployed with a {Ceph} back end. Use the <code>customServiceConfig</code> parameter to inject the right configuration to the <code>GlanceAPI</code> instance.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+<li>
+<p>Ensure that the Ceph-related secret (<code>ceph-conf-files</code>) is created in
+the <code>openstack</code> namespace and that the <code>extraMounts</code> property of the
+<code>OpenStackControlPlane</code> custom resource (CR) is configured properly. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; glance_patch.yaml
+spec:
+  glance:
+    enabled: true
+    template:
+      databaseInstance: openstack
+      customServiceConfig: |
+        [DEFAULT]
+        enabled_backends=default_backend:rbd
+        debug = true
+        [glance_store]
+        default_backend=default_backend
+        [default_backend]
+        rbd_store_ceph_conf=/etc/ceph/ceph.conf
+        rbd_store_user=openstack
+        rbd_store_pool=images
+        store_description=Ceph glance store backend.
+      storage:
+        storageRequest: 10G
+        storageClass: "nfs-storage"
+      glanceAPIs:
+        default:
+          replicas: 1
+          override:
+            service:
+              internal:
+                metadata:
+                  annotations:
+                    metallb.universe.tf/address-pool: internalapi
+                    metallb.universe.tf/allow-shared-ip: internalapi
+                    metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+                spec:
+                  type: LoadBalancer
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {image_service} with a {Ceph} back end:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file glance_patch.yaml</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="verifying-the-image-service-adoption_image-service"><a class="anchor" href="#verifying-the-image-service-adoption_image-service"></a>Verifying the {image_service} adoption</h3>
+<div class="paragraph _abstract">
+<p>Verify that you adopted the {image_service_first_ref} to the {rhos_long} {rhos_curr_ver} deployment.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Check that the service is active, and that the endpoints are updated in the {OpenStackShort} CLI:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack service list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| fc52dbffef36434d906eeb99adfc6186 | glance    | image        |</pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 028edc69abda467caa160366cb344b1b | regionOne | glance       | image        | True    | public    | http://glance-default-public-openstack.apps.ocp4.example.com |
+| ea3634e1715a433b8c5b144ca4a7d1ca | regionOne | glance       | image        | True    | internal  | http://glance-default-internal.openstack.svc:9292            |</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the images that you previously listed in the source cloud are available in the adopted service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack image list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| 1088f6e4-d0a8-4d63-8f93-f14f708a4dbc | cirros | active |
++--------------------------------------+--------+--------+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-placement-service_adopt-control-plane"><a class="anchor" href="#adopting-the-placement-service_adopt-control-plane"></a>Adopting the Placement service</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the Placement service, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has the Placement service disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You import your databases to MariaDB instances on the control plane. For more information, see <a href="#migrating-databases-to-mariadb-instances_migrating-databases">Migrating databases to MariaDB instances</a>.</p>
+</li>
+<li>
+<p>You adopt the {identity_service_first_ref}. For more information, see <a href="#adopting-the-identity-service_adopt-control-plane">Adopting the Identity service</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the Placement service:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  placement:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      databaseAccount: placement
+      secret: osp-secret
+      override:
+        service:
+          internal:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/allow-shared-ip: internalapi
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+            spec:
+              type: LoadBalancer
+'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the Placement service endpoints are defined and pointing to the
+control plane FQDNs, and that the Placement API responds:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep placement</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Without OpenStack CLI placement plugin installed:
+PLACEMENT_PUBLIC_URL=$(openstack endpoint list -c 'Service Name' -c 'Service Type' -c URL | grep placement | grep public | awk '{ print $6; }')
+oc exec -t openstackclient -- curl "$PLACEMENT_PUBLIC_URL"
+
+# With OpenStack CLI placement plugin installed:
+openstack resource class list</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-compute-service_adopt-control-plane"><a class="anchor" href="#adopting-the-compute-service_adopt-control-plane"></a>Adopting the {compute_service}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the {compute_service_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) where the {compute_service} is disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment. The following procedure describes a single-cell setup.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have completed the previous adoption steps.</p>
+</li>
+<li>
+<p>You have defined the following shell variables. Replace the following example values with the values that are correct for your environment:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"
+
+DEFAULT_CELL_NAME="cell3"
+RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The source cloud <code>default</code> cell takes a new <code>$DEFAULT_CELL_NAME</code>. In a multi-cell adoption scenario, the 'default' cell might retain its original name,<code>DEFAULT_CELL_NAME=default</code>, or become renamed as a cell that is free for use. Do not use other existing cell names for <code>DEFAULT_CELL_NAME</code>, except for <code>default</code>.</p>
+</li>
+<li>
+<p>If you deployed the source cloud with a <code>default</code> cell, and want to rename it during adoption, define the new name that you want to use, as shown in the following example:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="cell1"</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {compute_service}:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This procedure assumes that {compute_service} metadata is deployed on the top level and not on each cell level. If the {OpenStackShort} deployment has a per-cell metadata deployment, adjust the following patch as needed. You cannot run the metadata service in <code>cell0</code>.
+To enable the metadata services of a local cell, set the <code>enabled</code> property in the <code>metadataServiceTemplate</code> field of the local cell to <code>true</code> in the <code>OpenStackControlPlane</code> CR.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -f celltemplates
+for CELL in $(echo $RENAMED_CELLS); do
+ cat &gt;&gt; celltemplates &lt;&lt; EOF
+        ${CELL}:
+          hasAPIAccess: true
+          cellDatabaseAccount: nova-$CELL
+          cellDatabaseInstance: openstack-$CELL
+          cellMessageBusInstance: rabbitmq-$CELL
+          metadataServiceTemplate:
+            enabled: false
+            override:
+                service:
+                  metadata:
+                    annotations:
+                      metallb.universe.tf/address-pool: internalapi
+                      metallb.universe.tf/allow-shared-ip: internalapi
+                      metallb.universe.tf/loadBalancerIPs: 192.168.52.$(( 88 + ${CELL##*cell} ))
+                  spec:
+                    type: LoadBalancer
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+EOF
+done
+
+cat &gt; oscp-patch.yaml &lt;&lt; EOF
+spec:
+  nova:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      secret: osp-secret
+      apiDatabaseAccount: nova-api
+      apiServiceTemplate:
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+              spec:
+                type: LoadBalancer
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      metadataServiceTemplate:
+        enabled: true
+        override:
+          service:
+            metadata:
+              annotations:
+                metallb.universe.tf/address-pool: internalapi
+                metallb.universe.tf/allow-shared-ip: internalapi
+                metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+            spec:
+              type: LoadBalancer
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      schedulerServiceTemplate:
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=true
+      cellTemplates:
+        cell0:
+          hasAPIAccess: true
+          cellDatabaseAccount: nova-cell0
+          cellDatabaseInstance: openstack
+          cellMessageBusInstance: rabbitmq
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=true
+EOF
+cat celltemplates &gt;&gt; oscp-patch.yaml
+oc patch openstackcontrolplane openstack  --type=merge --patch-file=oscp-patch.yaml</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The local Conductor services are started for each cell, while the superconductor runs in <code>cell0</code>.
+Note that <code>disable_compute_service_check_for_ffu</code> is mandatory for all imported Compute services until the external data plane is imported, and until the Compute services are fast-forward upgraded. For more information, see <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a> and <a href="#performing-a-fast-forward-upgrade-on-compute-services_data-plane">Upgrading Compute services</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Wait for Nova control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Nova/nova</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Verification</div>
+<ul>
+<li>
+<p>Check that {compute_service} endpoints are defined and pointing to the
+control plane FQDNs, and that the Nova API responds:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list | grep nova
+openstack server list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>| 764454a0fe6540829496a91706be0fc9 | regionOne | nova         | compute      | True    | internal  | http://nova-internal.openstack.svc:8774/v2.1                 |
+| ce98dcc7e5a54ae4b08274ecf36c1a91 | regionOne | nova         | compute      | True    | public    | http://nova-public-openstack.apps.ocp4.example.com/v2.1      |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| ID                                   | Name               | Status | Networks                                | Image  | Flavor |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+
+| 32316d67-70bc-4c39-a462-93d18a3f6594 | server-2-compute-1 | ACTIVE | private=172.25.250.207, 192.168.100.91  | cirros | tiny   |
+| e776a713-6f7c-419a-a153-89fd1abb5a2d | server-1-compute-0 | ACTIVE | private=172.25.250.206, 192.168.100.187 | cirros | tiny   |
++--------------------------------------+--------------------+--------+-----------------------------------------+--------+--------+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At this point, the {compute_service} control plane services do not control the existing {compute_service} workloads. The control plane manages the data plane only after the data adoption process is completed. For more information, see <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-block-storage-service_adopt-control-plane"><a class="anchor" href="#adopting-the-block-storage-service_adopt-control-plane"></a>Adopting the {block_storage}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt a {OpenStackPreviousInstaller}-deployed {block_storage_first_ref}, create the manifest based on the existing <code>cinder.conf</code> file, deploy the {block_storage}, and validate the new deployment.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You have reviewed the {block_storage} limitations. For more information, see <a href="#block-storage-limitations_storage-requirements">Limitations for adopting the {block_storage}</a>.</p>
+</li>
+<li>
+<p>You have planned the placement of the Block Storage services.</p>
+</li>
+<li>
+<p>You have prepared the {rhocp_long} nodes where the volume and backup services run. For more information, see <a href="#openshift-preparation-for-block-storage-adoption_storage-requirements">{OpenShiftShort} preparation for {block_storage} adoption</a>.</p>
+</li>
+<li>
+<p>The {block_storage_first_ref} is stopped.</p>
+</li>
+<li>
+<p>The service databases are imported into the control plane MariaDB.</p>
+</li>
+<li>
+<p>The {identity_service_first_ref} and {key_manager_first_ref} are adopted.</p>
+</li>
+<li>
+<p>The Storage network is correctly configured on the {OpenShiftShort} cluster.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a new file, for example, <code>cinder_api.patch</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF &gt; cinder_api.patch
+spec:
+  extraMounts:
+  - extraVol:
+    - extraVolType: Ceph
+      mounts:
+      - mountPath: /etc/ceph
+        name: ceph
+        readOnly: true
+      propagation:
+      - CinderVolume
+      - CinderBackup
+      - Glance
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-conf-files
+  cinder:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      databaseAccount: cinder
+      secret: osp-secret
+      cinderAPI:
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 192.168.52.89
+              spec:
+                type: LoadBalancer
+        replicas: 1
+        customServiceConfig: |
+          [DEFAULT]
+          default_volume_type=tripleo
+      cinderScheduler:
+        replicas: 0
+      cinderBackup:
+        replicas: 0
+      cinderVolumes:
+        ceph:
+          replicas: 0
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Apply the configuration::</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_api.patch</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for Cinder control plane services' CRs to become ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Cinder/cinder</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the list of the previous scheduler and backup services:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list
+
++------------------+------------------------+------+---------+-------+----------------------------+
+| Binary           | Host                   | Zone | Status  | State | Updated At                 |
++------------------+------------------------+------+---------+-------+----------------------------+
+| cinder-scheduler | overcloud-controller-0 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-1 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-scheduler | overcloud-controller-2 | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
+| cinder-volume    | hostgroup@tripleo_ceph | nova | enabled | down  | 2025-11-15T07:58:05.000000 |
++------------------+------------------------+------+---------+-------+----------------------------+</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove services for hosts that are in the <code>down</code> state:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-0
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-1
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-scheduler overcloud-controller-2
+oc exec -t cinder-api-0 -c cinder-api -- cinder-manage service remove cinder-volume hostgroup@tripleo_ceph</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Deploy the scheduler, backup, and volume services:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create another file, for example, <code>cinder_services.patch</code>, and apply the configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">cat &lt;&lt; EOF &gt; cinder_services.patch
+spec:
+  cinder:
+    enabled: true
+    template:
+      cinderScheduler:
+        replicas: 1
+      cinderBackup:
+        replicas: 0
+      cinderVolumes:
+        ceph:
+          replicas: 1
+          customServiceConfig: |
+            [tripleo_ceph]
+            backend_host=hostgroup
+            volume_backend_name=tripleo_ceph
+            volume_driver=cinder.volume.drivers.rbd.RBDDriver
+            rbd_ceph_conf=/etc/ceph/ceph.conf
+            rbd_user=openstack
+            rbd_pool=volumes
+            rbd_flatten_volume_from_snapshot=False
+            report_discard_supported=True
+EOF</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Apply the configuration::</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=cinder_services.patch</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Apply the DB data migrations:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are not required to run the data migrations at this step, but you must run them before the next upgrade. However, for adoption, you can run the migrations now to ensure that there are no issues before you run production workloads on the deployment.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it cinder-scheduler-0 -- cinder-manage db online_data_migrations</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Ensure that the <code>openstack</code> alias is defined:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">alias openstack="oc exec -t openstackclient -- openstack"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that {block_storage} endpoints are defined and pointing to the control plane FQDNs:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack endpoint list --service cinderv3</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that the Block Storage services are running:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume service list</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Cinder API services do not appear in the list. However, if you get a response from the <code>openstack volume service list</code> command, that means at least one of the cinder API services is running.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Confirm that you have your previous volume types, volumes, snapshots, and backups:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume type list
+openstack volume list
+openstack volume snapshot list</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To confirm that the configuration is working, perform the following steps:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create a volume from an image to check that the connection to {image_service_first_ref} is working:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">openstack volume create --image cirros --bootable --size 1 disk_new</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-openstack-dashboard_adopt-control-plane"><a class="anchor" href="#adopting-the-openstack-dashboard_adopt-control-plane"></a>Adopting the {dashboard_service}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the {dashboard_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR) that has the {dashboard_service} disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} environment.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>You adopted Memcached. For more information, see <a href="#deploying-backend-services_migrating-databases">Deploying back-end services</a>.</p>
+</li>
+<li>
+<p>You adopted the {identity_service_first_ref}. For more information, see <a href="#adopting-the-identity-service_adopt-control-plane">Adopting the {identity_service}</a>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Procedure</div>
+<ul>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {dashboard_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  horizon:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      memcachedInstance: memcached
+      secret: osp-secret
+'</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Verify that the {dashboard_service} instance is successfully deployed and ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get horizon</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Confirm that the {dashboard_service} is reachable and returns a <code>200</code> status code:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PUBLIC_URL=$(oc get horizon horizon -o jsonpath='{.status.endpoint}')
+curl --silent --output /dev/stderr --head --write-out "%{http_code}" "$PUBLIC_URL/dashboard/auth/login/?next=/dashboard/" -k | grep 200</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adopting-the-orchestration-service_adopt-control-plane"><a class="anchor" href="#adopting-the-orchestration-service_adopt-control-plane"></a>Adopting the {orchestration}</h2>
+<div class="sectionbody">
+<div class="paragraph _abstract">
+<p>To adopt the {orchestration_first_ref}, you patch an existing <code>OpenStackControlPlane</code> custom resource (CR), where the {orchestration}
+is disabled. The patch starts the service with the configuration parameters that are provided by the {rhos_prev_long} ({OpenStackShort}) environment.</p>
+</div>
+<div class="paragraph">
+<p>After you complete the adoption process, you have CRs for <code>Heat</code>, <code>HeatAPI</code>, <code>HeatEngine</code>, and <code>HeatCFNAPI</code>, and endpoints within the {identity_service_first_ref} to facilitate these services.</p>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>The source {OpenStackPreviousInstaller} environment is running.</p>
+</li>
+<li>
+<p>The target {rhocp_long} environment is running.</p>
+</li>
+<li>
+<p>You adopted MariaDB and the {identity_service}.</p>
+</li>
+<li>
+<p>If your existing {orchestration} stacks contain resources from other services such as {networking_first_ref}, {compute_service_first_ref}, {object_storage_first_ref}, and so on, adopt those sevices before adopting the {orchestration}.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Retrieve the existing <code>auth_encryption_key</code> and <code>service</code> passwords. You use these passwords to patch the <code>osp-secret</code>. In the following example, the <code>auth_encryption_key</code> is used as <code>HeatAuthEncryptionKey</code> and the <code>service</code> password is used as <code>HeatPassword</code>, in the <strong>utility server</strong>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">HEAT_AUTH_ENCRYPTION_KEY_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatAuthEncryptionKey:' | awk -F ': ' '{ print $2; }')
+HEAT_AUTH_ENCRYPTION_KEY_BASE64=$(echo -n "$HEAT_AUTH_ENCRYPTION_KEY_PASSWORD" | base64)
+HEAT_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatPassword:' | awk -F ': ' '{ print $2; }')
+HEAT_PASSWORD_BASE64=$(echo -n "$HEAT_PASSWORD" | base64)
+HEAT_STACK_DOMAIN_ADMIN_PASSWORD=$(cat ~/overcloud-passwords.yaml | grep ' HeatStackDomainAdminPassword:' | awk -F ': ' '{ print $2; }')
+HEAT_STACK_DOMAIN_ADMIN_PASSWORD_BASE64=$(echo -n "$HEAT_STACK_DOMAIN_ADMIN_PASSWORD" | base64)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>osp-secret</code> to update the <code>HeatAuthEncryptionKey</code> and <code>HeatPassword</code> parameters. These values must match the values in the {OpenStackPreviousInstaller} {orchestration} configuration:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatAuthEncryptionKey', 'value': '$HEAT_AUTH_ENCRYPTION_KEY_BASE64'}]"
+oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatPassword', 'value': '$HEAT_PASSWORD_BASE64'}]"
+oc patch secret osp-secret --type='json' -p="[{'op': 'replace', 'path': '/data/HeatStackDomainAdminPassword', 'value': '$HEAT_STACK_DOMAIN_ADMIN_PASSWORD_BASE64'}]"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to deploy the {orchestration}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch '
+spec:
+  heat:
+    enabled: true
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      databaseAccount: heat
+      secret: osp-secret
+      memcachedInstance: memcached
+      passwordSelectors:
+        authEncryptionKey: HeatAuthEncryptionKey
+        service: HeatPassword
+        stackDomainAdminPassword: HeatStackDomainAdminPassword
+'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Verification</div>
+<ol class="arabic">
+<li>
+<p>Ensure that the statuses of all the CRs are <code>Setup complete</code>:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get Heat,HeatAPI,HeatEngine,HeatCFNAPI</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                           STATUS   MESSAGE
+heat.heat.openstack.org/heat   True     Setup complete
+
+NAME                                  STATUS   MESSAGE
+heatapi.heat.openstack.org/heat-api   True     Setup complete
+
+NAME                                        STATUS   MESSAGE
+heatengine.heat.openstack.org/heat-engine   True     Setup complete
+
+NAME                                        STATUS   MESSAGE
+heatcfnapi.heat.openstack.org/heat-cfnapi   True     Setup complete</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the {orchestration} is registered in the {identity_service}:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack service list -c Name -c Type</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+------------+----------------+
+| Name       | Type           |
++------------+----------------+
+| heat       | orchestration  |
+| glance     | image          |
+| heat-cfn   | cloudformation |
+| ceilometer | Ceilometer     |
+| keystone   | identity       |
+| placement  | placement      |
+| cinderv3   | volumev3       |
+| nova       | compute        |
+| neutron    | network        |
++------------+----------------+</pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack endpoint list --service=heat -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>- Enabled: true
+  ID: 1da7df5b25b94d1cae85e3ad736b25a5
+  Interface: public
+  Region: regionOne
+  Service Name: heat
+  Service Type: orchestration
+  URL: http://heat-api-public-openstack-operators.apps.okd.bne-shift.net/v1/%(tenant_id)s
+- Enabled: true
+  ID: 414dd03d8e9d462988113ea0e3a330b0
+  Interface: internal
+  Region: regionOne
+  Service Name: heat
+  Service Type: orchestration
+  URL: http://heat-api-internal.openstack-operators.svc:8004/v1/%(tenant_id)s</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the {orchestration} engine services are running:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it openstackclient -- openstack orchestration service list -f yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>- Binary: heat-engine
+  Engine ID: b16ad899-815a-4b0c-9f2e-e6d9c74aa200
+  Host: heat-engine-6d47856868-p7pzz
+  Hostname: heat-engine-6d47856868-p7pzz
+  Status: up
+  Topic: engine
+  Updated At: '2023-10-11T21:48:01.000000'
+- Binary: heat-engine
+  Engine ID: 887ed392-0799-4310-b95c-ac2d3e6f965f
+  Host: heat-engine-6d47856868-p7pzz
+  Hostname: heat-engine-6d47856868-p7pzz
+  Status: up
+  Topic: engine
+  Updated At: '2023-10-11T21:48:00.000000'
+- Binary: heat-engine
+  Engine ID: 26ed9668-b3f2-48aa-92e8-2862252485ea
+  Host: heat-engine-6d47856868-p7pzz
+  Hostname: heat-engine-6d47856868-p7pzz
+  Status: up
+  Topic: engine
+  Updated At: '2023-10-11T21:48:00.000000'
+- Binary: heat-engine
+  Engine ID: 1011943b-9fea-4f53-b543-d841297245fd
+  Host: heat-engine-6d47856868-p7pzz
+  Hostname: heat-engine-6d47856868-p7pzz
+  Status: up
+  Topic: engine
+  Updated At: '2023-10-11T21:48:01.000000'</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

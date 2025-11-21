@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Performing a fast-forward upgrade on Compute services :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+    <script>var uiRootPath = '../../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="proc_performing-a-fast-forward-upgrade-on-compute-services.html">Performing a fast-forward upgrade on Compute services</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Performing a fast-forward upgrade on Compute services</h1>
+<div class="paragraph _abstract">
+<p>You must upgrade the Compute services from {rhos_prev_long} {rhos_prev_ver} to {rhos_long} {rhos_curr_ver} on the control plane and data plane by completing the following tasks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Update the cell1 Compute data plane services version.</p>
+</li>
+<li>
+<p>Remove pre-fast-forward upgrade workarounds from the Compute control plane services and Compute data plane services.</p>
+</li>
+<li>
+<p>Run Compute database online migrations to update live data.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Prerequisites</div>
+<ul>
+<li>
+<p>Define the shell variables necessary to apply the fast-forward upgrade commands for each {compute_service} cell.</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">DEFAULT_CELL_NAME="cell1"
+RENAMED_CELLS="$DEFAULT_CELL_NAME"
+
+declare -A PODIFIED_DB_ROOT_PASSWORD
+for CELL in $(echo "super $RENAMED_CELLS"); do
+  PODIFIED_DB_ROOT_PASSWORD[$CELL]=$(oc get -o json secret/osp-secret | jq -r .data.DbRootPassword | base64 -d)
+done</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Complete the steps in <a href="#adopting-compute-services-to-the-data-plane_data-plane">Adopting Compute services to the {rhos_acro} data plane</a>.</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Wait for the {compute_service} data plane services version to update for all the cells:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $RENAMED_CELLS); do
+oc exec openstack-$CELL-galera-0 -c galera -- mysql -rs -uroot -p"${PODIFIED_DB_ROOT_PASSWORD[$CELL]}" \
+    -e "select a.version from nova_${CELL}.services a join nova_${CELL}.services b where a.version!=b.version and a.binary='nova-compute' and a.deleted=0;"
+done</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The query returns an empty result when the update is completed. No downtime is expected for virtual machine workloads.</p>
+</div>
+<div class="paragraph">
+<p>Review any errors in the nova Compute agent logs on the data plane, and the <code>nova-conductor</code> journal records on the control plane.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Patch the <code>OpenStackControlPlane</code> CR to remove the pre-fast-forward upgrade workarounds from the Compute control plane services:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rm -f celltemplates
+for CELL in $(echo $RENAMED_CELLS); do
+cat &gt;&gt; celltemplates &lt;&lt; EOF
+        ${CELL}:
+          metadataServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=false
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=false
+EOF
+done
+
+cat &gt; oscp-patch.yaml &lt;&lt; EOF
+spec:
+  nova:
+    template:
+      apiServiceTemplate:
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=false
+      metadataServiceTemplate:
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=false
+      schedulerServiceTemplate:
+        customServiceConfig: |
+          [workarounds]
+          disable_compute_service_check_for_ffu=false
+      cellTemplates:
+        cell0:
+          conductorServiceTemplate:
+            customServiceConfig: |
+              [workarounds]
+              disable_compute_service_check_for_ffu=false
+EOF
+cat celltemplates &gt;&gt; oscp-patch.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Apply the patch file:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch openstackcontrolplane openstack --type=merge --patch-file=oscp-patch.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait until the Compute control plane services CRs are ready:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready --timeout=300s Nova/nova</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Remove the pre-fast-forward upgrade workarounds from the Compute data plane services:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch cm nova-cells-global-config --type=json -p='[{"op": "replace", "path": "/data/99-nova-compute-cells-workarounds.conf", "value": "[workarounds]\n"}]'
+oc apply -f - &lt;&lt;EOF
+---
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack-nova-compute-ffu-cell1
+spec:
+  nodeSets:
+    - compute0-1-set
+  servicesOverride:
+    - nova-cell1
+backoffLimit: 3
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the Compute data plane services to be ready for all the cells:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for condition=Ready openstackdataplanedeployments --all --timeout=5m</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run Compute database online migrations to complete the upgrade:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec -it nova-cell0-conductor-0 -- nova-manage db online_data_migrations
+for CELL in $(echo $RENAMED_CELLS); do
+oc exec -it nova-${CELL}-conductor-0 -- nova-manage db online_data_migrations
+done</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Discover the Compute hosts in the cells:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify if the existing test VM instance is running:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-2-compute-1 2&gt;&amp;1 || echo FAIL
+${BASH_ALIASES[openstack]} server --os-compute-api-version 2.48 show --diagnostics server-1-compute-0 2&gt;&amp;1 || echo FAIL</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<div class="title">Next steps</div>
+<p>After the data plane adoption, the Compute hosts continue to run Red Hat Enterprise Linux (RHEL) {rhel_prev_ver}. To take advantage of RHEL {rhel_curr_ver}, perform a minor update procedure after finishing the adoption procedure.</p>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
