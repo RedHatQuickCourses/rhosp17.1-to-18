@@ -1,6 +1,6 @@
 site:
   title: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism
-  start_page: REPLACEREPONAME::index.adoc
+  start_page: rhosp17.1-to-1::index.adoc
 
 content:
   sources:
