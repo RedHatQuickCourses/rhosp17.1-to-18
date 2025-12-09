@@ -3,7 +3,7 @@
 == Instructions to Launch Your Lab on the Red Hat Online Learning (ROLE) Platform
 
 . **Log in** to the xref:#ROLE-Portal-Links[ROLE platform]
-. **Search** for the catalog entry: **FIXME Lab Catalog Name**.
+. **Search** for the catalog entry: **Upgrade a Red Hat OpenStack Platform (RHOSP) 17.1 to Red Hat OpenStack Services on OpenShift (RHOSO) 18 using the Adoption Mechanis**.
 . **Click** on the **Launch** button for the catalog entry in the search results.
 . On the Course page, **click** the **Lab Environment** tab.
 . Click on the **Create** button on the Lab Environment page to launch the lab.
