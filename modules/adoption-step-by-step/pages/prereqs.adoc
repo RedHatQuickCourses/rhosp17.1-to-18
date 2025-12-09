@@ -156,12 +156,46 @@ spec:
 EOF
 ----
 
+Subscribe to the *cert-manager* Operator:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: gls-catalog-cs
+  sourceNamespace: openshift-marketplace
+EOF
+----
+
+Confirm the *cert-manager* installplan is in the namespace:
+
+[source,bash,role=execute]
+----
+oc get installplan -n cert-manager-operator
+----
+
 Confirm the *cert-manager* operator is installed:
 
 [source,bash,role=execute]
 ----
 oc get clusterserviceversion -n cert-manager-operator \
- -o custom-columns=Name:.metadata.name,Phase:.status.phase
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase -w
+----
+
+Type Control + C when you see that the operator has moved to Succeded state
+
+.Sample Output
+----
+Name                                              Phase
+cert-manager-operator.v1.17.0           Succeeded
 ----
 
 Verify that cert-manager pods are up and running by entering the following command:

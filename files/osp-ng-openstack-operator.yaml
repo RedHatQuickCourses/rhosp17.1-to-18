@@ -16,5 +16,5 @@ spec:
   channel: stable-v1.0
   installPlanApproval: Manual
   name: openstack-operator
-  source: cs-redhat-operator-index
+  source: gls-catalog-cs
   sourceNamespace: openshift-marketplace
