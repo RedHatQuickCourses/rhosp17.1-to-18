@@ -316,12 +316,50 @@ EOF</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>Subscribe to the <strong>cert-manager</strong> Operator:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: gls-catalog-cs
+  sourceNamespace: openshift-marketplace
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm the <strong>cert-manager</strong> installplan is in the namespace:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get installplan -n cert-manager-operator</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Confirm the <strong>cert-manager</strong> operator is installed:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusterserviceversion -n cert-manager-operator \
- -o custom-columns=Name:.metadata.name,Phase:.status.phase</code></pre>
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase -w</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type Control + C when you see that the operator has moved to Succeded state</p>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre>Name                                              Phase
+cert-manager-operator.v1.17.0           Succeeded</pre>
 </div>
 </div>
 <div class="paragraph">
