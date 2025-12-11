@@ -4,4 +4,5 @@ version: 1
 nav:
 - modules/ROOT/nav.adoc
 - modules/LABENV/nav.adoc
+- modules/lab_environment/nav.adoc
 - modules/adoption-step-by-step/nav.adoc
