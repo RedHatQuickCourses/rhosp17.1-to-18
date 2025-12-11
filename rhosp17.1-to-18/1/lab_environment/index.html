@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Network Diagram of the Lab Environment :: Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</title>
+    <link rel="prev" href="../LABENV/index-lab-role.html">
+    <link rel="next" href="../adoption-step-by-step/index.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhosp17.1-to-18" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index-lab-role.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Network Diagram of the Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adoption-step-by-step/index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/prereqs.html">Perform OpenShift Prerequisite</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/install-operators.html">Install the Red Hat OpenStack Platform Service Operators</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/network-isolation.html">Prepare OCP for OpenStack Network Isolation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/adoption-overview.html">RHOSP 17.1 to RHOSO 18 adoption overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/migrating-databases.html">Migrating RHOSP 17.1 Database to RHOSO 18</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/adoption-cp.html">Control plane Adoption</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adoption-step-by-step/adoption-dp.html">Data plane Adoption</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism</a></li>
+    <li><a href="index.html">Network Diagram of the Lab Environment</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Network Diagram of the Lab Environment</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document describes the lab environment for the Red Hat OpenStack Platform 17.1 to 18 migration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The lab environment consists of two main components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>RHOSP 17.1</strong> - The source environment RHOSP 17.1 to be adopted to RHOSO 18</p>
+</li>
+<li>
+<p><strong>RHOSO 18</strong> - The target environment RHOSO 18 to be created from the RHOSP 17.1 environment</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The environment includes multiple node types serving different roles in the OpenStack infrastructure, with dedicated networks for various types of traffic including student, storage, management, tenant, and external connectivity.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_network_diagram"><a class="anchor" href="#_network_diagram"></a>Network Diagram</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following diagram illustrates the network topology and connections between the RHOSP 17.1 environment and the future RHOSO 18 environment:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../common/_images/environment.png" alt="Lab Environment Network Diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>The diagram shows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Lab Environment:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Workstation (Jump host for Student network access)</p>
+</li>
+<li>
+<p>Utility node (Multiple network connections)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>RHOSP 17.1 Components:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Director node (OpenStack deployment and management)</p>
+</li>
+<li>
+<p>RHOSP 17.1 Controllers (High availability cluster)</p>
+</li>
+<li>
+<p>Networker node (Network services)</p>
+</li>
+<li>
+<p>RHOSP 17.1 Compute nodes (Virtualization hosts)</p>
+</li>
+<li>
+<p>Ceph storage cluster</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>RHOSO 18 Components:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>OCP master/workers (Running containerized OpenStack services)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Network Segments:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Classroom Network (172.25.252.0/24)</p>
+</li>
+<li>
+<p>Student Network (172.25.250.0/24) - Acting as an external network</p>
+</li>
+<li>
+<p>Storage Network (192.168.50.0/24)</p>
+</li>
+<li>
+<p>Storage Management Network (192.168.51.0/24) - Not used</p>
+</li>
+<li>
+<p>Internal API Network (192.168.52.0/24)</p>
+</li>
+<li>
+<p>Tenant Network (192.168.53.0/24)</p>
+</li>
+<li>
+<p>Control Plane Network (172.25.249.0/24)</p>
+</li>
+<li>
+<p>External2 Network (10.1.0.0/16) - Not used</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_network_configuration"><a class="anchor" href="#_network_configuration"></a>Network Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following table provides detailed IP address assignments for each node across all network segments:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Node</th>
+<th class="tableblock halign-left valign-top">Classroom Network 172.25.252.0/24</th>
+<th class="tableblock halign-left valign-top">Student Network 172.25.250.0/24</th>
+<th class="tableblock halign-left valign-top">Storage Network 192.168.50.0/24</th>
+<th class="tableblock halign-left valign-top">Storage Mgmt Network 192.168.51.0/24</th>
+<th class="tableblock halign-left valign-top">Internal API Network 192.168.52.0/24</th>
+<th class="tableblock halign-left valign-top">Tenant Network 192.168.53.0/24</th>
+<th class="tableblock halign-left valign-top">Control Plane Network 172.25.249.0/24</th>
+<th class="tableblock halign-left valign-top">External2 Network 10.1.0.0/16</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Classroom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.252.254</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.252.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.254</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Workstation</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.9</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Utility</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.253</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.254</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.254</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.253</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.1.0.254</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Registry</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.249</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.50</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.1.0.249</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.251</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.40</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.1.0.40</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Networker</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.250</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.250</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.250</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.250</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Power</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.30</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.30</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IDM</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.248</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.40</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.1.0.253</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Master01</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.10</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Master02</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.11</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Master03</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.12</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Director</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.15</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controller0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.16</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controller1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.17</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controller2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.18</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compute0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.19</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compute1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.249.20</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compute2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.51.21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.52.21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.53.21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.25.249.21</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ceph</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.25.250.252</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.50.30</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.1.0.252</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../LABENV/index-lab-role.html">Lab Environment</a></span>
+  <span class="next"><a href="../adoption-step-by-step/index.html">Upgrade a RHOSP 17.1 to RHOSO 18 using the adoption mechanism through an example</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
