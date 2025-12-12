@@ -33,6 +33,9 @@ CONTROLLER2_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.1
 CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.18"
 ----
 
+[NOTE]
+Click Yes, if the message "The authenticity of host can't be established" appears. This is expected as the SSH key is not known to the utility host.
+
 .Procedure
 
 . Disable {OpenStackShort} control plane services:

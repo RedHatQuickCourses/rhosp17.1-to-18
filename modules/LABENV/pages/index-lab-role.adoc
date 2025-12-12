@@ -9,6 +9,7 @@
 . Click on the **Create** button on the Lab Environment page to launch the lab.
 . Wait for the lab creation process to complete.
 . When the lab is created, refer to the **SSH Private Key & Instructions** on the page to access your lab.
+. The lab environment will be ready in approximately 40-50 minutes.
 
 [[ROLE-Portal-Links]]
 === ROLE Portal Links

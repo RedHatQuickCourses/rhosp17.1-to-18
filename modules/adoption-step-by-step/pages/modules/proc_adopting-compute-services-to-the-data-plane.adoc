@@ -10,10 +10,11 @@ Adopt your Compute (nova) services to the {rhos_long} data plane.
 
 * You have stopped the remaining control plane nodes, repositories, and packages on the {compute_service_first_ref} hosts. For more information, see xref:stopping-infrastructure-management-and-compute-services_{context}[Stopping infrastructure management and Compute services].
 * You have configured the Ceph back end for the `NovaLibvirt` service. For more information, see xref:configuring-a-ceph-backend_migrating-databases[Configuring a Ceph back end].
-* You have configured IP Address Management (IPAM):
+* You have configured IP Address Management (IPAM). On the *utility host*, execute the following command:
 +
 [source,bash,role=execute]
 ----
+cd ~/labrepo/files
 oc apply -f osp-ng-dataplane-netconfig.yaml
 ----
 +
@@ -218,7 +219,7 @@ You do not need to reference the `subscription-manager` secret in the `dataSourc
 The secret is already passed in with a node-specific `OpenStackDataPlaneNodeSet` CR in the `ansibleVarsFrom` property in the `nodeTemplate` field.
 
 
-. Create the `OpenStackDataPlaneNodeSet` CRs corresponding to compute02 and compute03:
+. Create the `OpenStackDataPlaneNodeSet` CRs corresponding to `overcloud-novacompute-0` and `overcloud-novacompute-1`:
 +
 [source,bash,role=execute,subs=attributes]
 ----
@@ -324,7 +325,7 @@ spec:
 EOF
 ----
 
-. When the clean-up is finished, deploy the `OpenStackDataPlaneDeployment` CR:
+. When the clean-up is finished, deploy the `OpenStackDataPlaneDeployment` CR that performs the dataplane adoption:
 +
 [source,bash,role=execute]
 ----
@@ -332,7 +333,7 @@ oc apply -f - <<EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
-  name: openstack
+  name: dataplane-adoption
 spec:
   nodeSets:
   - compute0-1-set
@@ -364,31 +365,6 @@ oc logs -l app=openstackansibleee -f --max-log-requests 20
 ----
 oc wait --for condition=Ready osdpns/compute0-1-set --timeout=30m
 ----
-
-. Verify that the {networking_first_ref} agents are running:
-+
-[source,bash,role=execute]
-----
-oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
-| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
-| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
-| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)    | UP    | neutron-ovn-metadata-agent |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
-----
-
-[NOTE]
-====
-After you remove all the services from the {OpenStackPreviousInstaller} cell controllers, you can decomission the cell controllers.
-To create new cell Compute nodes, you re-provision the decomissioned controllers as new data plane hosts and add them to the node sets of corresponding or new cells.
-====
 
 .Next steps
 

@@ -18,9 +18,6 @@ To adopt the {compute_service_first_ref}, you patch an existing `OpenStackContro
 [source,bash,role=execute]
 ----
 alias openstack="oc exec -t openstackclient -- openstack"
-
-DEFAULT_CELL_NAME="cell3"
-RENAMED_CELLS="cell1 cell2 $DEFAULT_CELL_NAME"
 ----
 +
 ** The source cloud `default` cell takes a new `$DEFAULT_CELL_NAME`. In a multi-cell adoption scenario, the 'default' cell might retain its original name,`DEFAULT_CELL_NAME=default`, or become renamed as a cell that is free for use. Do not use other existing cell names for `DEFAULT_CELL_NAME`, except for `default`.

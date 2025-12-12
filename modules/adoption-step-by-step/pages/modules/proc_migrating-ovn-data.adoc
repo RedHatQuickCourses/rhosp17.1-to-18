@@ -154,7 +154,7 @@ PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name
 ----
 
 . Upgrade the database schema for the backup files:
-.. If you did not enable TLS everywhere, use the following command:
+.. As TLS isn't enabled in this lab, use the following command:
 +
 [source,bash,role=execute]
 ----
@@ -163,7 +163,7 @@ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB
 ----
 
 . Restore the database backup to the new OVN database servers:
-.. If you did not enable TLS everywhere, use the following command:
+.. As TLS isn't enabled in this lab, use the following command:
 +
 [source,bash,role=execute]
 ----

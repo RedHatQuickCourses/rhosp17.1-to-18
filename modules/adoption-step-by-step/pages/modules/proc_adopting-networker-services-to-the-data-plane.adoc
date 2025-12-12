@@ -16,6 +16,11 @@ parameter set to `enable-chassis-as-gw` is considered OVN gateway chassis. In th
 [source,bash,role=execute]
 ----
 oc exec openstackclient -- openstack network agent list
+----
++
+Sample output:
++
+----
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+

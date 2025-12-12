@@ -12,11 +12,7 @@ Some prerequisites needed to install Red Hat OpenStack Services on OpenShift (RH
 * Example YAML files are available in this repository which can be cloned or copy and pasted for use.
 For ease of instructions it will be assumed the repo has been cloned
 
-=== Install the Prerequisite Operators
-
-There are three operators that are required to be installed before you can install the OpenStack Operator, the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli[NMState  Operator^] the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install[MetalLB  Operator^]  and the https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html[Cert-Manager + Operator^]
-
-==== Accessing the Cluster
+=== Accessing the Cluster
 
 . From the workstation, access to the utility host by executing the following command:
 +
@@ -25,6 +21,36 @@ There are three operators that are required to be installed before you can insta
 ssh utility
 ----
 
+. The lab environment will be ready in approximately 40-50 minutes. Execute the following command to check the status of the lab environment:
++
+[source,bash,role=execute,subs=attributes]
+----
+sh wait.sh
+----
+
+. Sample Output
+----
+API is up
+Cluster version is 4.18.6
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+API is up
+Cluster version is 4.18.6
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+Lock file detected: /.etcd-migration-ocp4. Etcd migration already completed
+Starting and enabling the status-api service to notify classroom API that OCP cluster is ready...
+Service status-api started and enabled
+[OK] OpenShift cluster ready.
+Running wait hook.
+0
+----
 . Make sure you can reach out to the OpenShift cluster, for instance, by listing the nodes in your cluster:
 +
 [source,bash,role=execute]
@@ -39,6 +65,10 @@ master01   Ready    control-plane,master,worker   163d   v1.31.6
 master02   Ready    control-plane,master,worker   163d   v1.31.6
 master03   Ready    control-plane,master,worker   163d   v1.31.6
 ----
+
+=== Install the Prerequisite Operators
+
+There are three operators that are required to be installed before you can install the OpenStack Operator, the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli[NMState  Operator^] the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install[MetalLB  Operator^]  and the https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html[Cert-Manager + Operator^]
 
 ==== NMState Operator
 

@@ -131,9 +131,12 @@ CONTROLLER2_IP is then 172.25.249.17
 CONTROLLER3_IP is then 172.25.249.18
 ----
 
-. In the *director host*, copy the overcloud-passwords from the director node to the student user home directory:
+
+.Passwords file and credentials preparation
+
+. On the *director host*, copy the overcloud passwords and SSH keys to the student user home directory:
 +
-[source,bash,role=execute,subs=attributes]
+[source,bash,role=execute,subs=attributes+]
 ----
 sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
 sudo chown student:student /home/student/overcloud-passwords.yaml
@@ -142,31 +145,33 @@ sudo chown student:student /home/student/.ssh/id_rsa_tripleo
 sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub
 ----
 
-. In the *workstation host*, copy the overcloud-passwords from the director node to the utiliy node:
+. On the *workstation host*, copy the overcloud passwords and SSH keys from the director node to the utility node:
 +
-[source,bash,role=execute,subs=attributes]
+[source,bash,role=execute,subs=attributes+]
 ----
 scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
 scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/
 ----
 
-. In the *utility host* log in to the Red Hat registry and create the secret, it will be used to pull the helper pod images:
+.Red Hat Registry authentication
+
+. On the *utility host*, extract the pull secret from OpenShift configuration:
 +
-[source,bash,role=execute,subs=attributes]
+[source,bash,role=execute,subs=attributes+]
 ----
 oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile
 ----
 
-. Authenticate to the Red Hat registry:
+. Authenticate to the Red Hat registry using the extracted credentials:
 +
-[source,bash,role=execute,subs=attributes]
+[source,bash,role=execute,subs=attributes+]
 ----
 podman login registry.redhat.io --authfile authfile
 ----
 
-. Set the pull secret:
+. Update the OpenShift pull secret with the authenticated credentials:
 +
-[source,bash,role=execute,subs=attributes]
+[source,bash,role=execute,subs=attributes+]
 ----
 oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile
 ----
@@ -209,7 +214,7 @@ The source cloud always uses the same password for cells databases. For that rea
 
 .Procedure
 
-. Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:
+. On the *utility host*, export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:
 +
 [source,bash,role=execute]
 ----
@@ -274,12 +279,28 @@ for CELL in $(echo $CELLS); do
 done
 ----
 
+. Configure the utility host to access the control plane:
++
+[source,bash,role=execute]
+----
+sudo -i
+nmcli con delete c5ca8081-6db2-4602-4b46-d771f4330a6d
+nmcli con delete 9096615b-bf89-34e5-8abc-f1b87533e849
+nmcli con add type ethernet ifname eth3 con-name eth3-static \
+  ipv4.addresses 172.25.249.253/24 \
+  ipv4.method manual autoconnect yes
+logout
+----
+
 . Get the list of the mapped {compute_service} cells:
 +
 [source,bash,role=execute]
 ----
 export PULL_OPENSTACK_CONFIGURATION_NOVAMANAGE_CELL_MAPPINGS=$($CONTROLLER1_SSH sudo podman exec -it nova_conductor nova-manage cell_v2 list_cells)
 ----
+
+[NOTE]
+Click Yes, if the message "The authenticity of host can't be established" appears. This is expected as the SSH key is not known to the utility host.
 
 . Store the exported variables for future use:
 +
