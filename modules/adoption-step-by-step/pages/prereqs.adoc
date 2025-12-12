@@ -170,7 +170,7 @@ spec:
   channel: stable-v1
   installPlanApproval: Automatic
   name: openshift-cert-manager-operator
-  source: gls-catalog-cs
+  source: cs-redhat-operator-index
   sourceNamespace: openshift-marketplace
 EOF
 ----
