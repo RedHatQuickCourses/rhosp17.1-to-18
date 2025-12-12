@@ -145,8 +145,15 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <p>Check for the nodes where <code>OVN Controller Gateway agent</code> agents are running. The list of agents varies depending on the services you enabled:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | XXX   | UP    | ovn-controller             |
@@ -157,7 +164,7 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 | 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
 | eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
 | ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
 </div>
 </div>
 </li>

@@ -126,7 +126,7 @@
 <article class="doc">
 <h1 class="page">Configuring a {Ceph} back end</h1>
 <div class="paragraph _abstract">
-<p>If your {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment uses a {Ceph} back end for any service, such as {image_service_first_ref}, {block_storage_first_ref}, {compute_service_first_ref}, or {rhos_component_storage_file_first_ref}, you must configure the custom resources (CRs) to use the same back end in the {rhos_long} {rhos_curr_ver} deployment.</p>
+<p>In this lab, your {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment uses a {Ceph} back end for any service, such as {image_service_first_ref}, {block_storage_first_ref}, {compute_service_first_ref}, or {rhos_component_storage_file_first_ref}, you must configure the custom resources (CRs) to use the same back end in the {rhos_long} {rhos_curr_ver} deployment.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -144,10 +144,7 @@ To run <code>ceph</code> commands, you must use SSH to connect to a {Ceph} node 
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>The <code>OpenStackControlPlane</code> CR is created.</p>
-</li>
-<li>
-<p>If your {OpenStackShort} {rhos_prev_ver} deployment uses the {rhos_component_storage_file}, the openstack keyring is updated.
+<p>The <code>OpenStackControlPlane</code> CR is created.
 Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and <code>ceph.conf</code> file and propagate the secret to all the services that need it.</p>
 </li>
 <li>
@@ -161,6 +158,18 @@ CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</code></pre>
 </div>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Click Yes, if the message "The authenticity of host can&#8217;t be established" appears. This is expected as the SSH key is not known to the utility host.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <div class="title">Procedure</div>

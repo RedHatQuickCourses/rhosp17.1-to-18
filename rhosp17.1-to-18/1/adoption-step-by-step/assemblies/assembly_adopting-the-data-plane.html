@@ -242,10 +242,11 @@ done</code></pre>
 <p>You have configured the Ceph back end for the <code>NovaLibvirt</code> service. For more information, see <a href="#configuring-a-ceph-backend_migrating-databases">Configuring a Ceph back end</a>.</p>
 </li>
 <li>
-<p>You have configured IP Address Management (IPAM):</p>
+<p>You have configured IP Address Management (IPAM). On the <strong>utility host</strong>, execute the following command:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-netconfig.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/labrepo/files
+oc apply -f osp-ng-dataplane-netconfig.yaml</code></pre>
 </div>
 </div>
 </li>
@@ -529,7 +530,7 @@ The secret is already passed in with a node-specific <code>OpenStackDataPlaneNod
 </div>
 </li>
 <li>
-<p>Create the <code>OpenStackDataPlaneNodeSet</code> CRs corresponding to compute02 and compute03:</p>
+<p>Create the <code>OpenStackDataPlaneNodeSet</code> CRs corresponding to <code>overcloud-novacompute-0</code> and <code>overcloud-novacompute-1</code>:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f osp-ng-dataplane-node-set-deploy-adoption-compute.yaml</code></pre>
@@ -668,14 +669,14 @@ EOF</code></pre>
 </div>
 </li>
 <li>
-<p>When the clean-up is finished, deploy the <code>OpenStackDataPlaneDeployment</code> CR:</p>
+<p>When the clean-up is finished, deploy the <code>OpenStackDataPlaneDeployment</code> CR that performs the dataplane adoption:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
-  name: openstack
+  name: dataplane-adoption
 spec:
   nodeSets:
   - compute0-1-set
@@ -723,42 +724,7 @@ add them in the <code>nodeSets</code> list in this step, or create separate <cod
 </div>
 </div>
 </li>
-<li>
-<p>Verify that the {networking_first_ref} agents are running:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
-| ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
-| b182ecee-95ff-4c10-8698-23936d97b3d7 | OVN Controller agent         | overcloud-controller-2.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| 238beac8-d417-4098-b712-5350823f08d5 | OVN Controller agent         | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | ovn-controller             |
-| bd7fbc34-aca7-5f0b-8fba-abe4ba279c8a | OVN Metadata agent           | overcloud-novacompute-0.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
-| 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | :-)   | UP    | ovn-controller             |
-| 248abd88-f08e-441f-8560-aa5520757d68 | OVN Controller Gateway agent | overcloud-networker.localdomain     |                   | :-)   | UP    | ovn-controller             |
-| ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-| eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)    | UP    | neutron-ovn-metadata-agent |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
-</div>
-</div>
-</li>
 </ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>After you remove all the services from the {OpenStackPreviousInstaller} cell controllers, you can decomission the cell controllers.
-To create new cell Compute nodes, you re-provision the decomissioned controllers as new data plane hosts and add them to the node sets of corresponding or new cells.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 <div class="ulist">
 <div class="title">Next steps</div>
@@ -992,8 +958,15 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 <p>Check for the nodes where <code>OVN Controller Gateway agent</code> agents are running. The list of agents varies depending on the services you enabled:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec openstackclient -- openstack network agent list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ID                                   | Agent Type                   | Host                                | Availability Zone | Alive | State | Binary                     |
 +--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+
 | ad88316a-0f35-4a6e-87c8-db6a792e566f | OVN Controller agent         | overcloud-controller-1.localdomain  |                   | XXX   | UP    | ovn-controller             |
@@ -1004,7 +977,7 @@ parameter set to <code>enable-chassis-as-gw</code> is considered OVN gateway cha
 | 3fb27b31-9381-42be-89ed-b3a6f6f6a328 | OVN Controller agent         | overcloud-controller-0.localdomain  |                   | XXX   | UP    | ovn-controller             |
 | eb4f018e-91ac-5f05-b0c2-a7c16935fe78 | OVN Metadata agent           | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | neutron-ovn-metadata-agent |
 | ef0ba743-2339-42b4-9535-21f70b8e5d5a | OVN Controller agent         | overcloud-novacompute-1.localdomain |                   | :-)   | UP    | ovn-controller             |
-+--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</code></pre>
++--------------------------------------+------------------------------+-------------------------------------+-------------------+-------+-------+----------------------------+</pre>
 </div>
 </div>
 </li>

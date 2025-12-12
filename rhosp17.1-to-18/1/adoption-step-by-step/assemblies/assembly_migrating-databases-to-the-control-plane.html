@@ -291,10 +291,17 @@ CONTROLLER2_IP is then 172.25.249.17
 CONTROLLER3_IP is then 172.25.249.18</pre>
 </div>
 </div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
 <div class="olist arabic">
+<div class="title">Passwords file and credentials preparation</div>
 <ol class="arabic">
 <li>
-<p>In the <strong>director host</strong>, copy the overcloud-passwords from the director node to the student user home directory:</p>
+<p>On the <strong>director host</strong>, copy the overcloud passwords and SSH keys to the student user home directory:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo cp /home/stack/overcloud-deploy/overcloud/overcloud-passwords.yaml /home/student/overcloud-passwords.yaml
@@ -306,7 +313,7 @@ sudo chown student:student /home/student/.ssh/id_rsa_tripleo.pub</code></pre>
 </div>
 </li>
 <li>
-<p>In the <strong>workstation host</strong>, copy the overcloud-passwords from the director node to the utiliy node:</p>
+<p>On the <strong>workstation host</strong>, copy the overcloud passwords and SSH keys from the director node to the utility node:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">scp student@172.25.250.15:~/overcloud-passwords.yaml lab@utility:~/overcloud-passwords.yaml
@@ -314,16 +321,21 @@ scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre
 </div>
 </div>
 </li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Red Hat Registry authentication</div>
+<ol class="arabic">
 <li>
-<p>In the <strong>utility host</strong> log in to the Red Hat registry and create the secret, it will be used to pull the helper pod images:</p>
+<p>On the <strong>utility host</strong>, extract the pull secret from OpenShift configuration:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d > authfile</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret/pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d &gt; authfile</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Authenticate to the Red Hat registry:</p>
+<p>Authenticate to the Red Hat registry using the extracted credentials:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">podman login registry.redhat.io --authfile authfile</code></pre>
@@ -331,21 +343,13 @@ scp student@172.25.250.15:~/.ssh/id_rsa_tripleo* lab@utility:~/.ssh/</code></pre
 </div>
 </li>
 <li>
-<p>Set the pull secret:</p>
+<p>Update the OpenShift pull secret with the authenticated credentials:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=authfile</code></pre>
 </div>
 </div>
 </li>
-</ol>
-</div>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<div class="title">Prerequisites</div>
-<ol class="arabic">
 <li>
 <p>In the <strong>utility host</strong>, define the following shell variables. Replace the example values with values that are correct for your environment:</p>
 <div class="listingblock execute">
@@ -379,9 +383,6 @@ SOURCE_MARIADB_IP[default]=192.168.52.55</code></pre>
 </li>
 </ol>
 </div>
-</li>
-</ul>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -398,7 +399,7 @@ The source cloud always uses the same password for cells databases. For that rea
 <div class="title">Procedure</div>
 <ol class="arabic">
 <li>
-<p>Export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:</p>
+<p>On the <strong>utility host</strong>, export the shell variables for the following outputs and test the connection to the {OpenStackShort} database:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">unset PULL_OPENSTACK_CONFIGURATION_DATABASES
@@ -475,6 +476,20 @@ done</code></pre>
 </div>
 </li>
 <li>
+<p>Configure the utility host to access the control plane:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i
+nmcli con delete c5ca8081-6db2-4602-4b46-d771f4330a6d
+nmcli con delete 9096615b-bf89-34e5-8abc-f1b87533e849
+nmcli con add type ethernet ifname eth3 con-name eth3-static \
+  ipv4.addresses 172.25.249.253/24 \
+  ipv4.method manual autoconnect yes
+logout</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Get the list of the mapped {compute_service} cells:</p>
 <div class="listingblock execute">
 <div class="content">
@@ -482,6 +497,22 @@ done</code></pre>
 </div>
 </div>
 </li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Click Yes, if the message "The authenticity of host can&#8217;t be established" appears. This is expected as the SSH key is not known to the utility host.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Store the exported variables for future use:</p>
 <div class="listingblock execute">
@@ -713,7 +744,7 @@ openstack   Unknown   OpenStackControlPlane Client not started</pre>
 <h2 id="configuring-a-ceph-backend_migrating-databases"><a class="anchor" href="#configuring-a-ceph-backend_migrating-databases"></a>Configuring a {Ceph} back end</h2>
 <div class="sectionbody">
 <div class="paragraph _abstract">
-<p>If your {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment uses a {Ceph} back end for any service, such as {image_service_first_ref}, {block_storage_first_ref}, {compute_service_first_ref}, or {rhos_component_storage_file_first_ref}, you must configure the custom resources (CRs) to use the same back end in the {rhos_long} {rhos_curr_ver} deployment.</p>
+<p>In this lab, your {rhos_prev_long} ({OpenStackShort}) {rhos_prev_ver} deployment uses a {Ceph} back end for any service, such as {image_service_first_ref}, {block_storage_first_ref}, {compute_service_first_ref}, or {rhos_component_storage_file_first_ref}, you must configure the custom resources (CRs) to use the same back end in the {rhos_long} {rhos_curr_ver} deployment.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -731,10 +762,7 @@ To run <code>ceph</code> commands, you must use SSH to connect to a {Ceph} node 
 <div class="title">Prerequisites</div>
 <ul>
 <li>
-<p>The <code>OpenStackControlPlane</code> CR is created.</p>
-</li>
-<li>
-<p>If your {OpenStackShort} {rhos_prev_ver} deployment uses the {rhos_component_storage_file}, the openstack keyring is updated.
+<p>The <code>OpenStackControlPlane</code> CR is created.
 Using the same user across all services makes it simpler to create a common {Ceph} secret that includes the keyring and <code>ceph.conf</code> file and propagate the secret to all the services that need it.</p>
 </li>
 <li>
@@ -748,6 +776,18 @@ CEPH_CONF=$($CEPH_SSH "sudo cat /etc/ceph/ceph.conf | base64 -w 0")</code></pre>
 </div>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Click Yes, if the message "The authenticity of host can&#8217;t be established" appears. This is expected as the SSH key is not known to the utility host.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <div class="title">Procedure</div>
@@ -859,6 +899,18 @@ CONTROLLER3_SSH="ssh -i /home/lab/.ssh/id_rsa_tripleo tripleo-admin@172.25.249.1
 </div>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Click Yes, if the message "The authenticity of host can&#8217;t be established" appears. This is expected as the SSH key is not known to the utility host.
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <div class="title">Procedure</div>
@@ -1189,19 +1241,6 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $CELLS); do
   oc rsh mariadb-copy-data mysql -h "${SOURCE_MARIADB_IP[$CELL]}" -uroot -p"${SOURCE_DB_ROOT_PASSWORD[$CELL]}" -e "SHOW databases;"
 done</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Check that <code>mysqlcheck</code> had no errors:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">for CELL in $(echo $CELLS); do
-  set +u
-  . ~/.source_cloud_exported_variables_$CELL
-  set -u
-done
-test -z "$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK"  || [ "x$PULL_OPENSTACK_CONFIGURATION_MYSQLCHECK_NOK" = "x " ] &amp;&amp; echo "OK" || echo "CHECK FAILED"</code></pre>
 </div>
 </div>
 </li>
@@ -1586,7 +1625,7 @@ PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
+<p>As TLS isn&#8217;t enabled in this lab, use the following command:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
@@ -1602,7 +1641,7 @@ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
+<p>As TLS isn&#8217;t enabled in this lab, use the following command:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"

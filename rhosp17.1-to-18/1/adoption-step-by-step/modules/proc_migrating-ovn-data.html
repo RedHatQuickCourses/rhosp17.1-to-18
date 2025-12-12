@@ -308,7 +308,7 @@ PODIFIED_OVSDB_SB_IP=$(oc get svc --selector "statefulset.kubernetes.io/pod-name
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
+<p>As TLS isn&#8217;t enabled in this lab, use the following command:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_NB_IP:6641 &gt; /backup/ovs-nb.ovsschema &amp;&amp; ovsdb-tool convert /backup/ovs-nb.db /backup/ovs-nb.ovsschema"
@@ -324,7 +324,7 @@ oc exec ovn-copy-data -- bash -c "ovsdb-client get-schema tcp:$PODIFIED_OVSDB_SB
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>If you did not enable TLS everywhere, use the following command:</p>
+<p>As TLS isn&#8217;t enabled in this lab, use the following command:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc exec ovn-copy-data -- bash -c "ovsdb-client restore tcp:$PODIFIED_OVSDB_NB_IP:6641 &lt; /backup/ovs-nb.db"
