@@ -284,6 +284,10 @@ done
 [source,bash,role=execute]
 ----
 sudo -i
+----
++
+[source,bash,role=execute]
+----
 nmcli con delete c5ca8081-6db2-4602-4b46-d771f4330a6d
 nmcli con delete 9096615b-bf89-34e5-8abc-f1b87533e849
 nmcli con add type ethernet ifname eth3 con-name eth3-static \
