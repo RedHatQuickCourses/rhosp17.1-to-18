@@ -479,8 +479,12 @@ done</code></pre>
 <p>Configure the utility host to access the control plane:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i
-nmcli con delete c5ca8081-6db2-4602-4b46-d771f4330a6d
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo -i</code></pre>
+</div>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">nmcli con delete c5ca8081-6db2-4602-4b46-d771f4330a6d
 nmcli con delete 9096615b-bf89-34e5-8abc-f1b87533e849
 nmcli con add type ethernet ifname eth3 con-name eth3-static \
   ipv4.addresses 172.25.249.253/24 \
