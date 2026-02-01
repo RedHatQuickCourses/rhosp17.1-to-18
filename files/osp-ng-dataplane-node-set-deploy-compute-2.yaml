@@ -3,7 +3,6 @@ kind: OpenStackDataPlaneNodeSet
 metadata:
   name: compute-2
 spec:
-  tlsEnabled: false
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
@@ -11,8 +10,8 @@ spec:
       value: "2"
   services:
     - redhat
-    - bootstrap
     - download-cache
+    - bootstrap
     - configure-network
     - validate-network
     - install-os
@@ -25,32 +24,32 @@ spec:
     - ovn
     - neutron-metadata
     - libvirt
-    - nova-cell1
-  preProvisioned: true
+    - nova
   networkAttachments:
     - ctlplane
+  preProvisioned: true
   nodes:
-      overcloud-novacompute-1:
-        hostName: overcloud-novacompute-1.localdomain
+      overcloud-novacompute-2:
+        hostName: overcloud-novacompute-2.localdomain
         ansible:
-          ansibleHost: 172.25.249.22
+          ansibleHost: 172.25.249.21
         networks:
         - name: ctlplane
           subnetName: subnet1
           defaultRoute: false
-          fixedIP: 172.25.249.22
+          fixedIP: 172.25.249.21
         - name: internalapi
           subnetName: subnet1
-          fixedIP: 192.168.52.22
+          fixedIP: 192.168.52.21
         - name: storage
           subnetName: subnet1
-          fixedIP: 192.168.50.22
+          fixedIP: 192.168.50.21
         - name: tenant
           subnetName: subnet1
-          fixedIP: 192.168.53.22
+          fixedIP: 192.168.53.21
         - name: external
           subnetName: subnet1
-          fixedIP: 172.25.250.22
+          fixedIP: 172.25.250.21
           defaultRoute: true
   nodeTemplate:
     extraMounts:
@@ -66,14 +65,14 @@ spec:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     managementNetwork: ctlplane
     ansible:
-      ansibleUser: tripleo-admin
+      ansibleUser: student
       ansibleVarsFrom:
       - secretRef:
           name: subscription-manager
       - secretRef:
           name: redhat-registry
       ansibleVars:
-         rhc_release: 9.2
+         rhc_release: 9.4
          rhc_repositories:
              - {name: "*", state: disabled}
              - {name: "rhel-9-for-x86_64-baseos-eus-rpms", state: enabled}
@@ -86,7 +85,7 @@ spec:
            ---
            network_config:
            - type: interface
-             name: ens3
+             name: eth0
              mtu: 1500
              dns_servers: {{ ctlplane_dns_nameservers }}
              domain: {{ dns_search_domains }}
@@ -94,7 +93,7 @@ spec:
              addresses:
              - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
            - type: interface
-             name: ens4
+             name: eth1
              mtu: 1500
              use_dhcp: false
              addresses:
@@ -102,10 +101,10 @@ spec:
                  {{ storage_ip }}/{{ storage_cidr }}
              routes: {{ storage_host_routes }}
            - type: interface
-             name: ens5
+             name: eth2
              use_dhcp: true        
            - type: interface
-             name: ens6
+             name: eth3
              mtu: 1500
              use_dhcp: false
              addresses:
@@ -113,7 +112,7 @@ spec:
                  {{ internalapi_ip }}/{{ internalapi_cidr }}
              routes: {{ internalapi_host_routes }}
            - type: interface
-             name: ens7
+             name: eth4
              use_dhcp: false   
            - type: ovs_bridge
              name: br-tenant
@@ -125,7 +124,7 @@ spec:
              routes: {{ tenant_host_routes }}
              members:
              - type: interface
-               name: ens8
+               name: eth5
                mtu: 1500
                # force the MAC address of the bridge to this interface
                primary: true 
@@ -142,25 +141,23 @@ spec:
                 default: true
              members:
              - type: interface
-               name: ens9
+               name: eth6
                mtu: 1500
                # force the MAC address of the bridge to this interface
                primary: true
-         edpm_network_config_nmstate: false
-         # Control resolv.conf management by NetworkManager
-         # false = disable NetworkManager resolv.conf update (default)
-         # true = enable NetworkManager resolv.conf update
-         edpm_bootstrap_network_resolvconf_update: false
          edpm_network_config_hide_sensitive_logs: false
-         #
-         # These vars are for the network config templates themselves and are
-         # considered EDPM network defaults (for all computes).
+          #
+          # These vars are for the network config templates themselves and are
+          # considered EDPM network defaults (for all computes).
+         neutron_physical_bridge_name: br-ex
+         edpm_ovn_bridge_mappings: ["datacentre:br-ex"]
          ctlplane_host_routes: []
          ctlplane_subnet_cidr: 24
-         dns_search_domains: localdomain
+         dns_search_domains: example.com
          ctlplane_mtu: 1500
          external_mtu: 1500
          external_cidr: '24'
+         external_host_routes: []
          internalapi_mtu: 1500
          internalapi_cidr: '24'
          internalapi_host_routes: []
@@ -170,31 +167,11 @@ spec:
          tenant_mtu: 1500
          tenant_cidr: '24'
          tenant_host_routes: []
-
-         # EDPM network defaults
-         neutron_physical_bridge_name: br-ex
+         # name of the first network interface on the compute node:
          neutron_public_interface_name: eth6
-
-         # edpm ovn-controller configuratio
-         edpm_ovn_bridge: br-int
-         edpm_ovn_encap_type: geneve
-         ovn_monitor_all: true
-         edpm_ovn_remote_probe_interval: 60000
-         edpm_ovn_ofctrl_wait_before_clear: 8000
-         edpm_tuned_profile: virtual-host
-
          # edpm_nodes_validation
          edpm_nodes_validation_validate_controllers_icmp: false
          edpm_nodes_validation_validate_gateway_icmp: false
          gather_facts: false
          enable_debug: false
-         
-         # Do not attempt OVS major upgrades here
-         edpm_ovs_packages:
-         - openvswitch3.3
-
          edpm_bootstrap_release_version_package: []
-
-         edpm_bootstrap_command: |
-           dnf -y upgrade openstack-selinux
-           rm -f /run/virtlogd.pid

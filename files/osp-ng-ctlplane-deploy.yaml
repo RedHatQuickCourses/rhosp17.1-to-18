@@ -6,6 +6,25 @@ metadata:
 spec:
   secret: osp-secret
   storageClass: nfs-storage
+  extraMounts:
+    - name: v1
+      region: r1
+      extraVol:
+        - propagation:
+          - CinderVolume
+          - CinderBackup
+          - Glance
+          extraVolType: Ceph
+          volumes:
+          - name: ceph
+            projected:
+              sources:
+              - secret:
+                  name: ceph-conf-files
+          mounts:
+          - name: ceph
+            mountPath: "/etc/ceph"
+            readOnly: true
   dns:
     template:
       override:
@@ -23,11 +42,12 @@ spec:
         - 172.25.250.254
       replicas: 1
   cinder:
-    enabled: false
+    enabled: true
     apiOverride:
       route: {}
     template:
       databaseInstance: openstack
+      databaseAccount: cinder
       secret: osp-secret
       cinderAPI:
         override:
@@ -40,25 +60,24 @@ spec:
                   metallb.universe.tf/loadBalancerIPs: 192.168.52.89
               spec:
                 type: LoadBalancer
+        replicas: 1
       cinderScheduler:
         replicas: 1
       cinderBackup:
-        networkAttachments:
-        - storage
-        replicas: 0 # backend needs to be configured
+        replicas: 0
       cinderVolumes:
-        nfs:
-          networkAttachments:
-          - storage
+        ceph:
+          replicas: 1
           customServiceConfig: |
-            [nfs]
-            volume_backend_name=nfs
-            volume_driver=cinder.volume.drivers.nfs.NfsDriver
-            nfs_snapshot_support=true
-            nas_secure_file_operations=false
-            nas_secure_file_permissions=false
-          customServiceConfigSecrets:
-          - cinder-nfs-config
+            [tripleo_ceph]
+            backend_host=hostgroup
+            volume_backend_name=tripleo_ceph
+            volume_driver=cinder.volume.drivers.rbd.RBDDriver
+            rbd_ceph_conf=/etc/ceph/ceph.conf
+            rbd_user=openstack
+            rbd_pool=volumes
+            rbd_flatten_volume_from_snapshot=False
+            report_discard_supported=True
   barbican:
     enabled: false  
     apiOverride:
@@ -86,13 +105,22 @@ spec:
     enabled: true
     template:
       databaseInstance: openstack
+      customServiceConfig: |
+        [DEFAULT]
+        enabled_backends=default_backend:rbd
+        debug = true
+        [glance_store]
+        default_backend=default_backend
+        [default_backend]
+        rbd_store_ceph_conf=/etc/ceph/ceph.conf
+        rbd_store_user=openstack
+        rbd_store_pool=images
+        store_description=Ceph glance store backend.
       storage:
         storageRequest: 10G
         storageClass: "nfs-storage"
-      keystoneEndpoint: default
       glanceAPIs:
         default:
-          type: single
           replicas: 1
           override:
             service:
@@ -104,8 +132,6 @@ spec:
                     metallb.universe.tf/loadBalancerIPs: 192.168.52.89
                 spec:
                   type: LoadBalancer
-          networkAttachments:
-            - storage
   keystone:
     apiOverride:
       route: {}

@@ -1,8 +1,8 @@
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
-  name: openstack-edpm-compute-1
+  name: openstack-edpm-compute-2
   namespace: openstack
 spec:
   nodeSets:
-    - openstack-edpm-compute-1
+    - compute-2
